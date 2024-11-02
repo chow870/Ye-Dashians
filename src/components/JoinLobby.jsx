@@ -16,7 +16,7 @@ function JoinLobby() {
     const handleJoin = async(e) => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/lobby/join', {
+            const response = await fetch('/api/v1/lobby/join', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

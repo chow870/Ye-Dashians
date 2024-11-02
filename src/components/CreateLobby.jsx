@@ -11,7 +11,7 @@ function CreateLobby() {
     const handleButtonClick = async (e) => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/lobby/createNew', {
+            const response = await fetch('/api/v1/lobby/createNew', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

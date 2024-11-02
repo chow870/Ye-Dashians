@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { database } from '../firebase';
 function LobbiesCard(props) {
+    // means here I have the lobbyId, myId, guestId. I shall pass/use it as per the requirenment in the Arch. : chow870
     const myId = useSelector((state) => {
         return state?.auth?.user?.uid
     })
@@ -21,7 +22,7 @@ function LobbiesCard(props) {
     useEffect(() => {
         async function fetchThatOne() {
             try {
-                const response = await fetch('http://localhost:5000/lobby/getAll', {
+                const response = await fetch('/api/v1/lobby/getAll', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ function LobbiesCard(props) {
       </Typography>
     </CardContent>
     <CardActions>
-      <Button size="small" variant='outlined'>View/Alter Your Plans</Button>
+        {thatOne?.venue == null ? <Button size="small" variant='outlined'>Create The Plans</Button> : <Button size="small" variant='outlined'>View/Alter Your Plans</Button> }
     </CardActions>
     </div>
     <div style = {{width : '80%' , textAlign : 'right' , display : 'flex' ,flexDirection : 'column', justifyContent : 'center' , alignItems : 'right'}}><Typography style={{fontSize:'30px',margin:'15px'}}>have to meet</Typography>

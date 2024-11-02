@@ -1,5 +1,6 @@
 const lobbyModel = require('../models/lobbyModel')
 module.exports.addLobby = async function addLobby(req, res) {
+    console.log("reached the addLobby backend")
     console.log(req.body.creatorId)
     const newLobby = {
       user1: req.body.creatorId,
@@ -12,6 +13,8 @@ module.exports.addLobby = async function addLobby(req, res) {
       let mongoRes = await lobbyModel.create(newLobby);
       res.status(201).json({ message : "new lobby created", success: true, lobby: mongoRes });
     } catch (error) {
+        console.log("errro in creation of the lobby, controller addLobby")
+        console.log(error)
       res.status(500).json({ success: false, message: error.message });
     }
   }

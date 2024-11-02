@@ -11,5 +11,5 @@ mongoose.connect(db_link)
   .catch(err => console.log(err));
 
 app.use(cors());
-app.use('/lobby', lobbyRouter);
+app.use('/api/v1/lobby', lobbyRouter);
   
