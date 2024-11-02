@@ -1,6 +1,6 @@
 import { Autocomplete, LoadScript } from '@react-google-maps/api';
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const libraries = ['places', 'geometry'];
 
@@ -8,6 +8,7 @@ function PreferenceForm() {
     const [preference, setPreference] = useState(null);
     const [originInput, setOriginInput] = useState(null);
     const originRef = useRef(null);
+    const navigate = useNavigate();
     const location = useLocation();
     const [nextPagebol,setNextPageBol]= useState(false);
     const { slotId, myId, guestId } = location.state || {};
@@ -54,7 +55,8 @@ function PreferenceForm() {
             typeOfPlace: Array.from(document.getElementById('TypeOfPlace').selectedOptions).map(option => option.value),
             ambience: Array.from(document.getElementById('Ambience').selectedOptions).map(option => option.value),
             foodPreference: Array.from(document.getElementById('foodPreference').selectedOptions).map(option => option.value),
-            otherServices: Array.from(document.getElementById('Services').selectedOptions).map(option => option.value)
+            otherServices: Array.from(document.getElementById('Services').selectedOptions).map(option => option.value),
+            location:originInput
         };
 
         setPreference(tempPreference);
@@ -65,6 +67,14 @@ function PreferenceForm() {
         if (nextPagebol) {
             console.log("Updated preference:", preference);
             // i will have to navigate it to next page now.
+            navigate('/preference/matching',{
+              state:{
+                  slotId:lobbyId,
+                  myId:myId,
+                  mylocation:originInput,
+                  preference:preference,
+                  guestId:guestId
+              }})
         }
     }, [preference,nextPagebol]);
 
