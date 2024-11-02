@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Route,Routes } from 'react-router-dom';
-import SignUp from './components/SignUp'
+import CreateLobby from './components/Lobby/CreateLobby';
+import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
-import CreateLobby from './components/CreateLobby';
-import JoinLobby from './components/JoinLobby';
-import Navbar from './components/Navbar';
-import LobbiesCard from './components/LobbiesCard';
-import Lobbies from './components/Lobbies';
+import JoinLobby from './components/Lobby/JoinLobby';
+import LobbiesCard from './components/Lobby/LobbiesCard';
+import Navbar from './components/Common/Navbar';
+import MapWrapper from './components/Home/Map';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -19,9 +17,10 @@ function App() {
       <Routes>
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
+          <Route path='/home' element={<MapWrapper/>} />
           <Route path='/createlobby' element={<CreateLobby/>} />
           <Route path='/joinlobby' element={<JoinLobby/>} />
-          <Route path='/showlobbies' element={<Lobbies/>} />
+          <Route path='/showlobbies' element={<LobbiesCard/>} />
       </Routes>
       
     </>
