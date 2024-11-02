@@ -10,6 +10,7 @@ import Navbar from './components/Common/Navbar';
 import MapWrapper from './components/Home/Map';
 import MainPreference from './pages/Preference/MainPreference';
 import PreferenceForm from './components/Preference/PreferenceForm';
+import Lobbies from './components/Lobby/Lobbies';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -22,7 +23,7 @@ function App() {
           <Route path='/home' element={<MapWrapper/>} />
           <Route path='/createlobby' element={<CreateLobby/>} />
           <Route path='/joinlobby' element={<JoinLobby/>} />
-          <Route path='/showlobbies' element={<LobbiesCard/>} />
+          <Route path='/showlobbies' element={<Lobbies/>} />
           <Route path='/preference' element={<MainPreference/>} >
               <Route path ='form' element={<PreferenceForm/>}/>
           </Route>

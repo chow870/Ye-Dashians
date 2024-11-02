@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const lobbyRouter = require('./routes/lobbyRoute')
+const PreferenceFormSubmitRouter = require('./routes/preferenceRoute');
 const cors = require('cors');
 app.use(express.json());
 app.listen(5000);
@@ -12,4 +13,5 @@ mongoose.connect(db_link)
 
 app.use(cors());
 app.use('/api/v1/lobby', lobbyRouter);
+app.use('/api/v1/preferenceSubmit',PreferenceFormSubmitRouter );
   
