@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react'
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { database } from '../firebase';
-function CreateLobby() {
+import { database } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
+function JoinLobby() {
+
+    const navigate = useNavigate();
     const [lobbyId, setLobbyId] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const userId = useSelector((state) => {
         return state?.auth?.user?.uid
     })
-    const handleButtonClick = async (e) => {
+
+    const handleJoin = async(e) => {
         try {
             setLoading(true);
-            const response = await fetch('/api/v1/lobby/createNew', {
-                method: 'POST',
+            const response = await fetch('/api/v1/lobby/join', {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "creatorId": userId }),
+                body: JSON.stringify({ 
+                    "guestId" : userId,
+                    "lobbyId" : lobbyId
+                 }),
             });
 
             if (!response.ok) {
@@ -49,27 +57,41 @@ function CreateLobby() {
         } catch (error) {
             setLoading(false);
             setError(error.message);
-            console.error('Error creating lobby:', error);
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+            console.error('Error joining lobby:', error);
         }
-    };
+    }
+
+
+   
+
     return (
-        <div>
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-500 to-blue-300">
-                <h1 className="text-3xl font-bold text-white mb-8">Lobby Generator</h1>
-                <button
-                    onClick={handleButtonClick} disabled={loading}
-                    className="px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out"
-                >
-                    Generate Lobby ID
-                </button>
-                {lobbyId && (
-                    <div className="mt-8 p-4 bg-white rounded-lg shadow-lg text-center">
-                        <h2 className="text-2xl font-semibold text-gray-800">Your Lobby ID:</h2>
-                        <p className="text-xl text-gray-600">{lobbyId}</p>
-                        <h2 className="text-2xl font-semibold text-gray-800">share this lobby id with ur friends to invite them</h2>
-                    </div>
-                )}
-                {error && (
+        <div class="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-500 to-blue-300">
+    <form class="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+        <div class="flex items-center border-b border-teal-500 py-2">
+            <input
+                class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                type="text"
+                placeholder="lobby ID"
+                aria-label="lobby ID" onChange={(e)=>{setLobbyId(e.target.value)}}
+            />
+            <button
+                class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+                type="button" disabled={loading} onClick={handleJoin}
+            >
+               join lobby
+            </button>
+            <button
+                class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
+                type="button" onClick={()=>{
+                    navigate('/createlobby')
+                }}
+            >
+                create a new lobby
+            </button>
+            {error && (
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         <strong class="font-bold">he bhagwan !!</strong>
                         <span class="block sm:inline">{error}</span>
@@ -78,9 +100,11 @@ function CreateLobby() {
                         </span>
                     </div>
                 )}
-            </div>
         </div>
+    </form>
+</div>
+
     )
 }
 
-export default CreateLobby
+export default JoinLobby

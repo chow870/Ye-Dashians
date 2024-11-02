@@ -11,7 +11,7 @@ import Alert from '@mui/material/Alert';
 import { TextField } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { login } from '../redux/slices/authSlice';
+import { login } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 
 function SignIn() {

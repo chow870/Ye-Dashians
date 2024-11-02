@@ -6,7 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { database } from '../firebase';
+import { database } from '../../firebase';
 function LobbiesCard(props) {
     // means here I have the lobbyId, myId, guestId. I shall pass/use it as per the requirenment in the Arch. : chow870
     const myId = useSelector((state) => {

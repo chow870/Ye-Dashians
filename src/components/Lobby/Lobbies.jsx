@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState  , useEffect} from 'react';
 import LobbiesCard from './LobbiesCard';
-import { database } from '../firebase';
+import { database } from '../../firebase';
 import { useSelector } from 'react-redux';
 function Lobbies() {
     const [error,setError] = useState();

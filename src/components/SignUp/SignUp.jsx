@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { isLoaded } from 'react-redux-firebase'
 // import { connect } from "react-redux";
 // import * as authActions from '../../actions/authActions';
-import { signup } from "../redux/slices/authSlice";
+import { signup } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from '@mui/material/Card';
@@ -15,7 +15,7 @@ import CardActions from '@mui/material/CardActions';
 import Alert from '@mui/material/Alert';
 import { TextField } from '@mui/material';
 import { Link } from "react-router-dom";
-import {  database , storage } from "../firebase";
+import {  database , storage } from "../../firebase";
 
 
 
