@@ -1,6 +1,8 @@
 import React from 'react'
 
-function Lobby(props) {
+function Lobby() {
+    
+    
   return (
     <div>
         

@@ -38,13 +38,8 @@ module.exports.joinLobby =  async function joinLobby(req,res){
     }
 }
 module.exports.getAllLobies = async function getAllLobies(req,res){
-
-}
-
-module.exports.getOneLobby = async function getOneLobby(req,res){
-    let lobbyId = req.body.lobbyId;
     try {
-        let mongoRes = await lobbyModel.findOneAndUpdate({_id : lobbyId});
+        let mongoRes = await lobbyModel.find();
         if (!mongoRes) {
             res.status(500).json({ message : "such a lobby doesnt exist", success: false});
         }
@@ -57,3 +52,20 @@ module.exports.getOneLobby = async function getOneLobby(req,res){
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+// module.exports.getOneLobby = async function getOneLobby(req,res){
+//     let lobbyId = req.body.lobbyId;
+//     try {
+//         let mongoRes = await lobbyModel.findOne({_id : lobbyId});
+//         if (!mongoRes) {
+//             res.status(500).json({ message : "such a lobby doesnt exist", success: false});
+//         }
+//         else
+//         {
+//             res.status(201).json({ message : "found a lobby , giving it to you", success: true, lobby: mongoRes });
+//         }
+        
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: error.message });
+//     }
+// }

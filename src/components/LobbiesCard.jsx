@@ -1,42 +1,86 @@
-import React from 'react'
+import React, { useState  , useEffect} from 'react'
+import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { database } from '../firebase';
 function LobbiesCard(props) {
+    const myId = useSelector((state) => {
+        return state?.auth?.user?.uid
+    })
+    const [error,setError] = useState();
+    const [lobby,setLobby] = useState();
+    const [guest,setGuest] = useState();
     let lobbyId = props.lobbyId;
-    async function fetchThatOne(){
-    try {
-        setLoading(true);
-        const response = await fetch('http://localhost:5000/lobby/createNew', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "lobbyId": lobbyId }),
+    console.log(lobbyId);
+    let thatOne;
+    // fetchthatone and fetchGuest ko lagana padega usestate ke andar , where snapshot lagaenge apan firestore ke users database ke upar
+    useEffect(() => {
+        async function fetchThatOne() {
+            try {
+                const response = await fetch('http://localhost:5000/lobby/getAll', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    setError(null);
+                    const foundLobby = data.lobby.find((lobby) => lobby._id === lobbyId);
+                    setLobby(foundLobby || null);
+                }
+            } catch (error) {
+                setError(error.message);
+                console.error('Error fetching lobby:', error);
+            }
+        }
+
+        fetchThatOne();
+
+
+
+
+        const unsubscribe = database.users.onSnapshot((snapshot) => {
+            console.log("Users collection changed, re-fetching lobbies...");
+            fetchThatOne();
         });
 
-        if (!response.ok) {
-            setLoading(false);
-            throw new Error('Network response was not ok');
+     
+        return () => unsubscribe();
+
+
+
+
+
+    }, [lobbyId]);
+    useEffect(() => {
+        async function fetchGuest() {
+            try {
+                if (lobby) {
+                    const guestId = myId !== lobby.user1 ? lobby.user1 : lobby.user2;
+                    const res = await database.users.doc(guestId).get();
+                    setGuest(res.data().fullname);  // Assuming res.data() has the guest information
+                    // console.log('Guest data:', res.data().fullname);
+                    
+                }
+            } catch (error) {
+                console.error('Error fetching guest:', error);
+            }
         }
 
-        const data = await response.json();
-
-        if (data.success) {
-            setLoading(false);
-            setLobbyId(data.lobby._id);
-            setError(null);
-            
+        if (lobby) {
+            fetchGuest();
         }
-    } catch (error) {
-        setLoading(false);
-        setError(error.message);
-        console.error('Error creating lobby:', error);
-    }
-}
+    }, [lobby, myId]);
   return (
     <div style={{border:'2px solid black' , display : 'flex'}}>
         
@@ -46,22 +90,24 @@ function LobbiesCard(props) {
         date
       </Typography>
       <Typography variant="h5" component="div">
-       monday
+      {thatOne?.time}
       </Typography>
       <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>time</Typography>
       <Typography variant="body2">
-        well meaning and kindly
+      {thatOne?.time}
       </Typography>
       <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>venue</Typography>
       <Typography variant="body2">
-        well meaning and kindly
+      {thatOne?.venue}
       </Typography>
     </CardContent>
     <CardActions>
-      <Button size="small" variant='outlined'>Change Your Plans</Button>
+      <Button size="small" variant='outlined'>View/Alter Your Plans</Button>
     </CardActions>
     </div>
-    <div style = {{width : '80%'}}></div>
+    <div style = {{width : '80%' , textAlign : 'right' , display : 'flex' ,flexDirection : 'column', justifyContent : 'center' , alignItems : 'right'}}><Typography style={{fontSize:'30px',margin:'15px'}}>have to meet</Typography>
+    <Typography style={{fontSize:'70px'}}>{guest}</Typography>
+    </div>
     </div>
   )
 }
