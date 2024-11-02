@@ -10,6 +10,7 @@ function Lobbies() {
         return state?.auth?.user?.uid
     })
     useEffect(() => {
+        console.log("inside the useEffect of Lobbies.jsx")
      
         async function fetchLobbies() {
             try {

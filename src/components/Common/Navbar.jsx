@@ -2,9 +2,9 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 const navigation = [
-  { name: 'signup', href: '/signup', current: false },
+  { name: 'signup', href: '/signup', current: true },
   { name: 'signin', href: '/signin', current: false },
-  { name: 'Home', href: '/home', current: true },
+  { name: 'Home', href: '/home', current: false },
   { name: 'createlobby', href: '/createlobby', current: false },
   { name: 'joinlobby', href: '/joinlobby', current: false },
   { name: 'Showlobbies', href: '/showlobbies', current: false },
