@@ -71,6 +71,7 @@ export default function ShowingResults() {
         setCommonPreference(commonPref);
 
         // Find common places based on common preferences
+        // this is the filtering algorithm 
         commonPref.forEach((placeType) => {
             const myPlace = myoptions.find((opt) => opt.typeOfPlace === placeType);
             const otherPlace = othersOption.find((opt) => opt.typeOfPlace === placeType);
