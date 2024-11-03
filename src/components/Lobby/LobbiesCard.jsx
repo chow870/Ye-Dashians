@@ -68,10 +68,15 @@ function LobbiesCard(props) {
             try {
                 if (lobby) {
                     const guestId = myId !== lobby.user1 ? lobby.user1 : lobby.user2;
+                    console.log("guestId is" , guestId)
                     setGuestId(guestId)
-                    const res = await database.users.doc(guestId).get();
+                    if(guestId)
+                    {
+                        const res = await database.users.doc(guestId).get();
                     setGuest(res.data().fullname);  // Assuming res.data() has the guest information
                     // console.log('Guest data:', res.data().fullname);
+                    }
+                    
                     
                 }
             } catch (error) {
