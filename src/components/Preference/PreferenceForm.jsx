@@ -68,7 +68,7 @@ function PreferenceForm() {
             console.log("Updated preference:", preference);
             navigate('/preference/matching',{
               state:{
-                  slotId:lobbyId,
+                  slotId:slotId,
                   myId:myId,
                   mylocation:originInput,
                   preference:preference,

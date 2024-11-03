@@ -79,8 +79,8 @@ export default function ShowingResults() {
         // first match kar le
         console.log("now entered the other useEffect of Showing Results with otherPreference as : ", preferenceother);
 
-        preferencemy.typeOfPlaces.map((element)=>{
-            preferenceother.typeOfPlaces((element2)=>{
+        preferencemy.typeOfPlace.map((element)=>{
+            preferenceother.typeOfPlace((element2)=>{
                 if(element==element2){
                     setcommonPreference((prev)=>[...prev , element])
                 }

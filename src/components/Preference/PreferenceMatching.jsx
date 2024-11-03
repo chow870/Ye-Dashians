@@ -1,249 +1,196 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function PrefernceMatching() {
-    const [results, setResults]= useState([]); // it will be an array of object // one this will be tags that i wil display and other will be just for further matching
-    const [tempResult,setTempResult] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [coordinate2,setCoordinate2]=useState(null);
-    const [othersPreference,setOthersPreference]= useState({}); // will be helpful, Agle wale page mai help karega.
-    const navigate = useNavigate();
-    const location = useLocation();
+function PreferenceMatching() {
+  const [results, setResults] = useState([]); 
+  const [tempResult, setTempResult] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [coordinate2, setCoordinate2] = useState(null);
+  const [othersPreference, setOthersPreference] = useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const {slotId,myId,mylocation,guestId,preference } = location.state || {};
-    console.log("reached Preference Matching page with :slotId,myId,mylocation,guestId,preference as ", slotId,myId,mylocation,guestId,preference)
+  const { slotId, myId, mylocation, guestId, preference } = location.state || {};
+  console.log("Reached Preference Matching page with:", slotId, myId, mylocation, guestId, preference);
 
-    // self user ki toh location,userid and location {} toh hai hi.
-    // dusre wale kai liye preference model wale sai fetch karna parega slot id , useri sai jo uss user ki hai
-    // or you may store it in the form of object
-    // I may get it from the props also.
+//   to fetch the location 
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      try {
+        const response = await fetch(`/api/v1/fetchCoordinates?slotId=${slotId}&userId=${guestId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
+        if (response.ok) {
+          const result = await response.json();
+          console.log(result.data.preference[0].location)
+          console.log(result.data.preference[0])
+          setCoordinate2(result.data.preference[0].location);
+          setOthersPreference(result.data.preference[0]);
+        } else {
+          if (response.status === 404) {
+            alert("Please ask your partner to fill their preferences.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching coordinates:", error);
+      }
+    };
 
-// this is meant for the individual ones in which on his basis i will be able to look for the options available for individual user.
-    useEffect(()=>{
-        const  FetchCoordinates = async ()=> {
-            try{
-                let response = await fetch(`/api/v1/fetchCoordinates?slotId=${slotId}&userId=${guestId}`, {
+    fetchCoordinates();
+  }, []);
+
+ useEffect(async ()=>{
+    console.log(coordinate2);
+if (coordinate2 == null) return;
+
+let searchLat = (mylocation.lat + coordinate2.lat) / 2;
+let searchLng = (mylocation.lng + coordinate2.lng) / 2;
+console.log(preference.typeOfPlace); // array
+console.log(preference.ambience); // array
+
+try {
+    // Collect all fetch promises for ambience and foodPreference
+    const fetchPromises = [];
+
+    // First loop: iterate over typeOfPlace and ambience
+    for (const element of preference.typeOfPlace) {
+        console.log("i have started iterating in the preference.typeOfPlace for the element ", element)
+        for (const ambience of preference.ambience) {
+            console.log("i have started iterating in the preference.ambience for the element ", ambience)
+            fetchPromises.push(
+                fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${ambience}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
                     }
-                });
-        
-                if(response.ok){
-                    let result = await response.json();
-                    setCoordinate2(result.preference.location);
-                    setOthersPreference(result.preference);
-                }
-                else{
-                    if(response.status== 404 ){
-                    console.log("entered the try block of FetchCoordinates but the response was not okay");
-                    console.log("Record not found within the timeout period {60 secs}")
-                    alert("plz ask Your partner to fill his/her preferences")
-                }
-                else{
-                    console.log("status was 500, some error in finding the second user")
-                }
-                }
-            }
-
-            catch(error){
-                console.log("there was some error : ", error);
-            }
-            
-        }
-        FetchCoordinates();
-    })
-
-    useEffect(async ()=>{
-        if(coordinate2 == null) return
-        let searchLat = (mylocation.lat + coordinate2.lat) / 2;
-        let searchLng = (mylocation.lng + coordinate2.lng) / 2;
-        try {
-            // Main loop for preferences
-            preference.typeOfPlaces.forEach((element) => {
-               
-                preference.ambience.forEach(async (ambience) => {
-                    try {
-                        // Fetch the API data for each combination of `type` and `ambience`
-                        let response = await fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${ambience}`, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        });
-        
-                        if (response.ok) {
-                            let result = await response.json();
-                            console.log("received one of the responses of 2 loops on the preferenceMatching.jsx : ", result)
-        
-                            // Process each result item
-                            result.data.forEach((r) => {
-                                setTempResult((prev) => {
-                                    
-                                    if (!prev) prev = [];
-        
-                                    let foundIt = false;
-    
-                                    const updatedPrev = prev.map((item) => {
-                                        if (item.place_id === r.place_id) {
-                                            foundIt = true;
-                                            return {
-                                                ...item,
-                                                tags: [...item.tags, ambience], 
-                                            };
-                                        }
-                                        return item;
-                                    });
-                                    if (!foundIt) {
-                                        return [...updatedPrev, { ...r, tags: [ambience] }];
-                                    } else {
-                                        return updatedPrev; 
-                                    }
-                                });
-                            });
-                        }
-                    } catch (error) {
-                        console.error("Inner fetch error:", error);
-                    }
-                });
-                preference.foodPreference.forEach(async (ambience) => {
-                    try {
-                        // Fetch the API data for each combination of `type` and `ambience`
-                        let response = await fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${ambience}`, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        });
-                        
-                        if (response.ok) {
-                            let result = await response.json();
-        
-                            // Process each result item
-                            result.data.forEach((r) => {
-                                setTempResult((prev) => {
-                                    // Initialize prev as an empty array if it is null
-                                    if (!prev) prev = [];
-        
-                                    let foundIt = false;
-        
-                                    // Map through prev to see if the place_id already exists
-                                    const updatedPrev = prev.map((item) => {
-                                        if (item.place_id === r.place_id) {
-                                            foundIt = true;
-                                            return {
-                                                ...item,
-                                                tags: [...item.tags, ambience], // Add ambience to tags immutably
-                                            };
-                                        }
-                                        return item;
-                                    });
-        
-                                    // If not found, add the new result with initial tags
-                                    if (!foundIt) {
-                                        return [...updatedPrev, { ...r, tags: [ambience] }];
-                                    } else {
-                                        return updatedPrev; // Return the updated array
-                                    }
-                                });
-                            });
-                        }
-                    } catch (error) {
-                        console.error("Inner fetch error:", error);
-                    }
-                });
-
-                setTempResult(async (prev) => {
-                    if (!prev) return []; 
-                    const updatedResults = await Promise.all(
-                        prev.map(async (item) => {
-                            try {
-                                let response = await fetch(); 
-                                if (response.ok) {
-                                    let result = await response.json();
-                
-                                    // Merge the result with the existing item details
+                })
+                .then(response => response.ok ? response.json() : Promise.reject(response))
+                .then(result => {
+                    console.log(result)
+                    // now just checking if the results entries if already exsists in the Tempresult
+                    result.data.results.forEach((r) => {
+                        setTempResult((prev) => {
+                            if (!prev) prev = [];
+                            let foundIt = false;
+                            const updatedPrev = prev.map((item) => {
+                                if (item.place_id === r.place_id) {
+                                    foundIt = true;
                                     return {
                                         ...item,
-                                        ...result.additionalDetails,
-                                        ...result.distances 
+                                        tags: [...item.tags, ambience],
                                     };
-                                } else {
-                                    return item;
                                 }
-                            } catch (error) {
-                                console.error("Error fetching details:", error);
-                                
                                 return item;
+                            });
+
+                            if (!foundIt) {
+                                return [...updatedPrev, { ...r, tags: [ambience] }];
+                            } else {
+                                return updatedPrev;
                             }
-                        })
-                    );
-                
-                    // Return the fully updated array
-                    return updatedResults;
-                });
-
-                setResults((prev)=>{
-                    return [...prev, {typeOfPlaces:element, result :tempResult}]
+                        });
+                    });
                 })
-                setTempResult(null)
-
-            });
-            // time to hit the backend to store the details
-            try {
-                console.log("Reached the PreferenceMatchingSubmission", results);
-        
-                const response = await fetch(`/api/v1/preferenceMatching?slotId=${slotId}&myId=${myId}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"  // Ensure JSON headers are set
-                    },
-                    body: JSON.stringify(results)  // Send preferenceData directly, not in an array
-                });
-        
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Response from server:', result);
-                    setNextPageBol(true);
-                } else {
-                    console.error('Failed to submit preferences:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error in PreferenceMAthcingSubmission:', error);
-            }
-            }
-        catch (error) {
-            console.error("Outer error:", error);
+                .catch(error => console.error("Inner fetch error for ambience:", error))
+            );
         }
 
-    
-    },[coordinate2])
-    if(loading){
-        return (
-            <h1>We are trying to find the best match for you.</h1>
-        )
-    }
-    else{
-        navigate('/preference/results',{
-            state:{
-                slotId:lobbyId,
-                myId:myId,
-                mylocation:originInput,
-                preferencemy:preference,
-                guestId:guestId,
-                guestlocation:coordinate2,
-                myoptions:results,
-                preferenceother:othersPreference,
-                
-            }})
+        // Second loop: iterate over typeOfPlace and foodPreference
+        for (const food of preference.foodPreference) {
+            console.log("i have started iterating in the preference.foodPreference for the element ", food)
+            fetchPromises.push(
+                fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${food}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => response.ok ? response.json() : Promise.reject(response))
+                .then(result => {
+                    console.log(result)
+                    result.data.results.forEach((r) => {
+                        setTempResult((prev) => {
+                            if (!prev) prev = [];
 
-        
-        // navigate to thenext page.
+                            let foundIt = false;
+                            const updatedPrev = prev.map((item) => {
+                                if (item.place_id === r.place_id) {
+                                    foundIt = true;
+                                    return {
+                                        ...item,
+                                        tags: [...item.tags, food],
+                                    };
+                                }
+                                return item;
+                            });
+
+                            if (!foundIt) {
+                                return [...updatedPrev, { ...r, tags: [food] }];
+                            } else {
+                                return updatedPrev;
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.error("Inner fetch error for foodPreference:", error))
+            );
+        }
     }
-  return (
-    <></>
-  )
+
+    // Wait for all fetch requests to complete
+    await Promise.all(fetchPromises);
+
+    // After all requests are done, update results and submit
+    await setResults((prev) => {
+        return [...prev, { typeOfPlaces: preference.typeOfPlace, result: tempResult }];
+    });
+    setTempResult(null);
+
+    // Submit preferences to backend
+    console.log("Reached the PreferenceMatchingSubmission so the result i will submit is : ", results);
+    const response = await fetch(`/api/v1/preferenceMatching?slotId=${slotId}&myId=${myId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(results),
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        console.log('Response from server:', result);
+       setLoading(false);
+    } else {
+        console.error('Failed to submit preferences:', response.statusText);
+    }
+} catch (error) {
+    console.error("Outer error:", error);
 }
 
-export default PrefernceMatching
+ },[coordinate2])
+
+if (loading) {
+    return <h1>We are trying to find the best match for you.</h1>;
+} else {
+    navigate('/preference/results', {
+        state: {
+            slotId,
+            myId,
+            mylocation,
+            preferenceMy: preference,
+            guestId,
+            guestLocation: coordinate2,
+            myOptions: results,
+            preferenceOther: othersPreference,
+        }
+    });
+}
+
+return null;
+}
+
+export default PreferenceMatching;

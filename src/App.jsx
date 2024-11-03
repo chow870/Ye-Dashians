@@ -11,8 +11,8 @@ import MapWrapper from './components/Home/Map';
 import MainPreference from './pages/Preference/MainPreference';
 import PreferenceForm from './components/Preference/PreferenceForm';
 import Lobbies from './components/Lobby/Lobbies';
-import PrefernceMatching from './components/Preference/PreferenceMatching';
 import ShowingResults from './components/Preference/ShowingResults';
+import PreferenceMatching from './components/Preference/PreferenceMatching';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -28,7 +28,7 @@ function App() {
           <Route path='/showlobbies' element={<Lobbies/>} />
           <Route path='/preference' element={<MainPreference/>} >
               <Route path ='form' element={<PreferenceForm/>}/>
-              <Route path ='matching' element={<PrefernceMatching/>}/>
+              <Route path ='matching' element={<PreferenceMatching/>}/>
               <Route path ='results' element={<ShowingResults/>}/>
           </Route>
 
