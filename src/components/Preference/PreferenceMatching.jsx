@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function PrefernceMatching() {
     const [results, setResults]= useState([]); // it will be an array of object // one this will be tags that i wil display and other will be just for further matching
@@ -7,10 +7,11 @@ function PrefernceMatching() {
     const [loading, setLoading] = useState(true);
     const [coordinate2,setCoordinate2]=useState(null);
     const [othersPreference,setOthersPreference]= useState({}); // will be helpful, Agle wale page mai help karega.
-
+    const navigate = useNavigate();
     const location = useLocation();
 
     const {slotId,myId,mylocation,guestId,preference } = location.state || {};
+    console.log("reached Preference Matching page with :slotId,myId,mylocation,guestId,preference as ", slotId,myId,mylocation,guestId,preference)
 
     // self user ki toh location,userid and location {} toh hai hi.
     // dusre wale kai liye preference model wale sai fetch karna parega slot id , useri sai jo uss user ki hai
@@ -51,7 +52,9 @@ function PrefernceMatching() {
             }
             
         }
+        FetchCoordinates();
     })
+
     useEffect(async ()=>{
         if(coordinate2 == null) return
         let searchLat = (mylocation.lat + coordinate2.lat) / 2;
@@ -222,6 +225,20 @@ function PrefernceMatching() {
         )
     }
     else{
+        navigate('/preference/results',{
+            state:{
+                slotId:lobbyId,
+                myId:myId,
+                mylocation:originInput,
+                preferencemy:preference,
+                guestId:guestId,
+                guestlocation:coordinate2,
+                myoptions:results,
+                preferenceother:othersPreference,
+                
+            }})
+
+        
         // navigate to thenext page.
     }
   return (

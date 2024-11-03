@@ -66,7 +66,6 @@ function PreferenceForm() {
     useEffect(() => {
         if (nextPagebol) {
             console.log("Updated preference:", preference);
-            // i will have to navigate it to next page now.
             navigate('/preference/matching',{
               state:{
                   slotId:lobbyId,

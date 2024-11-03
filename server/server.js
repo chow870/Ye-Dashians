@@ -8,6 +8,7 @@ const NearbySearchRouter = require('./routes/MapsRoutes/NearbySearch');
 const PlaceIdSearchRouter = require('./routes/MapsRoutes/PlaceIdSearch');
 const FetchCoordinatesRouter = require('./routes/FetchCoordinates');
 const PreferenceMathcingRouter = require('./routes/PreferenceMatchingRoutes');
+const FetchOtherPreferenceRouter = require('./routes/FetchOtherPreference');
 
 app.use(express.json());
 app.listen(5000);
@@ -23,3 +24,4 @@ app.use('/api/v1/fetchCoordinates',FetchCoordinatesRouter );
 app.use('/maps/v1/NearbySearch',NearbySearchRouter);
 app.use('/maps/v1/PlaceIdSearch',PlaceIdSearchRouter);
 app.use('/api/v1/preferenceMatching',PreferenceMathcingRouter );
+app.use('/api/v1/fetchOthersPreference',FetchOtherPreferenceRouter );
