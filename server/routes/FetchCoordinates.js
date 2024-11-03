@@ -1,7 +1,7 @@
 const express = require('express')
 const FetchCoordinatesRouter = express.Router();
 const { FetchCoordinates } = require('../controllers/FetchCoordinatesController');
-PreferenceFormSubmitRouter
+FetchCoordinatesRouter
   .route('/')
   .get(FetchCoordinates)
 

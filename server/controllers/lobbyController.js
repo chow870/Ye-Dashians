@@ -11,7 +11,9 @@ module.exports.addLobby = async function addLobby(req, res) {
   
     try {
       let mongoRes = await lobbyModel.create(newLobby);
+      console.log("succesfully created the lobby : ", mongoRes)
       res.status(201).json({ message : "new lobby created", success: true, lobby: mongoRes });
+
     } catch (error) {
         console.log("errro in creation of the lobby, controller addLobby")
         console.log(error)

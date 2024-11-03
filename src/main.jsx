@@ -8,10 +8,10 @@ import { auth } from './firebase.jsx';
 import { setLoading , setUser } from './redux/slices/authSlice.jsx';
 import {onAuthStateChanged} from 'firebase/auth'
 import { store } from './redux/store.jsx';
-// auth.onAuthStateChanged((user) => {
-//   store.dispatch(setUser(user));
-//   store.dispatch(setLoading(false));
-// });
+auth.onAuthStateChanged((user) => {
+  store.dispatch(setUser(user));
+  store.dispatch(setLoading(false));
+});
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>

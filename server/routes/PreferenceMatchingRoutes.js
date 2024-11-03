@@ -1,7 +1,7 @@
 const express = require('express')
 const PreferenceMathcingRouter = express.Router();
 const { preferenceMatching } = require('../controllers/PreferenceMatchingController');
-PreferenceFormSubmitRouter
+PreferenceMathcingRouter
   .route('/')
   .post(preferenceMatching)
 
