@@ -101,42 +101,72 @@ export default function ShowingResults() {
 
     // Render the results
     return (
-        <div>
-            <h2>Showing Results</h2>
+        <div className="flex flex-col md:flex-row justify-around space-y-8 md:space-y-0 w-full">
+    <div className="flex flex-col w-full md:w-1/2 p-4 space-y-4">
+        <h2 className="text-xl font-bold">Showing Results</h2>
 
-            {/* Display common preferences */}
-            <div>
-                <h3>Common Preferences</h3>
-                {commonPreference.length > 0 ? (
-                    <ul>
-                        {commonPreference.map((place, index) => (
-                            <li key={index}>{place}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No common preferences found.</p>
-                )}
-            </div>
+        {/* Display common preferences */}
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">Common Preferences</h3>
+            {commonPreference.length > 0 ? (
+                <ul className="list-disc list-inside">
+                    {commonPreference.map((place, index) => (
+                        <li key={index}>{place}</li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No common preferences found.</p>
+            )}
+        </div>
 
-            {/* Display common options */}
-            <div>
-                <h3>Common Options</h3>
-                {commonOptions.length > 0 ? (
-                    <ul>
-                        {commonOptions.map((option, index) => (
-                            <li key={index}>{option.name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No common options found.</p>
-                )}
-            </div>
+        {/* Display common options */}
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">Common Options</h3>
+            {commonOptions.length > 0 ? (
+                <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
+                    {commonOptions.result.map((item, index) => (
+                        <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+                            <p className="font-semibold">{item.name}</p>
+                            <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
+                            <p>Ratings: {item.rating}</p>
+                            <p>Tags: {item.tags}</p>
+                            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">More Details</button>
+                            <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md">Suggest Your Partner</button>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <h1>Nothing to show</h1>
+            )}
+        </div>
+    </div>
 
-            {/* Placeholder for custom cards and chat options */}
-            <div>
-                <h3>Other Options</h3>
-                {/* You could add code here to display other options if needed */}
+    {/* Your Options */}
+    <div className="flex flex-col w-full md:w-1/2 p-4 space-y-4">
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">Your Options</h3>
+            <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
+                {myoptions.result.map((item, index) => (
+                    <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
+                        <p className="font-semibold">{item.name}</p>
+                        <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
+                        <p>Ratings: {item.rating}</p>
+                        <p>Tags: {item.result.tags}</p>
+                        <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">More Details</button>
+                        <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md">Suggest Your Partner</button>
+                    </div>
+                ))}
             </div>
         </div>
+
+        {/* Suggestions by Partner */}
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold">Suggested By Your Partner</h3>
+            <p>I will maintain an array of place IDs suggested by your partner.</p>
+            <p>I will find it from the othersOptions and give you the option to finalize.</p>
+        </div>
+    </div>
+</div>
+
     );
 }
