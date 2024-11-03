@@ -9,9 +9,37 @@ const PlaceIdSearchRouter = require('./routes/MapsRoutes/PlaceIdSearch');
 const FetchCoordinatesRouter = require('./routes/FetchCoordinates');
 const PreferenceMathcingRouter = require('./routes/PreferenceMatchingRoutes');
 const FetchOtherPreferenceRouter = require('./routes/FetchOtherPreference');
-
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const httpServer = createServer(app);
+const io = new Server(httpServer, { 
+  cors: {
+    origin: "*"
+  }
+ });
 app.use(express.json());
-app.listen(5000);
+io.on("connection", (socket) => {
+  // console.log(socket);
+  console.log("socket is active to be connected")
+  console.log("the id of socket is",socket.id)
+  socket.on('Join Room' , (room)=>{
+    socket.join(room)
+  })
+  socket.on("PrivateMessage" , (data) => {
+    console.log(data);
+    io.to(data.lobbyId).emit("private-message-recieved", data)
+  })
+})
+
+httpServer.listen(5000,()=>{
+  console.log("server is listening on port 5000")
+});
+
+
+
+
+
+
 const db_link = 'mongodb+srv://ashutoshdigital:pXzjcCqx9L58oJz3@cluster0.vy40p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 mongoose.connect(db_link)
   .then(() => console.log("MongoDB connection for beatBonds db is successful"))
