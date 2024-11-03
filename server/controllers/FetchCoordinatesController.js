@@ -30,7 +30,7 @@ const retryFindPreference = async (slotId, userId, retries, delay) => {
 const FetchCoordinates = async (req, res) => {
     try {
         const { slotId, userId } = req.query; // Adjust as necessary
-        const maxRetries = 5;  // Number of times to retry
+        const maxRetries = 10;  // Number of times to retry
         const delay = 3000;     // Delay in milliseconds between retries (2 seconds)
 
         // Poll for the document

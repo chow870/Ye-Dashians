@@ -22,7 +22,7 @@ const preferenceMatching = async (req, res) => {
         const result = await preferenceMatchingModel.create({
             slotId: NewSlotId,
             userId: myId,
-            result: formData  // Store preferences
+            results: formData  // Store preferences
         });
 
         // Respond with success

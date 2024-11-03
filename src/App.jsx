@@ -13,6 +13,7 @@ import PreferenceForm from './components/Preference/PreferenceForm';
 import Lobbies from './components/Lobby/Lobbies';
 import ShowingResults from './components/Preference/ShowingResults';
 import Lobby from './components/Lobby/Lobby'
+import PreferenceMatching from './components/Preference/PreferenceMatching';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -20,6 +21,7 @@ function App() {
     <>
     <Navbar/>
       <Routes>
+          <Route path='/' element={<SignUp/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/home' element={<MapWrapper/>} />

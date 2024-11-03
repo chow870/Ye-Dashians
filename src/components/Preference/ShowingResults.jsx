@@ -1,116 +1,142 @@
-import { Co2Sharp } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// till now/ at reaching to this place i expect that both the users have given
-// there preferences,have there user ids, uuIds so that the specific ones may 
-// called and taken into the consideration. 
-
-// now from the backend i have to get the myoptions, othersoptions
-// also i have to get the prefernces of the both for that i will also require the userIds, slotIds
-
-
 export default function ShowingResults() {
-                const [commonOptions,setCommonOptions]=useState([]);
-                const [othersOption,setOthersOptions]=useState([]); // isko fix karne kai liye vackend hit karna parega
-                const [commonPreference,setcommonPreference] = useState([]);
-                const [loading, setLoading] = useState(true);
+    const [commonOptions, setCommonOptions] = useState([]);
+    const [othersOption, setOthersOptions] = useState([]);
+    const [commonPreference, setCommonPreference] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-                const location = useLocation();
-                const {slotId,
-                    myId,
-                    mylocation,
-                    preferencemy,
-                    guestId,
-                    guestlocation,
-                    preferenceother,
-                    myoptions } = location.state || {};
-    console.log("reached the Showing Results page with ",slotId,
+    const location = useLocation();
+    const {
+        slotId,
         myId,
         mylocation,
         preferencemy,
         guestId,
         guestlocation,
         preferenceother,
-        myoptions  )
+        myoptions,
+    } = location.state || {};
 
-    
-     useEffect(()=>{
-        const  FetchOtherPreference = async ()=> {
-            console.log("about to hit the backend to yield the FetchOtherPreference ")
-            try{
-                let response = await fetch(`/api/v1/fetchOthersPreference?slotId=${slotId}&userId=${guestId}`, {
+    console.log("Reached the ShowingResults page with ", slotId, myId, mylocation, preferencemy, guestId, guestlocation, preferenceother, myoptions);
+
+    // Fetch the guest's preferences from the backend
+    useEffect(() => {
+        const fetchOtherPreferences = async () => {
+            console.log("About to hit the backend to fetch other preferences");
+            try {
+                const response = await fetch(`/api/v1/fetchOthersPreference?slotId=${slotId}&userId=${guestId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
                     }
                 });
-        
-                if(response.ok){
-                    let result = await response.json();
-                    setOthersOptions(result.data);
-                    console.log("other options have been set now");
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setOthersOptions(result.data.results);
+                    console.log("Other options have been set");
+                } else if (response.status === 404) {
+                    console.log("Record not found, please ask your partner to fill in their preferences.");
+                    alert("Please ask your partner to fill in their preferences.");
+                } else {
+                    console.log("Server error occurred while fetching the second user's data");
                 }
-                else{
-                    if(response.status== 404 ){
-                    console.log("entered the try block of FetchCoordinates but the response was not okay");
-                    console.log("Record not found within the timeout period {60 secs}")
-                    alert("plz ask Your partner to fill his/her preferences")
-                }
-                else{
-                    console.log("status was 500, some error in finding the second user")
-                }
-                }
+            } catch (error) {
+                console.log("There was an error:", error);
             }
+        };
 
-            catch(error){
-                console.log("there was some error : ", error);
+        fetchOtherPreferences();
+    }, [slotId, guestId]);
+
+    // Calculate common preferences and common options based on preferences
+    useEffect(() => {
+        if (othersOption.length === 0) return; // Exit if othersOption is not yet populated
+
+        console.log("Entered the second useEffect of Showing Results with preferenceother:", preferenceother);
+        console.log("The othersOption is:", othersOption);
+
+        const commonPref = [];
+        const commonOpts = [];
+
+        // Find common typeOfPlace preferences
+        preferencemy.typeOfPlace.forEach((element) => {
+            if (preferenceother.typeOfPlace.includes(element)) {
+                commonPref.push(element);
             }
-            
-        }
-        FetchOtherPreference();
-    })
+        });
 
-    useEffect(()=>{
+        setCommonPreference(commonPref);
 
-        // immediately call the backend to load the myoptions and othersOptions
-        // just filter begins.
-        // {key match kar, then if place id}
-        // first match kar le
-        console.log("now entered the other useEffect of Showing Results with otherPreference as : ", preferenceother);
+        // Find common places based on common preferences
+        commonPref.forEach((placeType) => {
+            const myPlace = myoptions.find((opt) => opt.typeOfPlace === placeType);
+            const otherPlace = othersOption.find((opt) => opt.typeOfPlace === placeType);
 
-        preferencemy.typeOfPlace.map((element)=>{
-            preferenceother.typeOfPlace((element2)=>{
-                if(element==element2){
-                    setcommonPreference((prev)=>[...prev , element])
-                }
+            if (myPlace && otherPlace) {
+                myPlace.result.forEach((myItem) => {
+                    otherPlace.result.forEach((otherItem) => {
+                        if (myItem.place_id === otherItem.place_id) {
+                            // Push unique results
+                            if (!commonOpts.some(opt => opt.place_id === myItem.place_id)) {
+                                commonOpts.push(myItem);
+                            }
+                        }
+                    });
+                });
+            }
+        });
 
-            })
-        })
+        setCommonOptions(commonOpts);
+        setLoading(false);
 
-        commonPreference.map((places)=>{
-            myoptions.places.map((entry)=>{
-                othersOption.places.map((entry2)=>{
-                    if(entry.place_id == entry2.place_id){
-                        setCommonOptions((prev)=>[...prev,entry])
-                    }
-                })
-            })
-        })
-        setLoading(false)
+    }, [othersOption, preferencemy, preferenceother, myoptions]);
 
-    },[othersOption]);
-
-    if(loading){
-        return (<h1>WE ARE TRYING OUR BEST TO GIVE YOU THE BEST SUGGESTIONS</h1>)
+    // Loading message
+    if (loading) {
+        return (<h1>We are trying our best to give you the best suggestions...</h1>);
     }
 
+    // Render the results
+    return (
+        <div>
+            <h2>Showing Results</h2>
 
-  return (
-    <div>ShowingResults 
-        {/* the custom cards to display */}
-        {/* also the chatting option */}
+            {/* Display common preferences */}
+            <div>
+                <h3>Common Preferences</h3>
+                {commonPreference.length > 0 ? (
+                    <ul>
+                        {commonPreference.map((place, index) => (
+                            <li key={index}>{place}</li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No common preferences found.</p>
+                )}
+            </div>
 
-    </div>
-  )
+            {/* Display common options */}
+            <div>
+                <h3>Common Options</h3>
+                {commonOptions.length > 0 ? (
+                    <ul>
+                        {commonOptions.map((option, index) => (
+                            <li key={index}>{option.name}</li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No common options found.</p>
+                )}
+            </div>
+
+            {/* Placeholder for custom cards and chat options */}
+            <div>
+                <h3>Other Options</h3>
+                {/* You could add code here to display other options if needed */}
+            </div>
+        </div>
+    );
 }
