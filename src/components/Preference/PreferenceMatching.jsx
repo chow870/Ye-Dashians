@@ -168,7 +168,7 @@ function PreferenceMatching() {
 useEffect(() => {
     const fetchData = async () => {
         if (coordinate2 == null) return;
-
+        console.log(coordinate2)
         let searchLat = (mylocation.lat + coordinate2.lat) / 2;
         let searchLng = (mylocation.lng + coordinate2.lng) / 2;
         

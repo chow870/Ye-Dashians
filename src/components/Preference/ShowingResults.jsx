@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import io from 'socket.io-client'
 
 export default function ShowingResults() {
     const [commonOptions, setCommonOptions] = useState([]);
@@ -8,6 +9,11 @@ export default function ShowingResults() {
     const [loading, setLoading] = useState(true);
     const [finalized , setFinaliized] = useState();
     const location = useLocation();
+    const [messages, setMessages] = useState([])
+    const [inputValue , setInputValue] = useState()
+    const [socketLoading, setSocketLoading] = useState(true)
+    const socket = io.connect('http://localhost:5000')
+    const [friendSuggestedIds, setFriendSuggestedIds] = useState([])
     const {
         slotId,
         myId,
@@ -95,6 +101,52 @@ export default function ShowingResults() {
 
     }, [othersOption, preferencemy, preferenceother, myoptions]);
 
+
+
+
+    useEffect(() => {
+        const lobbyId = slotId
+        socket.on("connect" , () => {
+          console.log("frontend says connected with socket id" , socket.id)
+          setSocketLoading(false);
+          socket.emit("Join Room" , lobbyId)
+        })
+        socket.on("private-message-recieved" , (data) => {
+          console.log("private-data" , data)
+          if(data.sentObj.suggestor!=myId)
+          {
+            setFriendSuggestedIds((prev)=>[...prev , data.sentObj.suggestion])
+          }
+          setMessages((prev)=>[...prev , data.sentObj])
+        })
+        return () => {
+          socket.disconnect();
+        };
+      }, []);
+
+      const handleSubmit2 = (e) => {
+        const lobbyId = slotId;
+        e.preventDefault(); 
+        const sentObj = {
+            message : inputValue
+        }
+        socket.emit("PrivateMessage" , {sentObj,lobbyId})
+        setInputValue(''); 
+      };
+
+
+      const suggest = (placeid,placename) =>  {
+        const lobbyId = slotId;
+        const sentObj = {
+            suggestion : placeid,
+            suggestionname : placename,
+            suggestor : myId
+        }
+        socket.emit("PrivateMessage" , {sentObj,lobbyId})
+      } 
+
+
+
     // Loading message
     if (loading) {
         return (<h1>We are trying our best to give you the best suggestions...</h1>);
@@ -102,76 +154,194 @@ export default function ShowingResults() {
 
     // Render the results
     console.log("the common options are : ", commonOptions);
+
+
+
+    
+
     return (
-        <div className="flex flex-col md:flex-row justify-around space-y-8 md:space-y-0 w-full">
-    <div className="flex flex-col w-full md:w-1/2 p-4 space-y-4">
-        <h2 className="text-xl font-bold">Showing Results</h2>
+        <div style={{ display: 'flex', height: '100vh' }}>
+      {/* Left Side Content - Vertically stacked divs */}
+      <div style={{
+        flex: 1,
+        padding: '20px',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px'
+      }}>
+        <div style={{ width: '100%' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Showing Results</h2>
 
-        {/* Display common preferences */}
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">Common Preferences</h3>
+          {/* Common Preferences */}
+          <div style={{
+            backgroundColor: '#f3f4f6',
+            padding: '16px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Common Preferences</h3>
             {commonPreference.length > 0 ? (
-                <ul className="list-disc list-inside">
-                    {commonPreference.map((place, index) => (
-                        <li key={index}>{place}</li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No common preferences found.</p>
-            )}
-        </div>
-
-        {/* Display common options */}
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">Common Options</h3>
-            {commonOptions.length > 0 ? (
-                <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
-                    {commonOptions.map((item, index) => (
-                        <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
-                            <p className="font-semibold">{item.name}</p>
-                            <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
-                            <p>Ratings: {item.rating}</p>
-                            <p>Tags: {item.tags}</p>
-                            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">More Details</button>
-                            <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md">Suggest Your Partner</button>
-                            {/* 2 state mera and uska chat me place ID jayegi*/}
-                            {/* event  */}
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <h1>Nothing to show</h1>
-            )}
-        </div>
-    </div>
-
-    {/* Your Options */}
-    <div className="flex flex-col w-full md:w-1/2 p-4 space-y-4">
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">Your Options</h3>
-            <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
-                {myoptions.map((item, index) => (
-                    <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
-                        <p className="font-semibold">{item.name}</p>
-                        <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
-                        <p>Ratings: {item.rating}</p>
-                        <p>Tags: {item.result.tags}</p>
-                        <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">More Details</button>
-                        <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md">Suggest Your Partner</button>
-                    </div>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+                {commonPreference.map((place, index) => (
+                  <li key={index}>{place}</li>
                 ))}
-            </div>
+              </ul>
+            ) : (
+              <p>No common preferences found.</p>
+            )}
+          </div>
         </div>
 
-        {/* Suggestions by Partner */}
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">Suggested By Your Partner</h3>
-            <p>I will maintain an array of place IDs suggested by your partner.</p>
-            <p>I will find it from the othersOptions and give you the option to finalize.</p>
-            {/* finalize ka button */}
+        {/* Common Options */}
+        <div style={{
+          backgroundColor: '#f3f4f6',
+          padding: '16px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Common Options</h3>
+          {commonOptions.length > 0 ? (
+            <div style={{
+              display: 'flex',
+              gap: '10px',
+              overflowX: 'auto',
+              padding: '16px',
+              backgroundColor: '#e5e7eb',
+              borderRadius: '8px'
+            }}>
+              {commonOptions.map((item, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  backgroundColor: '#ffffff',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  minWidth:'300px'
+                }}>
+                  <p style={{ fontWeight: '600' }}>{item.name}</p>
+                  <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
+                  <p>Ratings: {item.rating}</p>
+                  <p>Tags: {item.tags}</p>
+                  <button style={{
+                    marginTop: '8px',
+                    backgroundColor: '#3b82f6',
+                    color: '#ffffff',
+                    padding: '8px 16px',
+                    borderRadius: '4px'
+                  }}>More Details</button>
+                  <button onClick = {()=>{
+                        console.log(item.place_id)
+                        suggest(item.place_id,item.name);
+                  }} style={{
+                    marginTop: '8px',
+                    backgroundColor: '#10b981',
+                    color: '#ffffff',
+                    padding: '8px 16px',
+                    borderRadius: '4px'
+                  }}>Suggest Your Partner</button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <h1>Nothing to show</h1>
+          )}
         </div>
+
+        {/* Your Options */}
+        <div style={{
+          backgroundColor: '#f3f4f6',
+          padding: '16px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Your Options</h3>
+          <div style={{
+            display: 'flex',
+            gap: '10px',
+            overflowX: 'auto',
+            padding: '16px',
+            backgroundColor: '#e5e7eb',
+            borderRadius: '8px'
+          }}>
+            {myoptions.map((item, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                backgroundColor: '#ffffff',
+                padding: '16px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                minWidth:'300px'
+              }}>
+                <p style={{ fontWeight: '600' }}>{item.name}</p>
+                <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
+                <p>Ratings: {item.rating}</p>
+                <p>Tags: {item.result.tags}</p>
+                <button style={{
+                  marginTop: '8px',
+                  backgroundColor: '#3b82f6',
+                  color: '#ffffff',
+                  padding: '8px 16px',
+                  borderRadius: '4px'
+                }}>More Details</button>
+                <button style={{
+                  marginTop: '8px',
+                  backgroundColor: '#10b981',
+                  color: '#ffffff',
+                  padding: '8px 16px',
+                  borderRadius: '4px'
+                }}>Suggest Your Partner</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Suggested By Partner */}
+        <div style={{
+          backgroundColor: '#f3f4f6',
+          padding: '16px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Suggested By Your Partner</h3>
+            {
+                friendSuggestedIds.map((id)=>(
+                    <p>{id}</p>
+                ))
+            }
+        </div>
+      </div>
+
+      {/* the chat section*/}
+      <div style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
+      <div className="w-2/5 bg-gray-200 p-4 rounded-lg" style={{ minHeight: '500px' }}>
+    <h3 className="font-semibold text-gray-700 mb-2">Chat</h3>
+    <form onSubmit={handleSubmit2}>
+      {messages.map((payload , index)=>{
+          return (
+            payload.suggestion?(payload.suggestor===myId?<p><span className="bg-green-200 text-greens-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                you have suggested {payload.suggestionname}
+              </span></p>:<p><span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                your friend has suggested {payload.suggestionname}
+              </span></p>):<p key = {index}>{payload.message}</p>
+            
+          )
+        })}
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)} // Update state on input change
+          placeholder="Enter something..."
+        />
+        <button type="submit" disabled={socketLoading}>Submit</button>
+        </form>
+  </div>
+      </div>
     </div>
-</div>
 
     );
 }
