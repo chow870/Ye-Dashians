@@ -101,6 +101,7 @@ export default function ShowingResults() {
     }
 
     // Render the results
+    console.log("the common options are : ", commonOptions);
     return (
         <div className="flex flex-col md:flex-row justify-around space-y-8 md:space-y-0 w-full">
     <div className="flex flex-col w-full md:w-1/2 p-4 space-y-4">
@@ -125,7 +126,7 @@ export default function ShowingResults() {
             <h3 className="text-lg font-semibold">Common Options</h3>
             {commonOptions.length > 0 ? (
                 <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
-                    {commonOptions.result.map((item, index) => (
+                    {commonOptions.map((item, index) => (
                         <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
                             <p className="font-semibold">{item.name}</p>
                             <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
@@ -147,7 +148,7 @@ export default function ShowingResults() {
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold">Your Options</h3>
             <div className="carousel carousel-center bg-neutral rounded-box max-w-md space-x-4 p-4">
-                {myoptions.result.map((item, index) => (
+                {myoptions.map((item, index) => (
                     <div key={index} className="carousel-item flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
                         <p className="font-semibold">{item.name}</p>
                         <p>Opened Now: {item.open_now ? 'Yes' : 'No'}</p>
