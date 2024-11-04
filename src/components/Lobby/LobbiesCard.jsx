@@ -42,6 +42,7 @@ function LobbiesCard(props) {
                     setError(null);
                     const foundLobby = data.lobby.find((lobby) => lobby._id === lobbyId);
                     setLobby(foundLobby || null);
+                    console.log("foundlobby is" , foundLobby)
                     const lobbyTime = foundLobby?.time ? dayjs(foundLobby.time) : dayjs();
                     setDate(lobbyTime.format('DD MMM YYYY'));
                     setTime(lobbyTime.format('HH:mm'));

@@ -6,7 +6,7 @@ export default function ShowingResults() {
     const [othersOption, setOthersOptions] = useState([]);
     const [commonPreference, setCommonPreference] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [finalized , setFinaliized] = useState();
     const location = useLocation();
     const {
         slotId,
@@ -133,6 +133,8 @@ export default function ShowingResults() {
                             <p>Tags: {item.tags}</p>
                             <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md">More Details</button>
                             <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md">Suggest Your Partner</button>
+                            {/* 2 state mera and uska chat me place ID jayegi*/}
+                            {/* event  */}
                         </div>
                     ))}
                 </div>
@@ -165,6 +167,7 @@ export default function ShowingResults() {
             <h3 className="text-lg font-semibold">Suggested By Your Partner</h3>
             <p>I will maintain an array of place IDs suggested by your partner.</p>
             <p>I will find it from the othersOptions and give you the option to finalize.</p>
+            {/* finalize ka button */}
         </div>
     </div>
 </div>
