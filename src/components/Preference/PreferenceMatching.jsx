@@ -171,11 +171,11 @@ useEffect(() => {
         console.log(coordinate2)
         let searchLat = (mylocation.lat + coordinate2.lat) / 2;
         let searchLng = (mylocation.lng + coordinate2.lng) / 2;
-        
+
         try {
             const fetchPromises = [];
 
-            // Create a temporary array to store results by typeOfPlace
+            // Temporary array to store results by typeOfPlace
             const newResults = [];
 
             // First loop: typeOfPlace and ambience
@@ -191,17 +191,13 @@ useEffect(() => {
                         .then(response => response.ok ? response.json() : Promise.reject(response))
                         .then(result => {
                             result.data.results.forEach((r) => {
-                                // Populate localTempResult for this typeOfPlace
-                                let foundIt = false;
-                                const updatedResult = localTempResult.map((item) => {
-                                    if (item.place_id === r.place_id) {
-                                        foundIt = true;
-                                        return { ...item, tags: [...item.tags, ambience] };
-                                    }
-                                    return item;
-                                });
+                                // Check if place already exists for this typeOfPlace
+                                let foundPlace = localTempResult.find(item => item.place_id === r.place_id);
 
-                                if (!foundIt) {
+                                if (foundPlace) {
+                                    // Update tags if place already exists
+                                    foundPlace.tags.push(ambience);
+                                } else {
                                     localTempResult.push({ ...r, tags: [ambience] });
                                 }
                             });
@@ -210,7 +206,6 @@ useEffect(() => {
                     );
                 }
 
-                // Push the typeOfPlace and its results to newResults after inner loop completes
                 newResults.push({ typeOfPlace: element, result: localTempResult });
             }
 
@@ -227,17 +222,11 @@ useEffect(() => {
                         .then(response => response.ok ? response.json() : Promise.reject(response))
                         .then(result => {
                             result.data.results.forEach((r) => {
-                                // Add or update entries in localTempResult for this typeOfPlace
-                                let foundIt = false;
-                                const updatedResult = localTempResult.map((item) => {
-                                    if (item.place_id === r.place_id) {
-                                        foundIt = true;
-                                        return { ...item, tags: [...item.tags, food] };
-                                    }
-                                    return item;
-                                });
+                                let foundPlace = localTempResult.find(item => item.place_id === r.place_id);
 
-                                if (!foundIt) {
+                                if (foundPlace) {
+                                    foundPlace.tags.push(food);
+                                } else {
                                     localTempResult.push({ ...r, tags: [food] });
                                 }
                             });
@@ -249,11 +238,30 @@ useEffect(() => {
 
             await Promise.all(fetchPromises);
 
-            // After all requests are done, update results with the new structured data
-            setResults((prev) => [...prev, ...newResults]);
-            setLoading(false);
+            // Additional API call to fetch place details and distances
+            console.log("now time for the detailFetchPromises")
+            const detailFetchPromises = newResults.map(async (place) => {
+                const updatedResults = await Promise.all(place.result.map(async (item) => {
+                    const response = await fetch(`/maps/v1/PlaceIdSearch?lat=${searchLat}&lng=${searchLng}&keyword=${item.tags.join(',')}&type=${place.typeOfPlace}&userId1=${myId}&userId2=${guestId}&coordinate1=${mylocation.lat},${mylocation.lng}&coordinate2=${coordinate2.lat},${coordinate2.lng}&place_id=${item.place_id}`);
+                    
+                    if (!response.ok) throw new Error('Failed to fetch additional details');
 
-           
+                    const detailData = await response.json();
+
+                    return {
+                        ...item,
+                        additionalDetails: detailData.additionalDetails,
+                        distances: detailData.distances
+                    };
+                }));
+
+                return { typeOfPlace: place.typeOfPlace, result: updatedResults };
+            });
+
+            const detailedResults = await Promise.all(detailFetchPromises);
+
+            setResults(prev => [...prev, ...detailedResults]);
+            setLoading(false);
         } catch (error) {
             console.error("Outer error:", error);
         }
@@ -261,6 +269,7 @@ useEffect(() => {
 
     fetchData();
 }, [coordinate2]);
+
 const  optionsSubmission = async ()=>{
     try{
         console.log("Reached the PreferenceMatchingSubmission so the result i will submit is : ", results);
