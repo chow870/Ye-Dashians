@@ -1,5 +1,5 @@
 import React , {useEffect , useState} from 'react'
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 const socket = io.connect('http://localhost:5000')
 function Lobby() {
-  let {lobbyId} = useParams();
+  const {lobbyId} = useParams();
   const [dateAndTime, setDateAndTime] = useState(dayjs());
   const minDateTime = dayjs();
   const [lobby , setLobby] = useState();
@@ -26,6 +26,12 @@ function Lobby() {
 })
   const [venue , setVenue] = useState();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { slotId,
+    venuePlaceId,
+    venueName,
+    guestId} = location.state||{};
+
   useEffect(() => {
     socket.on("connect" , () => {
       console.log("frontend says connected with socket id" , socket.id)
@@ -113,7 +119,10 @@ const handleUpdate = async() => {
         },
         body: JSON.stringify({ 
               "lobbyId" : lobbyId,
-              "venue" : venue,
+              "user1":myId,
+              "user2":guestId,
+              "venue" : venueName,
+              "venueId":venuePlaceId,
               "time" : dateAndTime
          }),
     });

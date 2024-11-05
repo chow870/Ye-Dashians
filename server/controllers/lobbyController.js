@@ -83,6 +83,7 @@ module.exports.updateLobby =  async function updateLobby(req,res){
             {user2 : req.body.user2,
              user1 : req.body.user1,
              venue : req.body.venue,
+             venueId:req.body.venueId,
              time :  req.body.time
             } ,
             { new: true , returnDocument: 'after',

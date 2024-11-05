@@ -14,7 +14,8 @@ export default function ShowingResults() {
     const socket = io.connect('http://localhost:5000');
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
-    const [friendSuggestedIds, setFriendSuggestedIds] = useState([])
+    const [friendSuggestedIds, setFriendSuggestedIds] = useState() // suggested ids.
+    const [suggested, setSuggested] =useState([])
     const navigate = useNavigate();
     const {
         slotId,
@@ -29,7 +30,29 @@ export default function ShowingResults() {
 
 
 
-
+    useEffect(() => {
+      const MatchSuggestions = (friendSuggestedIds) => {
+        let Found = false;
+    
+        othersOption.forEach((element) => {
+          element.result.forEach((item) => {
+            if (Found) return; // Stop inner loop if match found
+            if (item.place_id === friendSuggestedIds) {
+              setSuggested((prev) => {
+                Found = true;
+                return [...prev, item];
+              });
+            }
+          });
+        });
+      };
+    
+      // Call the function with friendSuggestedIds
+      if (friendSuggestedIds) {
+        MatchSuggestions(friendSuggestedIds);
+      }
+    }, [friendSuggestedIds, othersOption, setSuggested]);
+    
     useEffect(() => {
         const lobbyId = slotId
         socket.on("connect", () => {
@@ -40,19 +63,21 @@ export default function ShowingResults() {
         socket.on("private-message-recieved", (data) => {
             console.log("private-data", data)
             if (data.sentObj.suggestor != myId) {
-                setFriendSuggestedIds((prev) => [...prev, data.sentObj.suggestion])
+                setFriendSuggestedIds(data.sentObj.suggestion)
             }
             setMessages((prev) => [...prev, data.sentObj])
         })
-        socket.on(" finalize-message-recieved", (data) => {
+        socket.on("finalize-message-recieved", (data) => {
             // console.log("private-data", data)
+            console.log("yeah i have recieved  finalize-message-recieved ")
             const venuePlaceId = data.sentObj.id;
             const venueName = data.sentObj.name;
-            navigate('/preference/results', {
+            navigate(`/myLobby/${slotId}`, {
                 state: {
                    slotId,
                    venuePlaceId,
-                   venueName
+                   venueName,
+                   guestId:guestId
                 }
             })
         })
@@ -85,12 +110,14 @@ export default function ShowingResults() {
 
 
     const finalize = (placeid, placename) => {
+      console.log("inside the finalise event listener")
         const lobbyId = slotId;
         const sentObj = {
             id : placeid,
             name : placename
         }
         socket.emit("FinalizeMessage", { sentObj, lobbyId })
+
     }
 
 
@@ -300,8 +327,24 @@ export default function ShowingResults() {
                     }}>
                         <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Suggested By Your Partner</h3>
                         {
-                            friendSuggestedIds.map((id) => (
-                                <p>{id}</p>
+                            suggested.map((item,index) => (
+                              <div key={index} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px' }}>
+                                        <p><strong>Name:</strong> {item.name || 'N/A'}</p>
+                                        <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
+                                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
+                                        <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
+                                        <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>
+                                        <p><strong>Phone Number:</strong> {item.additionalDetails.result.formatted_phone_number || 'N/A'}</p>
+                                        <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
+                                        <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
+                                        <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
+                                        <button onClick={() => finalize(item.place_id, item.name)}>
+                                                  Finalize Your Partner
+                                                </button>
+
+                                    </div>     
                             ))
                         }
                     </div>

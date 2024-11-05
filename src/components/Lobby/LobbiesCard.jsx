@@ -131,10 +131,11 @@ function LobbiesCard(props) {
       {lobby?.venue}
       </Typography>
     </CardContent>
-     <CardActions>{/* lobby?.venue != null */}
+     <CardActions>
+        {lobby?.venue == null ? 
         <Button size="small" variant='outlined' 
-        onClick={HandleCreateNewEvent}       
-        >Create The Plans</Button> <Button size="small" variant='outlined'><Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link></Button>
+        onClick={HandleCreateNewEvent}> Create The Plans</Button> : <Button size="small" variant='outlined'><Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link></Button>}
+        
     </CardActions>
     </div>
     <div style = {{width : '80%' , textAlign : 'right' , display : 'flex' ,flexDirection : 'column', justifyContent : 'center' , alignItems : 'right'}}><Typography style={{fontSize:'30px',margin:'15px'}}>have to meet</Typography>

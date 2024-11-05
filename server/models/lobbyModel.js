@@ -15,6 +15,10 @@ const lobbySchema = mongoose.Schema({
         type: String,
         default: null,
       },
+      venueId:{
+        type: String,
+        default: null,
+      },
       time: {
         type: Date,
         default: null,

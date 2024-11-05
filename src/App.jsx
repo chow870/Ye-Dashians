@@ -30,7 +30,6 @@ function App() {
           <Route path='/showlobbies' element={<Lobbies/>} /> 
           <Route path = '/myLobby/:lobbyId' element = {<Lobby/>} />
           <Route path='/preference' element={<MainPreference/>} >
-         
               <Route path ='form' element={<PreferenceForm/>}/>
               <Route path ='matching' element={<PreferenceMatching/>}/>
               <Route path ='results' element={<ShowingResults/>}/>
