@@ -30,6 +30,9 @@ io.on("connection", (socket) => {
     console.log(data);
     io.to(data.lobbyId).emit("private-message-recieved", data)
   })
+  socket.on("FinalizeMessage" , (data) => {
+    io.to(data.lobbyId).emit("finalize-message-recieved", data)
+  })
 })
 
 httpServer.listen(5000,()=>{

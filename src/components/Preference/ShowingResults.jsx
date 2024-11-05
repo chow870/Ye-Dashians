@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 export default function ShowingResults() {
@@ -12,7 +12,10 @@ export default function ShowingResults() {
     const [sortOption, setSortOption] = useState('rating'); // State for sorting options
     const [filterType, setFilterType] = useState(''); // State for filtering by type of place
     const socket = io.connect('http://localhost:5000');
-
+    const [messages, setMessages] = useState([])
+    const [inputValue, setInputValue] = useState()
+    const [friendSuggestedIds, setFriendSuggestedIds] = useState([])
+    const navigate = useNavigate();
     const {
         slotId,
         myId,
@@ -23,6 +26,73 @@ export default function ShowingResults() {
         preferenceother,
         myoptions, // Assuming myoptions is passed from props
     } = useLocation().state || {};
+
+
+
+
+    useEffect(() => {
+        const lobbyId = slotId
+        socket.on("connect", () => {
+            console.log("frontend says connected with socket id", socket.id)
+            setSocketLoading(false);
+            socket.emit("Join Room", lobbyId)
+        })
+        socket.on("private-message-recieved", (data) => {
+            console.log("private-data", data)
+            if (data.sentObj.suggestor != myId) {
+                setFriendSuggestedIds((prev) => [...prev, data.sentObj.suggestion])
+            }
+            setMessages((prev) => [...prev, data.sentObj])
+        })
+        socket.on(" finalize-message-recieved", (data) => {
+            // console.log("private-data", data)
+            const venuePlaceId = data.sentObj.id;
+            const venueName = data.sentObj.name;
+            navigate('/preference/results', {
+                state: {
+                   slotId,
+                   venuePlaceId,
+                   venueName
+                }
+            })
+        })
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
+    const handleSubmit2 = (e) => {
+        const lobbyId = slotId;
+        e.preventDefault();
+        const sentObj = {
+            message: inputValue,
+            sender: myId
+        }
+        socket.emit("PrivateMessage", { sentObj, lobbyId })
+        setInputValue('');
+    };
+
+
+    const suggest = (placeid, placename) => {
+        const lobbyId = slotId;
+        const sentObj = {
+            suggestion: placeid,
+            suggestionname: placename,
+            suggestor: myId
+        }
+        socket.emit("PrivateMessage", { sentObj, lobbyId })
+    }
+
+
+    const finalize = (placeid, placename) => {
+        const lobbyId = slotId;
+        const sentObj = {
+            id : placeid,
+            name : placename
+        }
+        socket.emit("FinalizeMessage", { sentObj, lobbyId })
+    }
+
 
     useEffect(() => {
         const fetchOtherPreferences = async () => {
@@ -48,10 +118,10 @@ export default function ShowingResults() {
         fetchOtherPreferences();
     }, [slotId, guestId]);
 
-    
+
     useEffect(() => {
         if (myoptions) {
-            setMyOptions(myoptions); 
+            setMyOptions(myoptions);
         }
     }, [myoptions]);
 
@@ -93,7 +163,7 @@ export default function ShowingResults() {
             }
         });
 
-        setCommonOptions(applySorting(commonOpts)); 
+        setCommonOptions(applySorting(commonOpts));
         setLoading(false);
 
     }, [othersOption, preferencemy, preferenceother, myOptions, sortOption]);
@@ -106,8 +176,8 @@ export default function ShowingResults() {
                 if (sortOption === 'rating') {
                     return (b.rating || 0) - (a.rating || 0);
                 } else if (sortOption === 'distance') {
-                    return parseFloat(a.distances[0].distance.rows[0].elements[0].distance.value) - 
-                           parseFloat(b.distances[0].distance.rows[0].elements[0].distance.value);
+                    return parseFloat(a.distances[0].distance.rows[0].elements[0].distance.value) -
+                        parseFloat(b.distances[0].distance.rows[0].elements[0].distance.value);
                 }
                 return 0;
             })
@@ -115,20 +185,20 @@ export default function ShowingResults() {
     };
 
     // Function to filter results by type
-    const filteredCommonOptions = commonOptions.filter(option => 
+    const filteredCommonOptions = commonOptions.filter(option =>
         !filterType || option.typeOfPlace === filterType
     );
 
-    const filteredMyOptions = myOptions.filter(option => 
+    const filteredMyOptions = myOptions.filter(option =>
         !filterType || option.typeOfPlace === filterType
     );
 
-    
+
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
     };
 
-    
+
     const handleFilterChange = (e) => {
         setFilterType(e.target.value);
     };
@@ -139,14 +209,14 @@ export default function ShowingResults() {
 
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
-            <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ flex: '0 0 60%', padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
                     <label>Sort by:</label>
                     <select value={sortOption} onChange={handleSortChange}>
                         <option value="rating">Rating (High to Low)</option>
                         <option value="distance">Distance (Closest)</option>
                     </select>
-                    
+
                     <label>Filter by Type:</label>
                     <select value={filterType} onChange={handleFilterChange}>
                         <option value="">All</option>
@@ -164,7 +234,36 @@ export default function ShowingResults() {
                         <div style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
                             {filteredCommonOptions.map((element, index) => (
                                 element.result.map((item, itemIndex) => (
-                                    <div key={`${index}-${itemIndex}`} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '300px' }}>
+                                    <div key={`${index}-${itemIndex}`} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px' }}>
+                                        <p><strong>Name:</strong> {item.name || 'N/A'}</p>
+                                        <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
+                                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
+                                        <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
+                                        <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>
+                                        <p><strong>Phone Number:</strong> {item.additionalDetails.result.formatted_phone_number || 'N/A'}</p>
+                                        <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
+                                        <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
+                                        <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
+                                        <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
+
+                                    </div>
+                                ))
+                            ))}
+                        </div>
+                    ) : (
+                        <h1>Nothing to show</h1>
+                    )}
+                </div>
+
+                <div style={{ backgroundColor: '#e2e8f0', padding: '16px', borderRadius: '8px' }}>
+                    <h3>My Options</h3>
+                    {filteredMyOptions.length > 0 ? (
+                        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
+                            {filteredMyOptions.map((element, index) => (
+                                element.result.map((item, itemIndex) => (
+                                    <div key={`${index}-${itemIndex}`} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px' }}>
                                         <p><strong>Name:</strong> {item.name || 'N/A'}</p>
                                         <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
                                         <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
@@ -184,34 +283,83 @@ export default function ShowingResults() {
                     ) : (
                         <h1>Nothing to show</h1>
                     )}
-                    
                 </div>
 
-                <div style={{ backgroundColor: '#e2e8f0', padding: '16px', borderRadius: '8px' }}>
-                    <h3>My Options</h3>
-                    {filteredMyOptions.length > 0 ? (
-                        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto' }}>
-                            {filteredMyOptions.map((element, index) => (
-                                element.result.map((item, itemIndex) => (
-                                    <div key={`${index}-${itemIndex}`} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '300px' }}>
-                                        <p><strong>Name:</strong> {item.name || 'N/A'}</p>
-                                        <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
-                                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
-                                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
-                                        <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
-                                        <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
-                                        <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>
-                                        <p><strong>Phone Number:</strong> {item.additionalDetails.result.formatted_phone_number || 'N/A'}</p>
-                                        <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
-                                        <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
-                                        <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
-                                    </div>
-                                ))
-                            ))}
-                        </div>
-                    ) : (
-                        <h1>Nothing to show</h1>
-                    )}
+
+                <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+                    <h3 className="text-lg font-semibold">Suggested By Your Partner</h3>
+                    <p>I will maintain an array of place IDs suggested by your partner.</p>
+                    <p>I will find it from the othersOptions and give you the option to finalize.</p>
+                    {/* finalize ka button */}
+                    {/* Suggested By Partner */}
+                    <div style={{
+                        backgroundColor: '#f3f4f6',
+                        padding: '16px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Suggested By Your Partner</h3>
+                        {
+                            friendSuggestedIds.map((id) => (
+                                <p>{id}</p>
+                            ))
+                        }
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div style={{
+                flex: '0 0 40%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                {/* the chat section */}
+                <div className="w-3/5 bg-gray-200 p-4 rounded-lg" style={{ minHeight: '500px' }}>
+                    <h3 className="font-semibold text-gray-700 mb-2">Chat</h3>
+                    <form onSubmit={handleSubmit2}>
+                        {messages.map((payload, index) => {
+                            return (
+                                payload.suggestion ? (
+                                    payload.suggestor === myId ? (
+                                        <p>
+                                            <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                                You have suggested {payload.suggestionname}
+                                            </span>
+                                        </p>
+                                    ) : (
+                                        <p>
+                                            <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                                Your friend has suggested {payload.suggestionname}
+                                            </span>
+                                        </p>
+                                    )
+                                ) : (
+                                    <p key={index}>
+                                        {payload.sender === myId ? (
+                                            <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                                You:
+                                            </span>
+                                        ) : (
+                                            <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                                Your friend:
+                                            </span>
+                                        )}
+                                        <span>{payload.message}</span>
+                                    </p>
+                                )
+                            );
+                        })}
+                        <input
+                            type="text"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)} // Update state on input change
+                            placeholder="Enter something..."
+                        />
+                        <button type="submit" disabled={socketLoading}>Submit</button>
+                    </form>
                 </div>
             </div>
         </div>

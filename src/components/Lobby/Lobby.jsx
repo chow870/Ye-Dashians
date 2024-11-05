@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 const socket = io.connect('http://localhost:5000')
 function Lobby() {
-  const {lobbyId} = useParams();
+  let {lobbyId} = useParams();
   const [dateAndTime, setDateAndTime] = useState(dayjs());
   const minDateTime = dayjs();
   const [lobby , setLobby] = useState();
