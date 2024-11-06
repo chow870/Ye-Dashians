@@ -1,92 +1,88 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GoogleMap,
   Marker,
-  DirectionsRenderer,
-  Autocomplete,
   LoadScript,
   TrafficLayer,
-  Polyline
 } from '@react-google-maps/api';
-
 import { Link } from 'react-router-dom';
 import EventNearby from './EventNearby';
 import Aqi from './Aqi';
 
 const libraries = ['places', 'geometry'];
-// const routeColors = ['#1E90FF', '#FF6347', '#32CD32'];
 
 const MyMapComponent = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
-      } else {
-        console.log("Geolocation not supported");
-      }
-      
-      function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        // console.log(Latitude: ${latitude}, Longitude: ${longitude});
-        setCurrentLocation({lat: latitude, lng:longitude});
-        setOriginInput({lat: latitude, lng:longitude})
-        
-      }
-      function error() {
-        console.log("Unable to retrieve your location");
-      }
-  },[])
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      console.log("Geolocation not supported");
+    }
+
+    function success(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      setCurrentLocation({ lat: latitude, lng: longitude });
+    }
+
+    function error() {
+      console.log("Unable to retrieve your location");
+    }
+  }, []);
 
   if (!currentLocation) {
     return <p>Loading your location...</p>;
   }
 
   return (
-    <div className='flex flex-row'>
-    <div className="flex flex-col justify-center w-2/4 h-screen p-1">
-      <span className="p-2 flex flex-col bg-transparent">
-        <button
+    <div className="flex h-screen">
+      {/* Map Section */}
+      <div className="w-1/2 h-full">
+        <div className="flex flex-col h-full">
+          <button
             type="button"
             onClick={() => map.panTo(currentLocation)}
-            className="p-1 bg-pink-400 text-white"
+            className="p-2 bg-pink-400 text-white m-2"
           >
             Recentre
           </button>
-      </span>
-      <GoogleMap
-        center={currentLocation}
-        zoom={12}
-        mapContainerStyle={{ width: '100%', height: '100%' }}
-        onLoad={(map) => setMap(map)}
-      >
-        <Marker position={currentLocation} />
-        <TrafficLayer />
-      </GoogleMap>    
-    </div>
-    <div className='flex flex-col'>
-    <Aqi/>
-    <div className='h-64 w-96 border-2 border-black mx-5 my-2'>Previous visited : Backend wala kaam hai yaha par. aak state variable and .map karn hai bas</div>
-    <EventNearby />
-    <div className='h-32 w-96 border-2 border-black mx-5 my-2'>
-      <Link to='/showlobbies'>
-        <button>Connect with your friend</button>
-      </Link>
-    </div>
-    </div>
-   
+          <GoogleMap
+            center={currentLocation}
+            zoom={12}
+            mapContainerStyle={{ width: '100%', height: '100%' }}
+            onLoad={(map) => setMap(map)}
+          >
+            <Marker position={currentLocation} />
+            <TrafficLayer />
+          </GoogleMap>
+        </div>
+      </div>
 
+      {/* Sidebar Section */}
+      <div className="w-1/2 h-full p-4 overflow-y-auto">
+        <Aqi />
+        <div className="h-1/3 w-full border-2 border-black rounded-lg shadow-lg bg-red-200">
+          <p>Here i will display Suggested places </p>
+        </div>
+        <EventNearby />
+        <div className="h-32 w-full border-2 border-black my-4 p-4 flex items-center justify-center">
+          <Link to="/showlobbies">
+            <button className="bg-blue-500 text-white p-2 rounded">
+              Connect with your friend
+            </button>
+          </Link>
+        </div>
+      </div>
     </div>
-   
   );
 };
 
 const MapWrapper = () => (
   <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" libraries={libraries}>
     <MyMapComponent />
-    
   </LoadScript>
 );
 

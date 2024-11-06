@@ -11,6 +11,7 @@ const PreferenceMathcingRouter = require('./routes/PreferenceMatchingRoutes');
 const FetchOtherPreferenceRouter = require('./routes/FetchOtherPreference');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const WeatherSearchRouter = require('./routes/MapsRoutes/Aqi');
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -57,3 +58,4 @@ app.use('/maps/v1/NearbySearch',NearbySearchRouter);
 app.use('/maps/v1/PlaceIdSearch',PlaceIdSearchRouter);
 app.use('/api/v1/preferenceMatching',PreferenceMathcingRouter );
 app.use('/api/v1/fetchOthersPreference',FetchOtherPreferenceRouter );
+app.use('/maps/v1/WatherSearch',WeatherSearchRouter);
