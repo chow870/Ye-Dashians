@@ -9,6 +9,7 @@ const PlaceIdSearchRouter = require('./routes/MapsRoutes/PlaceIdSearch');
 const FetchCoordinatesRouter = require('./routes/FetchCoordinates');
 const PreferenceMathcingRouter = require('./routes/PreferenceMatchingRoutes');
 const FetchOtherPreferenceRouter = require('./routes/FetchOtherPreference');
+const reviewRouter = require('./routes/reviewRoutes')
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer(app);
@@ -51,6 +52,7 @@ mongoose.connect(db_link)
 
 app.use(cors());
 app.use('/api/v1/lobby', lobbyRouter);
+app.use('/api/v1/review' , reviewRouter);
 app.use('/api/v1/preferenceSubmit',PreferenceFormSubmitRouter );
 app.use('/api/v1/fetchCoordinates',FetchCoordinatesRouter );
 app.use('/maps/v1/NearbySearch',NearbySearchRouter);

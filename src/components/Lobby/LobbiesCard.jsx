@@ -5,10 +5,30 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { database } from '../../firebase'
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import {
+    TextField,
+    Rating,
+    Stack
+} from '@mui/material';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+
 function LobbiesCard(props) {
     const myId = useSelector((state) => {
         return state?.auth?.user?.uid
@@ -19,7 +39,9 @@ function LobbiesCard(props) {
     const [time, setTime] = useState(null);
     const [date, setDate] = useState(null)
     const [guestId, setGuestId] = useState('')
+    const [loading , setLoading] = useState(false);
     const navigate = useNavigate()
+
     let lobbyId = props.lobbyId;
     console.log(lobbyId);
     // fetchthatone and fetchGuest ko lagana padega usestate ke andar , where snapshot lagaenge apan firestore ke users database ke upar
@@ -174,6 +196,86 @@ function LobbiesCard(props) {
 
     }
 
+
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+
+// the states for the reviews page
+    const [reviewData, setReviewData] = useState({
+        userName: '',
+        text: '',
+        stars: 0
+      });
+
+// event listeners for the reviews page
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setReviewData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
+      };
+    
+      const handleRatingChange = (event, newValue) => {
+        setReviewData((prevData) => ({
+          ...prevData,
+          stars: newValue,
+        }));
+      };
+    
+      const handleSubmit = async(e) => {
+        e.preventDefault();
+        
+
+        try {
+            setLoading(true);
+            const response = await fetch('/api/v1/review/createNew', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body : JSON.stringify({
+                    slotId : lobbyId,
+                    userId : myId,
+                    userName : reviewData.userName,
+                    text : reviewData.text,
+                    stars : reviewData.stars,
+                    placeId : lobby?.venueId
+                })
+            });
+
+            if(!response.ok)
+            {
+                setLoading(false)
+                setError("some error occureed");
+                setTimeout(() => {
+                    setError("")
+                }, 5000);
+            }
+            else
+            {
+                console.log("review posted successFully")
+            }
+
+
+        } catch (error) {
+            setLoading(false);
+            // console.log(error)
+            setError(error.message);
+                setTimeout(() => {
+                    setError("")
+                }, 5000);
+        }
+
+
+      };
+
+
+
+
     return (
         <div style={{ border: '2px solid black', display: 'flex', position: 'relative' }}>
 
@@ -218,6 +320,8 @@ function LobbiesCard(props) {
                             <Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link>
                         </Button>
                     )}
+                    {(lobby && lobby.venueId) &&  <Button size="small" variant="outlined" onClick={handleOpen}>Review This Place</Button>}
+                    
                 </CardActions>
             </div>
 
@@ -236,6 +340,65 @@ function LobbiesCard(props) {
                 </Typography>
                 <Typography style={{ fontSize: '70px' }}>{guest}</Typography>
             </div>
+
+
+            {/* THE MODAL THING WE WILL DO HERE */}
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ maxWidth: 600, margin: '2rem auto', padding: 3, boxShadow: 3, borderRadius: 2 , backgroundColor: '#ffffff'}}
+    >
+      <Typography variant="h5" gutterBottom align="center">
+        Submit Your Review
+      </Typography>
+
+      <Stack spacing={2}>
+        
+
+        
+
+        <TextField
+          label="User Name"
+          name="userName"
+          value={reviewData.userName}
+          onChange={handleChange}
+          required
+          fullWidth
+        />
+
+        <TextField
+          label="Review Text"
+          name="text"
+          value={reviewData.text}
+          onChange={handleChange}
+          multiline
+          rows={4}
+          required
+          fullWidth
+        />
+
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="body1">Rating:</Typography>
+          <Rating
+            name="stars"
+            value={reviewData.stars}
+            onChange={handleRatingChange}
+          />
+        </Box>
+
+        <Button type="submit" variant="contained" color="primary" fullWidth>
+          Submit Review
+        </Button>
+      </Stack>
+    </Box>
+            </Modal>
+
         </div>
 
     )
