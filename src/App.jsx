@@ -14,6 +14,7 @@ import Lobbies from './components/Lobby/Lobbies';
 import ShowingResults from './components/Preference/ShowingResults';
 import Lobby from './components/Lobby/Lobby'
 import PreferenceMatching from './components/Preference/PreferenceMatching';
+import Trip from './components/trip/Trip'
 function App() {
   const [count, setCount] = useState(0)
 
@@ -26,6 +27,7 @@ function App() {
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/home' element={<MapWrapper/>} />
           <Route path='/createlobby' element={<CreateLobby/>} />
+          <Route path='/trip' element={<Trip/>} />
           <Route path='/joinlobby' element={<JoinLobby/>} />
           <Route path='/showlobbies' element={<Lobbies/>} /> 
           <Route path = '/myLobby/:lobbyId' element = {<Lobby/>} />

@@ -42,6 +42,8 @@ function LobbiesCard(props) {
     const [loading , setLoading] = useState(false);
     const navigate = useNavigate()
 
+
+
     let lobbyId = props.lobbyId;
     console.log(lobbyId);
     // fetchthatone and fetchGuest ko lagana padega usestate ke andar , where snapshot lagaenge apan firestore ke users database ke upar
@@ -294,7 +296,7 @@ function LobbiesCard(props) {
                 Band Karo Ye Tamasha
             </Button>
 
-            <div style={{ width: '30%' }}>
+            <div style={{ width: '40%' }}>
                 <CardContent sx={{ textAlign: 'left' }}>
                     <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
                         LobbyID: {lobbyId}
@@ -316,9 +318,24 @@ function LobbiesCard(props) {
                             Create The Plans
                         </Button>
                     ) : (
+                        <>
                         <Button size="small" variant="outlined">
                             <Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link>
                         </Button>
+                        <Button size="small" variant="outlined" onClick={()=>{
+                            navigate('/trip' , {
+                                state: {
+                                    myId,
+                                    guest,
+                                    guestId,
+                                    lobbyId,
+                                    placeId : lobby?.venueId
+                                }
+                            })
+                        }}>
+                       Start trip
+                    </Button>
+                    </>
                     )}
                     {(lobby && lobby.venueId) &&  <Button size="small" variant="outlined" onClick={handleOpen}>Review This Place</Button>}
                     
@@ -327,7 +344,7 @@ function LobbiesCard(props) {
 
             <div
                 style={{
-                    width: '80%',
+                    width: '60%',
                     textAlign: 'right',
                     display: 'flex',
                     flexDirection: 'column',
