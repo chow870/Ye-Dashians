@@ -101,3 +101,32 @@ module.exports.updateLobby =  async function updateLobby(req,res){
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+module.exports.deleteLobby = async function deleteLobby(req,res){
+    try {
+        const {slotId} = req.query
+        const idToDelete = slotId;
+        console.log("i am from delete lobby" , idToDelete)
+        if (!idToDelete) {
+            throw new Error("Please provide a slot ID");
+        }
+        
+        const deletedPreference = await lobbyModel.findOneAndDelete({ _id: idToDelete });
+        
+        if (deletedPreference) {
+            return res.status(200).json({
+                message: "Lobby deleted successfully"
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Lobby not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}

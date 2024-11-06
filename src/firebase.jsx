@@ -23,3 +23,6 @@ export const database = {
 }
 
 export const storage = firebase.storage();
+
+
+

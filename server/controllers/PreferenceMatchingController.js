@@ -44,4 +44,34 @@ const preferenceMatching = async (req, res) => {
     }
 };
 
-module.exports = { preferenceMatching };
+
+const deletePreferenceMatching = async (req, res) => {
+    try {
+        const {slotId} = req.query
+        const idToDelete = slotId;
+        
+        if (!idToDelete) {
+            throw new Error("Please provide a slot ID");
+        }
+        
+        const deletedPreference = await preferenceMatchingModel.deleteMany({ slotId: idToDelete });
+        
+        if (deletedPreference) {
+            return res.status(200).json({
+                message: "Lobby Matched Preference deleted successfully"
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Lobby not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+module.exports = { preferenceMatching , deletePreferenceMatching};

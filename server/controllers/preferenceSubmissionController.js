@@ -44,4 +44,34 @@ const preferenceSubmit = async (req, res) => {
     }
 };
 
-module.exports = { preferenceSubmit };
+const deletePreference = async (req, res) => {
+    try {
+        const {slotId} = req.query
+        const idToDelete = slotId;
+        
+        if (!idToDelete) {
+            throw new Error("Please provide a slot ID");
+        }
+        
+        const deletedPreference = await preferenceModel.deleteMany({ slotId: idToDelete });
+        
+        if (deletedPreference) {
+            return res.status(200).json({
+                message: "Lobby prefenreces deleted successfully"
+            });
+        } else {
+            return res.status(200).json({
+                // in this case also the success needs to be true because if the lobby isnt present on the database (deleted by the users friend) then alos we have no problems
+                success: true,
+                message: "Lobby not found"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+module.exports = { preferenceSubmit , deletePreference};
