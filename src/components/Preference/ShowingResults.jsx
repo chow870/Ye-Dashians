@@ -230,6 +230,14 @@ export default function ShowingResults() {
     const handleFilterChange = (e) => {
         setFilterType(e.target.value);
     };
+    const HandlerNavigateMoreDetailsPage = (item)=>{
+      navigate('/preference/moredetails',{
+        state:{
+            item:item,
+            mylocation:mylocation,
+            destinationLocation:item.geometry.location
+        }})
+    }
 
     if (loading) {
         return (<h1>We are trying our best to give you the best suggestions...</h1>);
@@ -275,15 +283,9 @@ export default function ShowingResults() {
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
                                         <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
-                                        <button onClick={()=>{
-                                           navigate('/preference/moredetails',{
-                                            state:{
-                                                item:item
-                                            }})
-                                      
-                                        }}>
-                                          More Details
-                                        </button>
+                                        <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+  More Details
+</button>
 
                                     </div>
                                 ))
@@ -313,13 +315,9 @@ export default function ShowingResults() {
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
                                         <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
-                                        <button onClick={()=>{
-                                           navigate('/preference/moredetails',{
-                                            state:{
-                                                item:item
-                                            }})
-                                      
-                                        }}></button>
+                                        <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+  More Details
+</button>
                                     </div>
                                 ))
                             ))}
@@ -361,13 +359,9 @@ export default function ShowingResults() {
                                                   Finalize Your Partner
                                                 </button>
                                           
-                                          <button onClick={()=>{
-                                           navigate('/preference/moredetails',{
-                                            state:{
-                                                item:item
-                                            }})
-                                      
-                                        }}></button>
+                                                <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+  More Details
+</button>
                                     </div>     
                             ))
                         }
