@@ -4,7 +4,7 @@ export default function Aqi() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currentLocation, setCurrentLocation] = useState(null);
-    const [activeIndex, setActiveIndex] = useState(0); // Track the current carousel slide
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const fetchData = async () => {
         if (currentLocation == null) {
@@ -109,10 +109,10 @@ export default function Aqi() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setActiveIndex((prevIndex) => (prevIndex + 1) % 2); // Switch between 0 and 1
-        }, 5000); // 2-second interval
+            setActiveIndex((prevIndex) => (prevIndex + 1) % 2);
+        }, 5000);
 
-        return () => clearInterval(interval); // Clean up on unmount
+        return () => clearInterval(interval);
     }, []);
 
     if (loading) return <p>Loading...</p>;
@@ -120,38 +120,82 @@ export default function Aqi() {
     if (data == null || data.length === 0) return <p>Oops! Something went wrong.</p>;
 
     return (
-        <div className='h-full w-full border-2 border-black rounded-lg shadow-lg'>
-            <div className="carousel h-full w-full p-4">
+        <div className="min-h-screen w-full p-4 border-2 border-gray-800 rounded-lg shadow-lg bg-black">
+            <div className="carousel h-full w-full space-y-6 transition-all duration-700">
                 {activeIndex === 0 && (
-                    <div className="p-4 bg-blue-100 rounded">
-                        <h2 className="text-xl font-semibold">CURRENT</h2>
-                        <p>Place: {data.location.name}, {data.location.country}</p>
-                        <p>Feels like: {data.current.feelslike_c}°C</p>
-                        <p>Condition: {data.current.condition.text}</p>
-                        <img src={data.current.condition.icon} alt="Weather condition" />
-                        <p>Wind Speed: {data.current.wind_kph} kph</p>
-                        <p>Humidity: {data.current.humidity}%</p>
-                        <p>Visibility: {data.current.vis_km} km</p>
-                        <p>AQI: {handlerForAqi(data.current.air_quality["us-epa-index"])}</p>
-                        <h3 className="font-semibold mt-2">Suggestion</h3>
-                        <div>{handlerForSuggestion(data.current.air_quality["us-epa-index"])}</div>
+                    <div className="p-6 bg-gray-900 text-gray-200 rounded-lg shadow-md transition-all duration-500 ease-in-out transform hover:scale-105">
+                        <h2 className="text-2xl font-bold text-blue-500 mb-4">Current Weather</h2>
+                        <div className="flex items-center space-x-4 mb-4">
+                            <img src={data.current.condition.icon} alt="Weather condition" className="w-16 h-16" />
+                            <div>
+                                <p className="text-lg font-semibold text-gray-100">
+                                    {data.location.name}, {data.location.country}
+                                </p>
+                                <p className="text-gray-400">{data.current.condition.text}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 text-gray-300">
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Temperature:</p>
+                                <p className="text-xl font-semibold">{data.current.temp_c}°C</p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Humidity:</p>
+                                <p className="text-xl font-semibold">{data.current.humidity}%</p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Visibility:</p>
+                                <p className="text-xl font-semibold">{data.current.vis_km} km</p>
+                            </div>
+                        </div>
+                        {/* Add Suggestion Section */}
+                        <div className="mt-6">
+                            <h3 className="text-lg font-semibold text-blue-500">Suggestion</h3>
+                            <div className="text-gray-300 mt-2 space-y-1">{handlerForSuggestion(data.current.air_quality["us-epa-index"])}</div>
+                        </div>
                     </div>
                 )}
-
                 {activeIndex === 1 && (
-                    <div className="p-4 bg-green-100 rounded">
-                        <h2 className="text-xl font-semibold">TODAY</h2>
-                        <p>Place: {data.location.name}, {data.location.country}</p>
-                        <p>Temperature Range: {data.forecast.forecastday[0].day.maxtemp_c}°C - {data.forecast.forecastday[0].day.mintemp_c}°C</p>
-                        <p>Condition: {data.forecast.forecastday[0].day.condition.text}</p>
-                        <img src={data.forecast.forecastday[0].day.condition.icon} alt="Weather condition" />
-                        <p>Sunrise: {data.forecast.forecastday[0].astro.sunrise}</p>
-                        <p>Sunset: {data.forecast.forecastday[0].astro.sunset}</p>
-                        <p>Humidity: {data.forecast.forecastday[0].day.avghumidity}%</p>
-                        <p>Visibility: {data.forecast.forecastday[0].day.avgvis_km} km</p>
-                        <p>AQI: {handlerForAqi(data.forecast.forecastday[0].day.air_quality["us-epa-index"])}</p>
-                        <h3 className="font-semibold mt-2">Suggestion</h3>
-                        <div>{handlerForSuggestion(data.forecast.forecastday[0].day.air_quality["us-epa-index"])}</div>
+                    <div className="p-6 bg-gray-900 text-gray-200 rounded-lg shadow-md transition-all duration-500 ease-in-out transform hover:scale-105">
+                        <h2 className="text-2xl font-bold text-green-500 mb-4">Today's Forecast</h2>
+                        <div className="flex items-center space-x-4 mb-4">
+                            <img src={data.forecast.forecastday[0].day.condition.icon} alt="Weather condition" className="w-16 h-16" />
+                            <div>
+                                <p className="text-lg font-semibold text-gray-100">
+                                    {data.location.name}, {data.location.country}
+                                </p>
+                                <p className="text-gray-400">{data.forecast.forecastday[0].day.condition.text}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 text-gray-300">
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Temperature Range:</p>
+                                <p className="text-xl font-semibold">
+                                    {data.forecast.forecastday[0].day.maxtemp_c}°C - {data.forecast.forecastday[0].day.mintemp_c}°C
+                                </p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Sunrise:</p>
+                                <p className="text-xl font-semibold">{data.forecast.forecastday[0].astro.sunrise}</p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Sunset:</p>
+                                <p className="text-xl font-semibold">{data.forecast.forecastday[0].astro.sunset}</p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Humidity:</p>
+                                <p className="text-xl font-semibold">{data.forecast.forecastday[0].day.avghumidity}%</p>
+                            </div>
+                            <div className="bg-gray-800 p-4 rounded-lg shadow-sm">
+                                <p>Visibility:</p>
+                                <p className="text-xl font-semibold">{data.forecast.forecastday[0].day.avgvis_km} km</p>
+                            </div>
+                        </div>
+                        {/* Add Suggestion Section */}
+                        <div className="mt-6">
+                            <h3 className="text-lg font-semibold text-blue-500">Suggestion</h3>
+                            <div className="text-gray-300 mt-2 space-y-1">{handlerForSuggestion(data.forecast.forecastday[0].day.air_quality["us-epa-index"])}</div>
+                        </div>
                     </div>
                 )}
             </div>
