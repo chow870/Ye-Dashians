@@ -19,6 +19,7 @@ const FetchPictures =  async (req, res) => {
         });
 
         const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+       
         res.json({ image: `data:image/jpeg;base64,${base64Image}` });
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve photo' });
