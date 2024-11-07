@@ -3,14 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 function PreferenceMatching() {
   const [results, setResults] = useState([]); 
-  const [tempResult, setTempResult] = useState([]);
   const [loading, setLoading] = useState(true);
   const [coordinate2, setCoordinate2] = useState(null);
   const [othersPreference, setOthersPreference] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { slotId, myId, mylocation, guestId, preference } = location.state || {};
+  const { slotId, myId, mylocation, guestId, preference,eventDetails } = location.state || {};
 //   console.log("Reached Preference Matching page with:", slotId, myId, mylocation, guestId, preference);
 
 //   to fetch the location 
@@ -210,11 +209,17 @@ useEffect(() => {
     const fetchData = async () => {
         if (coordinate2 == null) return;
         console.log(coordinate2)
+
         let midpoint = findMidpoint(mylocation,coordinate2);
+        console.log("The midpoint calculated is ", midpoint)
         let searchLat = midpoint.lat;
         let searchLng = midpoint.lng;
-        console.log("The midpoint calculated is ", midpoint)
-
+        if(Object.keys(eventDetails).length>0){
+            console.log("Inside the eventDetails :  ", eventDetails)
+            searchLat = eventDetails.locationCoordinates.lat;
+            searchLng = eventDetails.locationCoordinates.lng;
+        }
+       
         try {
             const fetchPromises = [];
 

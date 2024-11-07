@@ -12,7 +12,7 @@ function PreferenceForm() {
     const location = useLocation();
     const [nextPagebol, setNextPageBol] = useState(false);
     const [step, setStep] = useState(1); // Track current step
-    const { slotId, myId, guestId } = location.state || {};
+    const { slotId, myId, guestId,eventDetails } = location.state || {};
 
     useEffect(() => {
         console.log("Reached the PreferenceForm component");
@@ -72,7 +72,8 @@ function PreferenceForm() {
                     myId: myId,
                     mylocation: originInput,
                     preference: preference,
-                    guestId: guestId
+                    guestId: guestId,
+                    eventDetails:eventDetails
                 }
             })
         }

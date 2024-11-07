@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { database } from '../../firebase';
+import { useLocation } from 'react-router-dom';
 function CreateLobby() {
     const [lobbyId, setLobbyId] = useState('');
     const [loading, setLoading] = useState(false);
@@ -8,6 +9,8 @@ function CreateLobby() {
     const userId = useSelector((state) => {
         return state?.auth?.user?.uid
     })
+    const location = useLocation();
+    const {eventDetails} = location.state||{};
     const handleButtonClick = async (e) => {
         try {
             setLoading(true);
@@ -16,7 +19,7 @@ function CreateLobby() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "creatorId": userId }),
+                body: JSON.stringify({ "creatorId": userId, eventDetails:eventDetails }),
             });
 
             if (!response.ok) {

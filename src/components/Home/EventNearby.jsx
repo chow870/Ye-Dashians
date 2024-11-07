@@ -1,84 +1,101 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-function EventNearby() {
-    const [events, setEvents] = useState(null)
-    const [currentLocation, setCurrentLocation] = useState(null);
-    const [records, setRecords] = useState([{}])
+function EventSearchForm() {
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [load, setLoad]=useState(false);
+  const navigate = useNavigate();
 
-    const searchEventsNearMe = async () => {
-        if(currentLocation==null){
-            return ;
-        }
-        
-    
-        try {
-          const response = await fetch(`/api/events?lat=${currentLocation.lat}&lng=${currentLocation.lng}`);
-          const data = await response.json();
-          console.log(data);
-          setEvents(data.results);
-        } catch (error) {
-          console.error('Error fetching events:', error);
-        }
-      };
-    
-      useEffect(()=>{
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(success, error);
-          } else {
-            console.log("Geolocation not supported");
-          }
-          
-          function success(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            // console.log(Latitude: ${latitude}, Longitude: ${longitude});
-            setCurrentLocation({lat: latitude, lng:longitude});
-            // setOriginInput({lat: latitude, lng:longitude})
-            
-          }
-          
-          function error() {
-            console.log("Unable to retrieve your location");
-          }
-      },[])
+  // Available event types
+  const typesOptions = ["Music", "Concert", "Meetup", "Festival", "Celebrations", "Events"];
 
-      const searchRecords = async ({destination})=>{
-            
-    try {
-        const response = await fetch(`/api/recordslat=${currentLocation.lat}&lng=${currentLocation.lng}&destinations=${destination}`);
-        const data = await response.json();
-  
-        if (data.status === 'OK') {
-          const distancesMap = {};
-          data.rows[0].elements.forEach((element, index) => {
-            distancesMap[places[index].place_id] = {
-              distance: element.distance.text,
-              duration: element.duration.text,
-            };
-          });
-          setDistances(distancesMap);
-        } else {
-          console.error("Distance Matrix Error:", data.error_message);
-        }
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-        }
+  // Handle type selection
+  const handleTypeChange = (type) => {
+    setSelectedTypes((prevSelectedTypes) =>
+      prevSelectedTypes.includes(type)
+        ? prevSelectedTypes.filter((t) => t !== type)
+        : [...prevSelectedTypes, type]
+    );
+  };
 
-      useEffect(() => {
-        if(currentLocation == null ) return ;
-        if (currentLocation.lat && currentLocation.lng) {
-          searchEventsNearMe();
-        }
-        if(events != null){
-            searchRecords();
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const typesQuery = selectedTypes.join(',');
+    setLoad(true);
+    fetch(`/api/v1/fetchEvents?types=${typesQuery}`)
+      .then((response) => response.json())
+      .then((data) => setEvents(data))
+      .catch((error) => console.error('Error fetching events:', error));
+      setLoad(false)
+  };
+  if(load){
+    return (<p> We are loading the Nearby events for You </p>)
+  }
 
-        }
-      }, [currentLocation]);
- 
   return (
-    <div className='h-32 w-96 border-2 border-black mx-5 my-2'>events near me</div>
-  )
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Search Events by Type</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <fieldset className="flex flex-wrap gap-4">
+          <legend className="text-lg font-semibold mb-2">Select Types</legend>
+          {typesOptions.map((type) => (
+            <label key={type} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                value={type}
+                checked={selectedTypes.includes(type)}
+                onChange={() => handleTypeChange(type)}
+                className="form-checkbox h-4 w-4 text-blue-500"
+              />
+              <span>{type}</span>
+            </label>
+          ))}
+        </fieldset>
+        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+          Search
+        </button>
+      </form>
+
+      {/* Carousel Display for Events */}
+      {events.length > 0 ? (
+        <div className="mt-8 relative">
+          <div className="flex overflow-x-auto space-x-4">
+            {events.map((event, index) => (
+              <div
+                key={event._id}
+                className="min-w-[300px] bg-white rounded-lg shadow-md p-4 space-y-2 border border-gray-200"
+              >
+                <h3 className="text-xl font-semibold">{event.locationName}</h3>
+                <p className="text-gray-600">Organiser: {event.organiserName}</p>
+                <p className="text-gray-500">{event.details}</p>
+                <p className="text-gray-600">Date: {new Date(event.date).toLocaleDateString()}</p>
+                <p className="text-gray-600">Time: {event.time}</p>
+                {event.availableSeats > 0 ? (
+                  <>
+                  <p className="text-green-600 font-bold">Tickets Available</p>
+                  <button >Book The Seats !!!</button>
+                  <button
+                  onClick={()=>{
+                    navigate('/createlobby',)
+                  }} 
+                  > Share And Plan It With your Friend </button>
+                  </>
+                  
+                ) : (
+                  <p className="text-red-500 font-bold">Sold Out</p>
+                )}
+                <p className="text-blue-500 font-semibold">Price: ${event.pricePerTicket}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="mt-8 text-gray-500">No events found for the selected types.</p>
+      )}
+    </div>
+  );
 }
 
-export default EventNearby
+export default EventSearchForm;
