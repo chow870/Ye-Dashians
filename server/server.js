@@ -15,6 +15,8 @@ const { Server } = require("socket.io");
 const WeatherSearchRouter = require('./routes/MapsRoutes/Aqi');
 const FetchReviewRouter = require('./routes/FetchReviewsRoute');
 const PictureSearchRouter = require('./routes/MapsRoutes/FetchPictures');
+const FetchEventsRouter = require('./routes/FetchEvents');
+const EventsPurchasedRouter = require('./routes/EventsPurchased');
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -65,3 +67,5 @@ app.use('/api/v1/fetchOthersPreference',FetchOtherPreferenceRouter );
 app.use('/maps/v1/WatherSearch',WeatherSearchRouter);
 app.use('/api/v1/fetchReviews',FetchReviewRouter );
 app.use('/maps/v1/photo',PictureSearchRouter);
+app.use('/api/v1/fetchEvents',FetchEventsRouter)
+app.use('/api/v1/EventsPurchased',EventsPurchasedRouter)

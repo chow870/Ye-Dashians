@@ -1,3 +1,4 @@
+const { NightShelter } = require('@mui/icons-material');
 const mongoose = require('mongoose');
 const lobbySchema = mongoose.Schema({
       user1: {
@@ -26,6 +27,10 @@ const lobbySchema = mongoose.Schema({
       time: {
         type: Date,
         default: null,
+      },
+      eventDetails :{
+        type:{},
+        default:{}
       }
 });
 const lobbyModel = mongoose.model('userModel', lobbySchema);

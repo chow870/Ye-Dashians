@@ -185,12 +185,10 @@ navigate("/showlobbies")
   
   <div className="flex w-full space-x-4">
   {/* Left Div - 40% Width */}
-  <div className="w-3/5 bg-gray-200 p-4 rounded-lg" style={{ minHeight: '500px' }}>
-    <h3 className="font-semibold text-gray-700 mb-2">Venue Option 1</h3>
-    <p className="text-gray-600">This can be a dropdown or selection area for venue options.</p>
-  </div>
+  
 
   {/* Right Div - 60% Width */}
+  {/* Chat wala feature yaha par hai */}
   <div className="w-2/5 bg-gray-200 p-4 rounded-lg" style={{ minHeight: '500px' }}>
     <h3 className="font-semibold text-gray-700 mb-2">Chat</h3>
     <form onSubmit={handleSubmit2}>
