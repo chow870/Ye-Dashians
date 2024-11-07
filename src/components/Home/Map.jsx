@@ -38,7 +38,7 @@ const MyMapComponent = () => {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-black">
       {/* Map Section */}
       <div className="w-1/2 h-full">
         <div className="flex flex-col h-full">

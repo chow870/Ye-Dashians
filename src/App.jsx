@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import './index.css'
 import { Route,Routes } from 'react-router-dom';
 import CreateLobby from './components/Lobby/CreateLobby';
 import SignUp from './components/SignUp';
@@ -16,6 +17,7 @@ import Lobby from './components/Lobby/Lobby'
 import PreferenceMatching from './components/Preference/PreferenceMatching';
 import Trip from './components/trip/Trip'
 import MoreDetailsCard from './components/Preference/MoreDetailsCard';
+
 function App() {
   const [count, setCount] = useState(0)
 

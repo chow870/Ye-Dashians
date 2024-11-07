@@ -1,58 +1,45 @@
-import React from 'react'
-import { useLocation } from 'react-router-dom'
-import { useState , useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { database } from '../../firebase';
-import MapWithRoute from '../Preference/MoreDetailsMap';
 import MapWithTrack from './MapWithTrack';
 import { LoadScript } from '@react-google-maps/api';
+
 function Trip() {
-    const {
-        myId,
-        guest,
-        guestId,
-        lobbyId,
-        placeId,
-        venueCoords
+    const { myId, guestId, venueCoords } = useLocation().state || null;
 
-    } = useLocation().state || null
-    console.log(venueCoords)
+    const [myCurrentLocation, setMyCurrentLocation] = useState(null);
+    const [guestCurrentLocation, setGuestCurrentLocation] = useState(null);
+    const [error, setError] = useState(false);
 
-    const [myCurrentLocation, setMyCurrentLocation] = useState(null)
-    const [guestCurrentLocation, setGuestCurrentLocation] = useState(null)
-    const [iHaveReached, setIHaveReached] = useState(false);
-    const [guestHaveReached, setGuestIHaveReached] = useState(false);
-    const [error,setError] = useState(false);
-    const [destination,setDestination]=useState(null);
+    // Using refs to avoid unnecessary re-renders in MapWithTrack
+    const myLocationRef = useRef(null);
+    const guestLocationRef = useRef(null);
 
-    useEffect(()=>{
-
-
-    },[])
-
-    async function setMyCurLocIntoFireBase(curLocObj)
-    {
-        let res = await database.users.doc(myId).update({
-            curLoc : curLocObj
-        })
-        // console.log("i am from trip page",res);
+    async function setMyCurLocIntoFireBase(curLocObj) {
+        try {
+            await database.users.doc(myId).update({
+                curLoc: curLocObj
+            });
+        } catch (error) {
+            console.error("Error updating location in Firebase", error);
+        }
     }
-
 
     async function fetchMyFriendsLocation() {
         try {
             const userDoc = await database.users.doc(guestId).get();
             if (userDoc.exists) {
                 const data = userDoc.data();
-                setGuestCurrentLocation(data.curLoc)
+                setGuestCurrentLocation(data.curLoc);
+                guestLocationRef.current = data.curLoc;
             } else {
                 setError("Document not found");
             }
         } catch (error) {
             setError(error.message);
-            console.error("Error fetching friends location", error);
+            console.error("Error fetching friend's location", error);
         }
     }
-
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -61,44 +48,49 @@ function Trip() {
                     (position) => {
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
-                        setMyCurrentLocation({ lat: latitude, lng: longitude });
-                        setMyCurLocIntoFireBase({ lat: latitude, lng: longitude });
+                        const locationObj = { lat: latitude, lng: longitude };
+
+                        // Update state and refs only if location has significantly changed
+                        if (!myLocationRef.current || 
+                            Math.abs(myLocationRef.current.lat - latitude) > 0.0001 || 
+                            Math.abs(myLocationRef.current.lng - longitude) > 0.0001) {
+                            setMyCurrentLocation(locationObj);
+                            myLocationRef.current = locationObj;
+                            setMyCurLocIntoFireBase(locationObj);
+                        }
+
                         fetchMyFriendsLocation();
                     },
                     (error) => console.log("Unable to retrieve location", error),
-                    {
-                        enableHighAccuracy: true,
-                        //very frequent requests for location
-                        timeout: 100,
-                        maximumAge: 0
-                    }
+                    { enableHighAccuracy: true, timeout: 100, maximumAge: 0 }
                 );
-            }, 5000); 
+            }, 15000);
             return () => clearInterval(intervalId);
         } else {
             console.log("Geolocation not supported");
         }
     }, []);
 
+    return (
+        <div>
+            <h1>Your Location</h1>
+            <p>Latitude: {myCurrentLocation?.lat}</p>
+            <p>Longitude: {myCurrentLocation?.lng}</p>
 
+            <h1>Friend's Location</h1>
+            <p>Latitude: {guestCurrentLocation?.lat}</p>
+            <p>Longitude: {guestCurrentLocation?.lng}</p>
 
-
-
-  return (
-    <div>
-        <h1>your location is</h1>
-        <p>{myCurrentLocation?.lat}</p>
-        <p>{myCurrentLocation?.lng}</p>
-
-        <h1>your friends location is</h1>
-        <p>{guestCurrentLocation?.lat}</p>
-        <p>{guestCurrentLocation?.lng}</p>
-        <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" >
-            <MapWithTrack myInitialLocation ={myCurrentLocation} partnerInitialLocation={guestCurrentLocation} destinationLocation={venueCoords[0]} />
-        </LoadScript>
-
-    </div>
-  )
+            {/* LoadScript is loaded only once to prevent reloading issues */}
+            <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w">
+                <MapWithTrack 
+                    myInitialLocation={myCurrentLocation} 
+                    partnerInitialLocation={guestCurrentLocation} 
+                    destinationLocation={venueCoords[0]} 
+                />
+            </LoadScript>
+        </div>
+    );
 }
 
-export default Trip
+export default Trip;
