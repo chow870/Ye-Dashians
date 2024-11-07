@@ -67,6 +67,7 @@ const MyMapComponent = () => {
         <div className="h-1/3 w-full border-2 border-black rounded-lg shadow-lg bg-red-200">
           <p>Here i will display Suggested places </p>
         </div>
+        {/* <div class="ae-embed-org-plugin" data-type="org" data-title="false" data-id="25036600" data-height="" data-width="" data-transparency="true" data-header="0" data-border="0" data-layout="center" data-aff="u0" style="width: 100%;"></div> */}
         <EventNearby />
         <div className="h-32 w-full border-2 border-black my-4 p-4 flex items-center justify-center">
           <Link to="/showlobbies">

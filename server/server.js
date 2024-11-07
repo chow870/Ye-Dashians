@@ -13,6 +13,8 @@ const reviewRouter = require('./routes/reviewRoutes')
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const WeatherSearchRouter = require('./routes/MapsRoutes/Aqi');
+const FetchReviewRouter = require('./routes/FetchReviewsRoute');
+const PictureSearchRouter = require('./routes/MapsRoutes/FetchPictures');
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -61,3 +63,5 @@ app.use('/maps/v1/PlaceIdSearch',PlaceIdSearchRouter);
 app.use('/api/v1/preferenceMatching',PreferenceMathcingRouter );
 app.use('/api/v1/fetchOthersPreference',FetchOtherPreferenceRouter );
 app.use('/maps/v1/WatherSearch',WeatherSearchRouter);
+app.use('/api/v1/fetchReviews',FetchReviewRouter );
+app.use('/maps/v1/photo',PictureSearchRouter);

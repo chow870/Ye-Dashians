@@ -376,9 +376,6 @@ function LobbiesCard(props) {
       </Typography>
 
       <Stack spacing={2}>
-        
-
-        
 
         <TextField
           label="User Name"

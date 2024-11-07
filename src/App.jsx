@@ -15,6 +15,7 @@ import ShowingResults from './components/Preference/ShowingResults';
 import Lobby from './components/Lobby/Lobby'
 import PreferenceMatching from './components/Preference/PreferenceMatching';
 import Trip from './components/trip/Trip'
+import MoreDetailsCard from './components/Preference/MoreDetailsCard';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -35,6 +36,7 @@ function App() {
               <Route path ='form' element={<PreferenceForm/>}/>
               <Route path ='matching' element={<PreferenceMatching/>}/>
               <Route path ='results' element={<ShowingResults/>}/>
+              <Route path ='moredetails' element={<MoreDetailsCard/>}/>
           </Route>
 
           
