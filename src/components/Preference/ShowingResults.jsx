@@ -196,6 +196,7 @@ export default function ShowingResults() {
     }, [othersOption, preferencemy, preferenceother, myOptions, sortOption]);
 
     // Function to apply sorting
+    
     const applySorting = (options) => {
         return options.map(category => ({
             ...category,
@@ -274,6 +275,15 @@ export default function ShowingResults() {
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
                                         <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
+                                        <button onClick={()=>{
+                                           navigate('/preference/moredetails',{
+                                            state:{
+                                                item:item
+                                            }})
+                                      
+                                        }}>
+                                          More Details
+                                        </button>
 
                                     </div>
                                 ))
@@ -303,6 +313,13 @@ export default function ShowingResults() {
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
                                         <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
+                                        <button onClick={()=>{
+                                           navigate('/preference/moredetails',{
+                                            state:{
+                                                item:item
+                                            }})
+                                      
+                                        }}></button>
                                     </div>
                                 ))
                             ))}
@@ -343,7 +360,14 @@ export default function ShowingResults() {
                                         <button onClick={() => finalize(item.place_id, item.name)}>
                                                   Finalize Your Partner
                                                 </button>
-
+                                          
+                                          <button onClick={()=>{
+                                           navigate('/preference/moredetails',{
+                                            state:{
+                                                item:item
+                                            }})
+                                      
+                                        }}></button>
                                     </div>     
                             ))
                         }
