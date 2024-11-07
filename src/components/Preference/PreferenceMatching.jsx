@@ -165,12 +165,55 @@ function PreferenceMatching() {
 //         }
 //     });
 // }
+
+function toRadians(degrees) {
+    return (degrees * Math.PI) / 180;
+  }
+  
+  function toDegrees(radians) {
+    return (radians * 180) / Math.PI;
+  }
+  
+  function findMidpoint(location1, location2) {
+    const lat1 = toRadians(location1.lat);
+    const lon1 = toRadians(location1.lng);
+    const lat2 = toRadians(location2.lat);
+    const lon2 = toRadians(location2.lng);
+  
+    // Convert lat/lon to Cartesian coordinates
+    const x1 = Math.cos(lat1) * Math.cos(lon1);
+    const y1 = Math.cos(lat1) * Math.sin(lon1);
+    const z1 = Math.sin(lat1);
+  
+    const x2 = Math.cos(lat2) * Math.cos(lon2);
+    const y2 = Math.cos(lat2) * Math.sin(lon2);
+    const z2 = Math.sin(lat2);
+  
+    // Average the Cartesian coordinates
+    const x = (x1 + x2) / 2;
+    const y = (y1 + y2) / 2;
+    const z = (z1 + z2) / 2;
+  
+    // Convert the midpoint back to lat/lon
+    const centralLon = Math.atan2(y, x);
+    const hyp = Math.sqrt(x * x + y * y);
+    const centralLat = Math.atan2(z, hyp);
+  
+    return {
+      lat: toDegrees(centralLat),
+      lng: toDegrees(centralLon)
+    };
+  }
+
+
 useEffect(() => {
     const fetchData = async () => {
         if (coordinate2 == null) return;
         console.log(coordinate2)
-        let searchLat = (mylocation.lat + coordinate2.lat) / 2;
-        let searchLng = (mylocation.lng + coordinate2.lng) / 2;
+        let midpoint = findMidpoint(mylocation,coordinate2);
+        let searchLat = midpoint.lat;
+        let searchLng = midpoint.lng;
+        console.log("The midpoint calculated is ", midpoint)
 
         try {
             const fetchPromises = [];

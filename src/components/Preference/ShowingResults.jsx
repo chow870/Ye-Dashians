@@ -201,19 +201,31 @@ export default function ShowingResults() {
     // Function to apply sorting
     
     const applySorting = (options) => {
-        return options.map(category => ({
-            ...category,
-            result: [...category.result].sort((a, b) => {
-                if (sortOption === 'rating') {
-                    return (b.rating || 0) - (a.rating || 0);
-                } else if (sortOption === 'distance') {
-                    return parseFloat(a.distances[0].distance.rows[0].elements[0].distance.value) -
-                        parseFloat(b.distances[0].distance.rows[0].elements[0].distance.value);
-                }
-                return 0;
-            })
-        }));
-    };
+      return options.map(category => ({
+          ...category,
+          result: [...category.result].sort((a, b) => {
+              console.log("inside applySorting : ", a, b);
+  
+              if (sortOption === 'rating') {
+                  return (b.rating || 0) - (a.rating || 0); // Sort by rating, descending
+              } else if (sortOption === 'distance') {
+                  // Calculate absolute difference of distances for each place
+                  const user1DistanceA = parseFloat(a.distances[0].distance.rows[0].elements[0].distance.value);
+                  const user2DistanceA = parseFloat(a.distances[1].distance.rows[0].elements[0].distance.value);
+  
+                  const user1DistanceB = parseFloat(b.distances[0].distance.rows[0].elements[0].distance.value);
+                  const user2DistanceB = parseFloat(b.distances[1].distance.rows[0].elements[0].distance.value);
+  
+                  const absDifferenceA = Math.abs(user1DistanceA - user2DistanceA);
+                  const absDifferenceB = Math.abs(user1DistanceB - user2DistanceB);
+  
+                  return absDifferenceA - absDifferenceB; // Sort by absolute difference, ascending
+              }
+              return 0;
+          })
+      }));
+  };
+  
 
     // Function to filter results by type
     const filteredCommonOptions = commonOptions.filter(option =>
