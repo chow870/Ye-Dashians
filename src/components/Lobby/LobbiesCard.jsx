@@ -40,6 +40,7 @@ function LobbiesCard(props) {
     const [date, setDate] = useState(null)
     const [guestId, setGuestId] = useState('')
     const [loading , setLoading] = useState(false);
+    const [venueCoords , setVenueCoords] = useState(null);
     const navigate = useNavigate()
 
 
@@ -70,6 +71,7 @@ function LobbiesCard(props) {
                     const lobbyTime = foundLobby?.time ? dayjs(foundLobby.time) : dayjs();
                     setDate(lobbyTime.format('DD MMM YYYY'));
                     setTime(lobbyTime.format('HH:mm'));
+                    setVenueCoords(foundLobby?.venueCoordinates);
                 }
             } catch (error) {
                 setError(error.message);
@@ -329,7 +331,8 @@ function LobbiesCard(props) {
                                     guest,
                                     guestId,
                                     lobbyId,
-                                    placeId : lobby?.venueId
+                                    placeId : lobby?.venueId,
+                                    venueCoords
                                 }
                             })
                         }}>

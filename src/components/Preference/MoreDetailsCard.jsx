@@ -71,7 +71,9 @@ export default function MoreDetailsCard() {
     return (
         <>
         <div>
-        <MapWithRoute myLocation={mylocation} lat={item.geometry.location.lat} lng ={item.geometry.location.lng}/>
+        <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" >
+            <MapWithRoute myLocation={mylocation} lat={item.geometry.location.lat} lng ={item.geometry.location.lng}/>
+        </LoadScript>
 
         </div>
          <div className="bg-gray-100 p-8 rounded-lg shadow-lg">
@@ -83,8 +85,7 @@ export default function MoreDetailsCard() {
                     <button onClick={handlePrevPhoto} className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                         Prev
                     </button>
-                    <img
-                        src={`/maps/v1/photo?photo_reference=${item.additionalDetails.result.photos[currentPhotoIndex].photo_reference}`}
+                    <img src={`/maps/v1/photo?photo_reference=${item.additionalDetails.result.photos[currentPhotoIndex].photo_reference}`}
                         alt="Place Photo"
                         className="w-64 h-64 object-cover rounded-lg shadow-md"
                     />
