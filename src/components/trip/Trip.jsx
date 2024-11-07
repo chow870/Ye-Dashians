@@ -2,20 +2,32 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 import { useState , useEffect } from 'react';
 import { database } from '../../firebase';
+import MapWithRoute from '../Preference/MoreDetailsMap';
+import MapWithTrack from './MapWithTrack';
+import { LoadScript } from '@react-google-maps/api';
 function Trip() {
     const {
         myId,
         guest,
         guestId,
         lobbyId,
-        placeId
+        placeId,
+        venueCoords
+
     } = useLocation().state || null
+    console.log(venueCoords)
 
     const [myCurrentLocation, setMyCurrentLocation] = useState(null)
     const [guestCurrentLocation, setGuestCurrentLocation] = useState(null)
     const [iHaveReached, setIHaveReached] = useState(false);
     const [guestHaveReached, setGuestIHaveReached] = useState(false);
     const [error,setError] = useState(false);
+    const [destination,setDestination]=useState(null);
+
+    useEffect(()=>{
+
+
+    },[])
 
     async function setMyCurLocIntoFireBase(curLocObj)
     {
@@ -81,6 +93,10 @@ function Trip() {
         <h1>your friends location is</h1>
         <p>{guestCurrentLocation?.lat}</p>
         <p>{guestCurrentLocation?.lng}</p>
+        <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" >
+            <MapWithTrack myInitialLocation ={myCurrentLocation} partnerInitialLocation={guestCurrentLocation} destinationLocation={venueCoords[0]} />
+        </LoadScript>
+
     </div>
   )
 }

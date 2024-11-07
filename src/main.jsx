@@ -13,6 +13,8 @@ auth.onAuthStateChanged((user) => {
   store.dispatch(setLoading(false));
 });
 
+
+
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <BrowserRouter>

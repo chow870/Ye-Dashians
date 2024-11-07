@@ -30,7 +30,9 @@ function Lobby() {
   const { slotId,
     venuePlaceId,
     venueName,
-    guestId} = location.state||{};
+    guestId,
+    locationCoords
+  } = location.state||{};
 
   useEffect(() => {
     socket.on("connect" , () => {
@@ -123,7 +125,8 @@ const handleUpdate = async() => {
               "user2":guestId,
               "venue" : venueName,
               "venueId":venuePlaceId,
-              "time" : dateAndTime
+              "time" : dateAndTime,
+              "venCords" : locationCoords
          }),
     });
     if (!response.ok) {

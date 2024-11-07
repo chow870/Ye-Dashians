@@ -19,6 +19,10 @@ const lobbySchema = mongoose.Schema({
         type: String,
         default: null,
       },
+      venueCoordinates :{
+        type:Array,
+        default:null
+      },
       time: {
         type: Date,
         default: null,

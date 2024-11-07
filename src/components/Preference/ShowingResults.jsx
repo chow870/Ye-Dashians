@@ -72,11 +72,13 @@ export default function ShowingResults() {
             console.log("yeah i have recieved  finalize-message-recieved ")
             const venuePlaceId = data.sentObj.id;
             const venueName = data.sentObj.name;
+            const location = data.sentObj.loc;
             navigate(`/myLobby/${slotId}`, {
                 state: {
                    slotId,
                    venuePlaceId,
                    venueName,
+                   locationCoords : location,
                    guestId:guestId
                 }
             })
@@ -109,12 +111,13 @@ export default function ShowingResults() {
     }
 
 
-    const finalize = (placeid, placename) => {
+    const finalize = (placeid, placename , location) => {
       console.log("inside the finalise event listener")
         const lobbyId = slotId;
         const sentObj = {
             id : placeid,
-            name : placename
+            name : placename,
+            loc : location
         }
         socket.emit("FinalizeMessage", { sentObj, lobbyId })
 
@@ -284,8 +287,8 @@ export default function ShowingResults() {
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
                                         <button onClick={() => suggest(item.place_id, item.name)}>Suggest Your Partner</button>
                                         <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
-  More Details
-</button>
+                                                              More Details
+                                                            </button>
 
                                     </div>
                                 ))
@@ -355,10 +358,9 @@ export default function ShowingResults() {
                                         <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
-                                        <button onClick={() => finalize(item.place_id, item.name)}>
+                                        <button onClick={() => finalize(item.place_id, item.name,item.geometry.location)}> 
                                                   Finalize Your Partner
                                                 </button>
-                                          
                                                 <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
   More Details
 </button>
