@@ -30,6 +30,92 @@ function EventSearchForm() {
       .catch((error) => console.error('Error fetching events:', error));
       setLoad(false)
   };
+
+
+  const handlePayment = async () => {
+    try {
+      // Send a request to your backend to create a Razorpay order using fetch
+      const response = await fetch('http://localhost:3000/createOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: totalPrice,
+          name: 'Cart Purchase',
+          description: 'Payment for items in your cart',
+        }),
+      });
+  
+      const data = await response.json();
+  
+      // If the order is created successfully, proceed with Razorpay checkout
+      if (data.success) {
+        const options = {
+          key: data.key_id,
+          amount: data.amount,
+          currency: "INR",
+          name: data.product_name,
+          description: data.description,
+          image: ShoppingCartTwoToneIcon, // Optional image
+          order_id: data.order_id, // Order ID returned from your backend
+          handler: async function (response) {
+            alert("Payment Successful");
+           
+            const cartOrder={
+              userId: currUser.currentUser._id, // Replace with actual user ID
+              cart: cart,
+              totalPrice: totalPrice,
+              paymentId: response.razorpay_payment_id,
+            }
+            console.log(cart);
+               // Once the payment is successful, create an order in your system
+            await fetch('/api/order/create', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(cartOrder),
+            });
+            await fetch('/api/crop/updateQty', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({cart}),
+            });
+            
+            dispatch(signoutCart());
+            // when payment is successful we empty the card
+            // Optionally, you can handle post-payment logic here 
+            navigate('/market');
+  
+            // Optionally, you can handle post-payment logic here
+          },
+          prefill: {
+            name: data.name,
+            email: data.email,
+            contact: data.contact,
+           
+          },
+          theme: {
+            color: "#2300a3",
+          },
+        };
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+        razorpay.on('payment.failed', function (response) {
+          alert("Payment Failed: " + response.error.description);
+        });
+      } else {
+        alert('Order creation failed');
+      }
+    } catch (error) {
+      console.error('Error during payment:', error);
+      alert('Something went wrong!');
+    }
+  };
+
   if(load){
     return (<p> We are loading the Nearby events for You </p>)
   }
