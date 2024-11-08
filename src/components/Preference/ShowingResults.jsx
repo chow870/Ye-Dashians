@@ -36,7 +36,7 @@ export default function ShowingResults() {
     
         othersOption.forEach((element) => {
           element.result.forEach((item) => {
-            if (Found) return; // Stop inner loop if match found
+            if (Found) return; 
             if (item.place_id === friendSuggestedIds) {
               setSuggested((prev) => {
                 Found = true;
