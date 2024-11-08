@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const EventsSchema = new mongoose.Schema({
   locationCoordinates: {
-    type:{},
-    default:{},
-    required: true,
+    
+      type: Object,
+      default: {},
+      required: true,
   },
   locationName: {
     type: String,

@@ -214,10 +214,10 @@ useEffect(() => {
         console.log("The midpoint calculated is ", midpoint)
         let searchLat = midpoint.lat;
         let searchLng = midpoint.lng;
-        if(Object.keys(eventDetails).length>0){
+        if(eventDetails.length>0){
             console.log("Inside the eventDetails :  ", eventDetails)
-            searchLat = eventDetails.locationCoordinates.lat;
-            searchLng = eventDetails.locationCoordinates.lng;
+            searchLat = eventDetails[0].locationCoordinates.lat;
+            searchLng = eventDetails[0].locationCoordinates.lng;
         }
        
         try {

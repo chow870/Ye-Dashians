@@ -41,7 +41,7 @@ function LobbiesCard(props) {
     const [guestId, setGuestId] = useState('')
     const [loading , setLoading] = useState(false);
     const [venueCoords , setVenueCoords] = useState(null);
-    const [eventDetails,setEventDetails]= useState({});
+    const [eventDetails,setEventDetails]= useState([]);
     const navigate = useNavigate()
 
 
@@ -136,15 +136,6 @@ function LobbiesCard(props) {
             }
         })
     }
-
-    // async function handleDeletePrefernce(slotId)
-    // {
-    //     try {
-    //         const res  = await 
-    //     } catch (error) {
-
-    //     }
-    // }
 
     const deleteEverything = async () => {
         const deleteLobby = fetch(`/api/v1/lobby/delete?slotId=${lobbyId}`, {

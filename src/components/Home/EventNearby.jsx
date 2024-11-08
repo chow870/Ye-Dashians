@@ -78,7 +78,11 @@ function EventSearchForm() {
                   <button >Book The Seats !!!</button>
                   <button
                   onClick={()=>{
-                    navigate('/createlobby',)
+                    navigate('/createlobby', {
+                      state: {
+                          eventDetails:[event]
+                      }
+                  })
                   }} 
                   > Share And Plan It With your Friend </button>
                   </>
