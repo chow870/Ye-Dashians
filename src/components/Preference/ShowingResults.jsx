@@ -36,7 +36,7 @@ export default function ShowingResults() {
     
         othersOption.forEach((element) => {
           element.result.forEach((item) => {
-            if (Found) return; // Stop inner loop if match found
+            if (Found) return; 
             if (item.place_id === friendSuggestedIds) {
               setSuggested((prev) => {
                 Found = true;
@@ -382,7 +382,7 @@ export default function ShowingResults() {
         </div>
       </div>
 
-      {/* Right Side: Chat */}
+      {/* Right Side: Chat
       <div className="w-2/5 p-4 bg-gray-800 text-white rounded-lg flex flex-col gap-4">
         <h3 className="font-semibold text-gray-300 mb-2">Chat</h3>
         <div className="flex flex-col gap-3 overflow-y-auto h-full">
@@ -410,6 +410,60 @@ export default function ShowingResults() {
           <button
             type="submit"
             disabled={socketLoading}
+            className="px-4 py-2 bg-blue-600 rounded-lg text-white"
+          >
+            Send
+          </button>
+        </form>
+      </div> */}
+      {/* Right Side: Chat */}
+      <div className="w-2/5 p-4 bg-gray-800 text-white rounded-lg flex flex-col gap-4 mt-4">
+        <h3 className="font-semibold text-gray-300 mb-2">Chat</h3>
+        <div className="flex flex-col gap-3 overflow-y-auto h-full">
+        {messages.map((payload, index) => {
+                  return (
+                      payload.suggestion ? (
+                          payload.suggestor === myId ? (
+                              <p>
+                                  <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                      You have suggested {payload.suggestionname}
+                                  </span>
+                              </p>
+                          ) : (
+                              <p>
+                                  <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                      Your friend has suggested {payload.suggestionname}
+                                  </span>
+                              </p>
+                          )
+                      ) : (
+                          <p key={index}>
+                              {payload.sender === myId ? (
+                                  <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                      You:
+                                  </span>
+                              ) : (
+                                  <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+                                      Your friend:
+                                  </span>
+                              )}
+                              <span>{payload.message}</span>
+                          </p>
+                      )
+                  );
+              })}
+        </div>
+        <form onSubmit={handleSubmit2} className="mt-auto flex items-center gap-2">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Enter something..."
+            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+          />
+          <button
+            type="submit"
+            disabled={socketLoading && inputValue==""}
             className="px-4 py-2 bg-blue-600 rounded-lg text-white"
           >
             Send
