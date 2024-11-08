@@ -58,7 +58,7 @@ export default function MoreDetailsCard() {
     return (
         <div className="flex h-screen bg-black text-gray-200">
             <div className="w-1/2 p-6 flex items-center justify-center">
-                <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+                <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w">
                     <MapWithRoute myLocation={mylocation} lat={item.geometry.location.lat} lng={item.geometry.location.lng} />
                 </LoadScript>
             </div>

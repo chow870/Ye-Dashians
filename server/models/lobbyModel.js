@@ -28,9 +28,9 @@ const lobbySchema = mongoose.Schema({
         type: Date,
         default: null,
       },
-      eventDetails :{
-        type:{},
-        default:{}
+      eventDetails: {
+        type: Array,
+        default: []
       }
 });
 const lobbyModel = mongoose.model('userModel', lobbySchema);
