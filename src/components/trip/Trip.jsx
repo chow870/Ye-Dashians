@@ -64,7 +64,7 @@ function Trip() {
                     (error) => console.log("Unable to retrieve location", error),
                     { enableHighAccuracy: true, timeout: 100, maximumAge: 0 }
                 );
-            }, 15000);
+            }, 10000);
             return () => clearInterval(intervalId);
         } else {
             console.log("Geolocation not supported");

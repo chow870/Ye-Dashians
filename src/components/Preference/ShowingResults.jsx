@@ -257,35 +257,48 @@ export default function ShowingResults() {
     if (loading) {
         return (<h1>We are trying our best to give you the best suggestions...</h1>);
     }
+    console.log(filteredCommonOptions)
 
-    return (
-      <div className="flex h-screen">
-          <div className="flex flex-col gap-5 w-3/5 p-5 overflow-y-auto">
-              <div className="flex items-center gap-4">
-                  <label className="text-gray-600 font-medium">Sort by:</label>
-                  <select value={sortOption} onChange={handleSortChange} className="px-3 py-2 border border-gray-300 rounded-lg">
-                      <option value="rating">Rating (High to Low)</option>
-                      <option value="distance">Distance (Closest)</option>
-                  </select>
 
-                  <label className="text-gray-600 font-medium">Filter by Type:</label>
-                  <select value={filterType} onChange={handleFilterChange} className="px-3 py-2 border border-gray-300 rounded-lg">
-                      <option value="">All</option>
-                      <option value="cafe">Cafe</option>
-                      <option value="bars">Bars</option>
-                      <option value="restaurant">Restaurant</option>
-                      <option value="park">Park</option>
-                      <option value="bakery">Bakery</option>
-                  </select>
-              </div>
+   
+  return (
+    <div className="flex h-screen bg-black text-white">
+      {/* Left Side: Options */}
+      <div className="flex flex-col w-3/5 p-5 gap-6">
+        <div className="flex items-center gap-4">
+          <label className="text-gray-300 font-medium">Sort by:</label>
+          <select
+            value={sortOption}
+            onChange={handleSortChange}
+            className="px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
+          >
+            <option value="rating">Rating (High to Low)</option>
+            <option value="distance">Distance (Closest)</option>
+          </select>
 
-              <div className="bg-gray-100 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-4">Common Options</h3>
-                  {filteredCommonOptions.length > 0 ? (
+          <label className="text-gray-300 font-medium">Filter by Type:</label>
+          <select
+            value={filterType}
+            onChange={handleFilterChange}
+            className="px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
+          >
+            <option value="">All</option>
+            <option value="cafe">Cafe</option>
+            <option value="bars">Bars</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="park">Park</option>
+            <option value="bakery">Bakery</option>
+          </select>
+        </div>
+
+        {/* Common Options */}
+        <div className="bg-gray-100 p-4 rounded-lg">
+                 <h3 className="text-lg font-semibold mb-4 text-stone-950">Common Options</h3>
+                   {filteredCommonOptions.length > 0 ? (
                       <div className="flex gap-4 overflow-x-auto">
                           {filteredCommonOptions.map((element, index) => (
                               element.result.map((item, itemIndex) => (
-                                  <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow">
+                                  <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow text-stone-950	">
                                       <p className="font-bold">Name: <span className="font-normal">{item.name || 'N/A'}</span></p>
                                       <p className="font-bold">Rating: <span className="font-normal">{item.rating || 'N/A'}</span></p>
                                       <p className="font-bold">Distance (You): <span className="font-normal">{item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
@@ -304,31 +317,276 @@ export default function ShowingResults() {
                           ))}
                       </div>
                   ) : (
-                      <h1 className="text-lg font-medium text-gray-500">Nothing to show</h1>
+                      <h1 className="text-lg font-medium text-stone-950	">Nothing to show</h1>
                   )}
               </div>
 
-              <div className="bg-gray-200 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-4">My Options</h3>
-                  {filteredMyOptions.length > 0 ? (
+        {/* My Options */}
+        <div className="bg-gray-900 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-300">My Options</h3>
+          {/* Render my options */}
+          {filteredMyOptions.length > 0 ? (
                       <div className="flex gap-4 overflow-x-auto">
                           {filteredMyOptions.map((element, index) => (
                               element.result.map((item, itemIndex) => (
-                                  <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow">
-                                      <p className="font-bold">Name: <span className="font-normal">{item.name}</span></p>
-                                      <p className="font-bold">Rating: <span className="font-normal">{item.rating}</span></p>
-                                      <p className="font-bold">Distance: <span className="font-normal">{item.distance}</span></p>
-                                      <button onClick={() => HandlerNavigateMoreDetailsPage(item)} className="bg-green-500 text-white px-4 py-2 mt-3 rounded-lg">More Details</button>
-                                  </div>
+                                <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow text-stone-950	" >
+                                <p className="font-bold">Name: <span className="font-normal">{item.name || 'N/A'}</span></p>
+                                <p className="font-bold">Rating: <span className="font-normal">{item.rating || 'N/A'}</span></p>
+                                <p className="font-bold">Distance (You): <span className="font-normal">{item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+                                <p className="font-bold">Distance (Your Partner): <span className="font-normal">{item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+                                <p className="font-bold">Open Now: <span className="font-normal">{item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</span></p>
+                                <p className="font-bold">Tags: <span className="font-normal">{item.tags?.join(', ') || 'N/A'}</span></p>
+                                <p className="font-bold">Address: <span className="font-normal">{item.additionalDetails.result.formatted_address || 'N/A'}</span></p>
+                                <p className="font-bold">Phone Number: <span className="font-normal">{item.additionalDetails.result.formatted_phone_number || 'N/A'}</span></p>
+                                <p className="font-bold">Serves Dinner: <span className="font-normal">{item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</span></p>
+                                <p className="font-bold">Delivery: <span className="font-normal">{item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</span></p>
+                                <p className="font-bold">Takeout: <span className="font-normal">{item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</span></p>
+                                <button onClick={() => suggest(item.place_id, item.name)} className="bg-blue-500 text-white px-4 py-2 mt-3 rounded-lg">Suggest Your Partner</button>
+                                <button onClick={() => HandlerNavigateMoreDetailsPage(item)} className="bg-green-500 text-white px-4 py-2 mt-3 rounded-lg">More Details</button>
+                            </div>
                               ))
                           ))}
                       </div>
                   ) : (
-                      <h1 className="text-lg font-medium text-gray-500">No options available</h1>
+                      <h1 className="text-lg font-medium text-stone-950	">No options available</h1>
                   )}
-              </div>
-          </div>
+        </div>
+
+        {/* Suggested Options */}
+        <div className="bg-gray-900 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-white	">Suggested Options</h3>
+          {/* Render suggested options */}
+          {suggested.length == 0 ?  <></>:
+          suggested.map((item,index) => (
+                                        <div key={index} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px',color:'black' }}>
+                                        <p><strong>Name:</strong> {item.name || 'N/A'}</p>
+                                        <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
+                                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
+                                        <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
+                                        <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>
+                                        <p><strong>Phone Number:</strong> {item.additionalDetails.result.formatted_phone_number || 'N/A'}</p>
+                                        <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
+                                        <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
+                                        <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
+                                        <button onClick={() => finalize(item.place_id, item.name,item.geometry.location)}> 
+                                                  Finalize Your Partner
+                                                </button>
+                                                <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+                                                More Details
+                                                </button>
+                                    </div>     
+                            ))
+                        }
+        </div>
       </div>
+
+      {/* Right Side: Chat */}
+      <div className="w-2/5 p-4 bg-gray-800 text-white rounded-lg flex flex-col gap-4">
+        <h3 className="font-semibold text-gray-300 mb-2">Chat</h3>
+        <div className="flex flex-col gap-3 overflow-y-auto h-full">
+          {messages.map((payload, index) => (
+            <p key={index} className="flex items-center gap-2">
+              <span
+                className={`${
+                  payload.sender === myId ? 'bg-green-500' : 'bg-blue-500'
+                } text-sm font-semibold px-2 py-1 rounded-full`}
+              >
+                {payload.sender === myId ? 'You:' : 'Your friend:'}
+              </span>
+              <span>{payload.message}</span>
+            </p>
+          ))}
+        </div>
+        <form onSubmit={handleSubmit2} className="mt-auto flex items-center gap-2">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Enter something..."
+            className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white"
+          />
+          <button
+            type="submit"
+            disabled={socketLoading}
+            className="px-4 py-2 bg-blue-600 rounded-lg text-white"
+          >
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
   );
-}
+};
+
+
+
+
+//     return (
+//       <div className="flex h-screen">
+//           <div className="flex flex-col gap-5 w-3/5 p-5 overflow-y-auto">
+//               <div className="flex items-center gap-4">
+//                   <label className="text-gray-600 font-medium">Sort by:</label>
+//                   <select value={sortOption} onChange={handleSortChange} className="px-3 py-2 border border-gray-300 rounded-lg">
+//                       <option value="rating">Rating (High to Low)</option>
+//                       <option value="distance">Distance (Closest)</option>
+//                   </select>
+
+//                   <label className="text-gray-600 font-medium">Filter by Type:</label>
+//                   <select value={filterType} onChange={handleFilterChange} className="px-3 py-2 border border-gray-300 rounded-lg">
+//                       <option value="">All</option>
+//                       <option value="cafe">Cafe</option>
+//                       <option value="bars">Bars</option>
+//                       <option value="restaurant">Restaurant</option>
+//                       <option value="park">Park</option>
+//                       <option value="bakery">Bakery</option>
+//                   </select>
+//               </div>
+
+//               <div className="bg-gray-100 p-4 rounded-lg">
+//                   <h3 className="text-lg font-semibold mb-4">Common Options</h3>
+//                   {filteredCommonOptions.length > 0 ? (
+//                       <div className="flex gap-4 overflow-x-auto">
+//                           {filteredCommonOptions.map((element, index) => (
+//                               element.result.map((item, itemIndex) => (
+//                                   <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow">
+//                                       <p className="font-bold">Name: <span className="font-normal">{item.name || 'N/A'}</span></p>
+//                                       <p className="font-bold">Rating: <span className="font-normal">{item.rating || 'N/A'}</span></p>
+//                                       <p className="font-bold">Distance (You): <span className="font-normal">{item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+//                                       <p className="font-bold">Distance (Your Partner): <span className="font-normal">{item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+//                                       <p className="font-bold">Open Now: <span className="font-normal">{item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</span></p>
+//                                       <p className="font-bold">Tags: <span className="font-normal">{item.tags?.join(', ') || 'N/A'}</span></p>
+//                                       <p className="font-bold">Address: <span className="font-normal">{item.additionalDetails.result.formatted_address || 'N/A'}</span></p>
+//                                       <p className="font-bold">Phone Number: <span className="font-normal">{item.additionalDetails.result.formatted_phone_number || 'N/A'}</span></p>
+//                                       <p className="font-bold">Serves Dinner: <span className="font-normal">{item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</span></p>
+//                                       <p className="font-bold">Delivery: <span className="font-normal">{item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</span></p>
+//                                       <p className="font-bold">Takeout: <span className="font-normal">{item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</span></p>
+//                                       <button onClick={() => suggest(item.place_id, item.name)} className="bg-blue-500 text-white px-4 py-2 mt-3 rounded-lg">Suggest Your Partner</button>
+//                                       <button onClick={() => HandlerNavigateMoreDetailsPage(item)} className="bg-green-500 text-white px-4 py-2 mt-3 rounded-lg">More Details</button>
+//                                   </div>
+//                               ))
+//                           ))}
+//                       </div>
+//                   ) : (
+//                       <h1 className="text-lg font-medium text-gray-500">Nothing to show</h1>
+//                   )}
+//               </div>
+
+//               <div className="bg-gray-200 p-4 rounded-lg">
+//                   <h3 className="text-lg font-semibold mb-4">My Options</h3>
+//                   {filteredMyOptions.length > 0 ? (
+//                       <div className="flex gap-4 overflow-x-auto">
+//                           {filteredMyOptions.map((element, index) => (
+//                               element.result.map((item, itemIndex) => (
+//                                 <div key={`${index}-${itemIndex}`} className="bg-white p-4 rounded-lg min-w-[400px] shadow">
+//                                 <p className="font-bold">Name: <span className="font-normal">{item.name || 'N/A'}</span></p>
+//                                 <p className="font-bold">Rating: <span className="font-normal">{item.rating || 'N/A'}</span></p>
+//                                 <p className="font-bold">Distance (You): <span className="font-normal">{item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+//                                 <p className="font-bold">Distance (Your Partner): <span className="font-normal">{item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</span></p>
+//                                 <p className="font-bold">Open Now: <span className="font-normal">{item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</span></p>
+//                                 <p className="font-bold">Tags: <span className="font-normal">{item.tags?.join(', ') || 'N/A'}</span></p>
+//                                 <p className="font-bold">Address: <span className="font-normal">{item.additionalDetails.result.formatted_address || 'N/A'}</span></p>
+//                                 <p className="font-bold">Phone Number: <span className="font-normal">{item.additionalDetails.result.formatted_phone_number || 'N/A'}</span></p>
+//                                 <p className="font-bold">Serves Dinner: <span className="font-normal">{item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</span></p>
+//                                 <p className="font-bold">Delivery: <span className="font-normal">{item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</span></p>
+//                                 <p className="font-bold">Takeout: <span className="font-normal">{item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</span></p>
+//                                 <button onClick={() => suggest(item.place_id, item.name)} className="bg-blue-500 text-white px-4 py-2 mt-3 rounded-lg">Suggest Your Partner</button>
+//                                 <button onClick={() => HandlerNavigateMoreDetailsPage(item)} className="bg-green-500 text-white px-4 py-2 mt-3 rounded-lg">More Details</button>
+//                             </div>
+//                               ))
+//                           ))}
+//                       </div>
+//                   ) : (
+//                       <h1 className="text-lg font-medium text-gray-500">No options available</h1>
+//                   )}
+//               </div>
+//               <>
+//               {suggested.map((item,index) => (
+//                                         <div key={index} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px' }}>
+//                                         <p><strong>Name:</strong> {item.name || 'N/A'}</p>
+//                                         <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
+//                                         <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+//                                         <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+//                                         <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
+//                                         <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
+//                                         <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>
+//                                         <p><strong>Phone Number:</strong> {item.additionalDetails.result.formatted_phone_number || 'N/A'}</p>
+//                                         <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
+//                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
+//                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
+//                                         <button onClick={() => finalize(item.place_id, item.name,item.geometry.location)}> 
+//                                                   Finalize Your Partner
+//                                                 </button>
+//                                                 <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+//   More Details
+// </button>
+//                                     </div>     
+//                             ))
+//                         }
+//                     </div>
+//                 </div>
+
+//             </div>
+
+//             <div style={{
+//                 flex: '0 0 40%',
+//                 display: 'flex',
+//                 justifyContent: 'center',
+//                 alignItems: 'center'
+//             }}></div>
+//               </>
+
+              
+//           </div>
+//           {/* the chat section */}
+//           <div className="w-3/5 bg-gray-200 p-4 rounded-lg" style={{ minHeight: '500px' }}>
+//           <h3 className="font-semibold text-gray-700 mb-2">Chat</h3>
+//           <form onSubmit={handleSubmit2}>
+//               {messages.map((payload, index) => {
+//                   return (
+//                       payload.suggestion ? (
+//                           payload.suggestor === myId ? (
+//                               <p>
+//                                   <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+//                                       You have suggested {payload.suggestionname}
+//                                   </span>
+//                               </p>
+//                           ) : (
+//                               <p>
+//                                   <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+//                                       Your friend has suggested {payload.suggestionname}
+//                                   </span>
+//                               </p>
+//                           )
+//                       ) : (
+//                           <p key={index}>
+//                               {payload.sender === myId ? (
+//                                   <span className="bg-green-200 text-green-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+//                                       You:
+//                                   </span>
+//                               ) : (
+//                                   <span className="bg-blue-200 text-blue-800 text-sm font-semibold px-2 py-1 rounded-full mr-2">
+//                                       Your friend:
+//                                   </span>
+//                               )}
+//                               <span>{payload.message}</span>
+//                           </p>
+//                       )
+//                   );
+//               })}
+//               <input
+//                   type="text"
+//                   value={inputValue}
+//                   onChange={(e) => setInputValue(e.target.value)} // Update state on input change
+//                   placeholder="Enter something..."
+//               />
+//               <button type="submit" disabled={socketLoading}>Submit</button>
+//           </form>
+//       </div>
+//   </div>
+// </div>
+//       </div>
+//   );
+
 

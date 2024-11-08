@@ -10,7 +10,8 @@ function CreateLobby() {
         return state?.auth?.user?.uid
     })
     const location = useLocation();
-    const {eventDetails} = location.state||{};
+    const {eventDetails} = location.state||[];
+    console.log(eventDetails);
     const handleButtonClick = async (e) => {
         try {
             setLoading(true);
