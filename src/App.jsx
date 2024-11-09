@@ -18,9 +18,14 @@ import PreferenceMatching from './components/Preference/PreferenceMatching';
 import Trip from './components/trip/Trip'
 import MoreDetailsCard from './components/Preference/MoreDetailsCard';
 import { useSelector } from 'react-redux';
-import HomePage from './components/Admin/HomePage';
+import AdminHomePage from './components/Admin/AdminHomePage';
+import LandingPage from './components/LandingPage';
+import UserHomePage from './components/UserHomePage';
 function App() {
   const [count, setCount] = useState(0)
+  const state = useSelector(state=>{
+    return state;
+  })
   const isAdmin = useSelector(state=>{
     return state.auth.isAdmin;
   })
@@ -29,20 +34,20 @@ function App() {
     <>
     <Navbar/>
       <Routes>
-          <Route path='/' element={isAdmin?<HomePage/>:<SignUp/>} />
+      <Route path='/' element={state.auth.user?(state.auth.isAdmin?<AdminHomePage/>:<UserHomePage/>):<LandingPage/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
-          <Route path='/home' element={isAdmin?<HomePage/>:<MapWrapper/>} />
-          <Route path='/createlobby' element={isAdmin?<HomePage/>:<CreateLobby/>} />
-          <Route path='/trip' element={isAdmin?<HomePage/>:<Trip/>} />
-          <Route path='/joinlobby' element={isAdmin?<HomePage/>:<JoinLobby/>} />
-          <Route path='/showlobbies' element={isAdmin?<HomePage/>:<Lobbies/>} /> 
-          <Route path = '/myLobby/:lobbyId' element = {isAdmin?<HomePage/>:<Lobby/>} />
-          <Route path='/preference' element={isAdmin?<HomePage/>:<MainPreference/>} >
-              <Route path ='form' element={isAdmin?<HomePage/>:<PreferenceForm/>}/>
-              <Route path ='matching' element={isAdmin?<HomePage/>:<PreferenceMatching/>}/>
-              <Route path ='results' element={isAdmin?<HomePage/>:<ShowingResults/>}/>
-              <Route path ='moredetails' element={isAdmin?<HomePage/>:<MoreDetailsCard/>}/>
+          <Route path='/home' element={isAdmin?<AdminHomePage/>:<MapWrapper/>} />
+          <Route path='/createlobby' element={isAdmin?<AdminHomePage/>:<CreateLobby/>} />
+          <Route path='/trip' element={isAdmin?<AdminHomePage/>:<Trip/>} />
+          <Route path='/joinlobby' element={isAdmin?<AdminHomePage/>:<JoinLobby/>} />
+          <Route path='/showlobbies' element={isAdmin?<AdminHomePage/>:<Lobbies/>} /> 
+          <Route path = '/myLobby/:lobbyId' element = {isAdmin?<AdminHomePage/>:<Lobby/>} />
+          <Route path='/preference' element={isAdmin?<AdminHomePage/>:<MainPreference/>} >
+              <Route path ='form' element={isAdmin?<AdminHomePage/>:<PreferenceForm/>}/>
+              <Route path ='matching' element={isAdmin?<AdminHomePage/>:<PreferenceMatching/>}/>
+              <Route path ='results' element={isAdmin?<AdminHomePage/>:<ShowingResults/>}/>
+              <Route path ='moredetails' element={isAdmin?<AdminHomePage/>:<MoreDetailsCard/>}/>
           </Route>
 
           
