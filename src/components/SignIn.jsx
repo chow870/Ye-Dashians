@@ -62,7 +62,10 @@ function SignIn() {
             const user = result.user;
             setMyUser(user);
 
-            const newres = await database.users.doc(user.uid).set({
+            const res = await database.users.doc(user.uid).get();
+            if(!res.exists)
+            {
+                 const newres = await database.users.doc(user.uid).set({
                 email: user.email,
                 userId: user.uid,
                 fullname: user.displayName,
@@ -72,6 +75,8 @@ function SignIn() {
                 lobbies: [],
                 isAdmin : false
             });
+            }
+           
 
 
             dispatch(setUser(user));
@@ -96,6 +101,9 @@ function SignIn() {
             const user = result.user;
             setMyUser(user);
 
+            const res = await database.users.doc(user.uid).get();
+            if(!res.exists)
+            {
             const newres = await database.users.doc(user.uid).set({
                 userId: user.uid,
                 fullname: user.uid,
@@ -105,7 +113,7 @@ function SignIn() {
                 lobbies: [],
                 isAdmin : false
             });
-
+        }
 
             dispatch(setUser(user));
             dispatch(setAdminFalse());
