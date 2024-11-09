@@ -4,19 +4,21 @@ const mongoose = require('mongoose');
 const lobbyRouter = require('./routes/lobbyRoute')
 const PreferenceFormSubmitRouter = require('./routes/preferenceRoute');
 const cors = require('cors');
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 const NearbySearchRouter = require('./routes/MapsRoutes/NearbySearch');
 const PlaceIdSearchRouter = require('./routes/MapsRoutes/PlaceIdSearch');
 const FetchCoordinatesRouter = require('./routes/FetchCoordinates');
 const PreferenceMathcingRouter = require('./routes/PreferenceMatchingRoutes');
 const FetchOtherPreferenceRouter = require('./routes/FetchOtherPreference');
 const reviewRouter = require('./routes/reviewRoutes')
-const { createServer } = require("http");
-const { Server } = require("socket.io");
 const WeatherSearchRouter = require('./routes/MapsRoutes/Aqi');
 const FetchReviewRouter = require('./routes/FetchReviewsRoute');
 const PictureSearchRouter = require('./routes/MapsRoutes/FetchPictures');
 const FetchEventsRouter = require('./routes/FetchEvents');
 const EventsPurchasedRouter = require('./routes/EventsPurchased');
+const CreateNewEventRouter = require('./routes/CreateNewEvent');
+const DeleteEventRouter = require('./routes/DeleteEvents');
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -67,5 +69,8 @@ app.use('/api/v1/fetchOthersPreference',FetchOtherPreferenceRouter );
 app.use('/maps/v1/WatherSearch',WeatherSearchRouter);
 app.use('/api/v1/fetchReviews',FetchReviewRouter );
 app.use('/maps/v1/photo',PictureSearchRouter);
-app.use('/api/v1/fetchEvents',FetchEventsRouter)
-app.use('/api/v1/EventsPurchased',EventsPurchasedRouter)
+app.use('/api/v1/fetchEvents',FetchEventsRouter);
+app.use('/api/v1/EventsPurchased',EventsPurchasedRouter);
+app.use('/api/v1/createNewEvent',CreateNewEventRouter);
+app.use('/api/v1/deleteEvent',DeleteEventRouter);
+app.use('/api/v1/fetchAdminEvents',DeleteEventRouter);

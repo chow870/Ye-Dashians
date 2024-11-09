@@ -14,7 +14,7 @@ export default function ShowingResults() {
     const socket = io.connect('http://localhost:5000');
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
-    const [friendSuggestedIds, setFriendSuggestedIds] = useState() // suggested ids.
+    const [friendSuggestedIds, setFriendSuggestedIds] = useState() // suggested ids. ----> @ash saying to add ""
     const [suggested, setSuggested] =useState([])
     const navigate = useNavigate();
     const {
