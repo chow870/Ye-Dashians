@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { isLoaded } from 'react-redux-firebase'
 // import { connect } from "react-redux";
 // import * as authActions from '../../actions/authActions';
-import { signup } from "../redux/slices/authSlice";
+import { setAdminTrue, signup } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from '@mui/material/Card';
@@ -49,7 +49,11 @@ function SignUp(props) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [adress, setAdress] = useState('')
-
+  const [iAmAdmin , setIAmAdmin] = useState('');
+  const [phoneNo , setPhoneNo] = useState('');
+  const [OfficeAdress , setOfficeAdress] = useState('');
+  const [website , setWebsite] = useState('');
+  
 
 
   // dispatch(signup({ email, password }));
@@ -65,7 +69,7 @@ function SignUp(props) {
     try {
         setError('');
         setLoading(true);
-        let userObj = await dispatch(signup({ email, password }));
+        let userObj = await dispatch(signup({ email, password , isAdmin:false}));
         if(!userObj.payload.uid)
         {
           // console.log(userObj.payload)
@@ -108,7 +112,8 @@ function SignUp(props) {
                     profileUrl: url,
                     permLoc : adress,
                     curLoc : adress,
-                    lobbies : []
+                    lobbies : [],
+                    isAdmin : false
                 });
             });
             setLoading(false);
@@ -126,7 +131,41 @@ function SignUp(props) {
 
 
 
-
+const handleSignup2 = async() => {
+  try {
+        setError('');
+        setLoading(true);
+        let userObj = await dispatch(signup({ email, password}));
+        if(!userObj.payload.uid)
+        {
+          // console.log(userObj.payload)
+          setError(userObj.payload)
+          setTimeout(() => {
+            setError('')
+        }, 4000);
+        setLoading(false)
+          return;
+        }
+        let uid = userObj.payload.uid;
+        database.admins.doc(uid).set({
+          email: email,
+          userId: uid,
+          fullname: fullname,
+          isAdmin : true,
+          phoneno: phoneNo,
+          officeadress : OfficeAdress,
+          mywebsite : website
+      });
+      dispatch(setAdminTrue());
+      setLoading(false);
+  } catch (error) {
+    setError(error.message);
+        setTimeout(() => {
+            setError('');
+        }, 4000);
+        setLoading(false);
+  }
+}
 
 
 
@@ -148,8 +187,9 @@ function SignUp(props) {
     <>
       {/* To save from multiple request */}
       {/* {!isLoaded(props.auth)?<></>:<>*/}
-      {loads ? <h4 style={{ marginTop: '10%', height: '52vh' }}>Patiently Wait...we are resgistering you in</h4> :
-        <div>
+      {loads ? <h4 style={{ marginTop: '10%', height: '52vh' }}>Patiently Wait...we are resgistering you in</h4> : <div>{
+      !iAmAdmin?
+        <div className="flex justify-center">
           <div className='signupWrapper'>
             <div className='signupCard'>
               <Card sx={{ width: '25vw' }} variant="outlined">
@@ -207,6 +247,73 @@ function SignUp(props) {
             </div>
           </div>
         </div>
+
+:
+<div className="flex justify-center">
+<div className='signupWrapper'>
+  <div className='signupCard'>
+    <Card sx={{ width: '25vw' }} variant="outlined">
+
+
+      <CardContent sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
+        textAlign: 'center'
+      }}> <CardActionArea >
+          <Typography component="div">
+            admin
+          </Typography></CardActionArea>
+        <TextField id="outlined-basic" label="Email" variant="outlined" margin="normal" size="small" value={email} onChange={(e) => {
+          setEmail(e.target.value);
+        }} />
+        <TextField id="outlined-basic" label="Password" variant="outlined" margin="normal" size="small" value={password} onChange={(e) => {
+          setPassword(e.target.value);
+        }} />
+        <TextField id="outlined-basic" label="Full-Name" variant="outlined" margin="normal" size="small" value={fullname} onChange={(e) => {
+          setFullname(e.target.value);
+        }} />
+        <TextField id="outlined-basic" label="Phone-No" variant="outlined" margin="normal" size="small" value={phoneNo} onChange={(e) => {
+          setPhoneNo(e.target.value);
+        }} />
+        <TextField id="outlined-basic" label="Office - Address" variant="outlined" margin="normal" size="small" value={OfficeAdress} onChange={(e) => {
+          setOfficeAdress(e.target.value);
+        }} />
+        <TextField id="outlined-basic" label="Website" variant="outlined" margin="normal" size="small" value={website} onChange={(e) => {
+          setWebsite(e.target.value); 
+        }} />
+        {/* the following i required becuase somethimes the error is in object type . i need a string type error here  */}
+        {error && typeof error === 'string' && <Alert severity="error">{error}</Alert>}
+        {/* now i want ki neeche waala button will be disabled when the page is loading */}
+        <Button color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' disabled={loading} onClick={handleSignup2}>
+          SignUp
+        </Button>
+        <Typography component="div" variant='subtitle2' sx={{ color: 'grey', }}>
+          By signing up you agree to our "hamare yaha aisa hi hota hai
+        </Typography>
+      </CardContent>
+    </Card>
+    <Card sx={{ width: '25vw' }} variant="outlined" margin="normal">
+      <CardContent sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
+        textAlign: 'center'
+      }} component="div">
+        <Typography component="div" variant='subtitle2' sx={{ color: 'grey', }}>
+          Already have an acccount? <Link to=''>LogIn</Link>
+        </Typography></CardContent>
+    </Card>
+  </div>
+</div>
+</div>
+}
+<button onClick={()=>{
+  setIAmAdmin(!iAmAdmin)
+}}>{iAmAdmin?"i am user":"i am an admin"}</button>
+</div>
       }
     </>
   );

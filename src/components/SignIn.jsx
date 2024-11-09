@@ -1,5 +1,5 @@
 import '../index.css'
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -13,19 +13,23 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { login } from '../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
-
+import { googleProvider , githubProvider} from '../firebase';
+import { auth } from '../firebase';
+import { setUser } from '../redux/slices/authSlice';
+import { database } from '../firebase';
 function SignIn() {
     const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [myUser, setMyUser] = useState(null);
     const navigate = useNavigate();
     const handleLogin = async () => {
         try {
             setError('');
             setLoading(true);
-            let res = await dispatch(login({email, password}));
+            let res = await dispatch(login({ email, password }));
             // console.log(res);
             // console.log(user.user);
             setLoading(false);
@@ -40,6 +44,70 @@ function SignIn() {
         }
     }
 
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setError('');
+            setLoading(true);
+            const result = await auth.signInWithPopup(googleProvider);
+            const user = result.user;
+            setMyUser(user);
+
+            const newres = await database.users.doc(user.uid).set({
+                email: user.email,
+                userId: user.uid,
+                fullname: user.displayName,
+                profileUrl: user.photoURL,
+                permLoc: "",
+                curLoc: "",
+                lobbies: [],
+                isAdmin : false
+            });
+
+
+            dispatch(setUser(user));
+            navigate('/');
+            setLoading(false);
+            navigate('/');
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+            setError(error.message);
+            setTimeout(() => setError(''), 4000);
+            setLoading(false);
+        }
+    };
+
+
+    const handleGithubSignIn = async() => {
+        try {
+            setError('');
+            setLoading(true);
+            const result = await auth.signInWithPopup(githubProvider);
+            const user = result.user;
+            setMyUser(user);
+
+            const newres = await database.users.doc(user.uid).set({
+                userId: user.uid,
+                fullname: user.uid,
+                profileUrl: user.photoURL,
+                permLoc: "",
+                curLoc: "",
+                lobbies: [],
+                isAdmin : false
+            });
+
+
+            dispatch(setUser(user));
+            navigate('/');
+            setLoading(false);
+            navigate('/');
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+            setError(error.message);
+            setTimeout(() => setError(''), 4000);
+            setLoading(false);
+        }
+    }
 
     return (
         <div>
@@ -70,6 +138,12 @@ function SignIn() {
                             {error != '' && <Alert severity="error">{error}</Alert>}
                             <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleLogin} disabled={loading}>
                                 Login
+                            </Button>
+                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleGoogleSignIn} disabled={loading}>
+                                Login with google
+                            </Button>
+                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleGithubSignIn} disabled={loading}>
+                                Login with github
                             </Button>
                             <Typography variant='subtitle2' sx={{ color: 'grey', marginTop: '10px' }}>
                                 Password BhulGye?
