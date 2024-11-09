@@ -24,6 +24,7 @@ function App() {
   const isAdmin = useSelector(state=>{
     return state.isAdmin;
   })
+  console.log(isAdmin)
   return (
     <>
     <Navbar/>

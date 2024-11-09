@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react'
 
 function HomePage() {
@@ -50,13 +49,6 @@ function HomePage() {
         {/* here  i will do the traversal */}
         
     </div>
-=======
-import React from 'react'
-
-function HomePage() {
-  return (
-    <div>HomePage</div>
->>>>>>> 182d643e1f568ed34ca86f6ad8df03f2f91cb9de
   )
 }
 
