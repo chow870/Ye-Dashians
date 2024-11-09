@@ -29,7 +29,7 @@ function App() {
   const isAdmin = useSelector(state=>{
     return state.auth.isAdmin;
   })
-  
+  console.log(isAdmin)
   return (
     <>
     <Navbar/>
