@@ -17,28 +17,31 @@ import Lobby from './components/Lobby/Lobby'
 import PreferenceMatching from './components/Preference/PreferenceMatching';
 import Trip from './components/trip/Trip'
 import MoreDetailsCard from './components/Preference/MoreDetailsCard';
-
+import { useSelector } from 'react-redux';
+import HomePage from './components/Admin/HomePage';
 function App() {
   const [count, setCount] = useState(0)
-
+  const isAdmin = useSelector(state=>{
+    return state.isAdmin;
+  })
   return (
     <>
     <Navbar/>
       <Routes>
-          <Route path='/' element={<SignUp/>} />
+          <Route path='/' element={isAdmin?<HomePage/>:<SignUp/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
-          <Route path='/home' element={<MapWrapper/>} />
-          <Route path='/createlobby' element={<CreateLobby/>} />
-          <Route path='/trip' element={<Trip/>} />
-          <Route path='/joinlobby' element={<JoinLobby/>} />
-          <Route path='/showlobbies' element={<Lobbies/>} /> 
-          <Route path = '/myLobby/:lobbyId' element = {<Lobby/>} />
-          <Route path='/preference' element={<MainPreference/>} >
-              <Route path ='form' element={<PreferenceForm/>}/>
-              <Route path ='matching' element={<PreferenceMatching/>}/>
-              <Route path ='results' element={<ShowingResults/>}/>
-              <Route path ='moredetails' element={<MoreDetailsCard/>}/>
+          <Route path='/home' element={isAdmin?<HomePage/>:<MapWrapper/>} />
+          <Route path='/createlobby' element={isAdmin?<HomePage/>:<CreateLobby/>} />
+          <Route path='/trip' element={isAdmin?<HomePage/>:<Trip/>} />
+          <Route path='/joinlobby' element={isAdmin?<HomePage/>:<JoinLobby/>} />
+          <Route path='/showlobbies' element={isAdmin?<HomePage/>:<Lobbies/>} /> 
+          <Route path = '/myLobby/:lobbyId' element = {isAdmin?<HomePage/>:<Lobby/>} />
+          <Route path='/preference' element={isAdmin?<HomePage/>:<MainPreference/>} >
+              <Route path ='form' element={isAdmin?<HomePage/>:<PreferenceForm/>}/>
+              <Route path ='matching' element={isAdmin?<HomePage/>:<PreferenceMatching/>}/>
+              <Route path ='results' element={isAdmin?<HomePage/>:<ShowingResults/>}/>
+              <Route path ='moredetails' element={isAdmin?<HomePage/>:<MoreDetailsCard/>}/>
           </Route>
 
           

@@ -19,10 +19,12 @@ const firebaseConfig = {
 
   const fstore = firebase.firestore();
 export const database = {
-  users : fstore.collection('users')
+  users : fstore.collection('users'),
+  admins : fstore.collection('admins')
 }
 
 export const storage = firebase.storage();
-
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const githubProvider = new firebase.auth.GithubAuthProvider();
 
 

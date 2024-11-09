@@ -14,7 +14,7 @@ export default function ShowingResults() {
     const socket = io.connect('http://localhost:5000');
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
-    const [friendSuggestedIds, setFriendSuggestedIds] = useState() // suggested ids. ----> @ash saying to add ""
+    const [friendSuggestedIds, setFriendSuggestedIds] = useState('') // suggested ids.
     const [suggested, setSuggested] =useState([])
     const navigate = useNavigate();
     const {
@@ -34,24 +34,28 @@ export default function ShowingResults() {
       const MatchSuggestions = (friendSuggestedIds) => {
         let Found = false;
     
-        othersOption.forEach((element) => {
-          element.result.forEach((item) => {
-            if (Found) return; 
+        for (const element of othersOption) {
+          if (Found) break; // Break out if match is found
+    
+          for (const item of element.result) {
             if (item.place_id === friendSuggestedIds) {
               setSuggested((prev) => {
-                Found = true;
+                Found = true; // Set Found to true to stop further iteration
                 return [...prev, item];
               });
+              break; // Break out of inner loop once matched
             }
-          });
-        });
+          }
+        }
       };
     
       // Call the function with friendSuggestedIds
       if (friendSuggestedIds) {
         MatchSuggestions(friendSuggestedIds);
+        console.log("newest",suggested)
       }
     }, [friendSuggestedIds, othersOption, setSuggested]);
+    
     
     useEffect(() => {
         const lobbyId = slotId
@@ -370,10 +374,10 @@ export default function ShowingResults() {
                                         <p><strong>Serves Dinner:</strong> {item.additionalDetails.result.serves_dinner ? 'Yes' : 'No'}</p>
                                         <p><strong>Delivery:</strong> {item.additionalDetails.result.delivery ? 'Available' : 'Not Available'}</p>
                                         <p><strong>Takeout:</strong> {item.additionalDetails.result.takeout ? 'Available' : 'Not Available'}</p>
-                                        <button onClick={() => finalize(item.place_id, item.name,item.geometry.location)}> 
+                                        <button className="bg-blue-500 text-white px-4 py-2 mt-3 rounded-lg" onClick={() => finalize(item.place_id, item.name,item.geometry.location)}> 
                                                   Finalize Your Partner
                                                 </button>
-                                                <button onClick={() => HandlerNavigateMoreDetailsPage(item)}>
+                                                <button className="bg-green-500 text-white px-4 py-2 mt-3 rounded-lg" onClick={() => HandlerNavigateMoreDetailsPage(item)}>
                                                 More Details
                                                 </button>
                                     </div>     

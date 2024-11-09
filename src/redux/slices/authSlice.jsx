@@ -5,6 +5,7 @@ const initialState = {
     user: null,
     loading: false,
     error: null,
+    isAdmin : false
   };
 
 export const login = createAsyncThunk(
@@ -69,6 +70,9 @@ export const signup = createAsyncThunk(
           setLoading(state, action) {
             state.loading = action.payload;
           },
+        setAdminTrue(state,action){
+          state.isAdmin = true;
+        }  
       },
     
     extraReducers : (builder) => {
@@ -104,6 +108,6 @@ export const signup = createAsyncThunk(
     }
   })
 
-  export const {resetAuthState , setLoading , setUser} = authSlice.actions;
+  export const {resetAuthState , setLoading , setUser , setAdminTrue} = authSlice.actions;
 
   export default authSlice.reducer;
