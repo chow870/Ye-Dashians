@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 import AdminHomePage from './components/Admin/AdminHomePage';
 import LandingPage from './components/LandingPage';
 import UserHomePage from './components/UserHomePage';
+import CreateEventForm from './components/Admin/CreateNewEvent';
 function App() {
   const [count, setCount] = useState(0)
   const state = useSelector(state=>{
@@ -38,13 +39,13 @@ function App() {
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/home' element={isAdmin?<AdminHomePage/>:<MapWrapper/>} />
-          <Route path='/createlobby' element={isAdmin?<AdminHomePage/>:<CreateLobby/>} />
+          <Route path='/createlobby' element={isAdmin?<CreateEventForm/>:<CreateLobby/>} />
           <Route path='/trip' element={isAdmin?<AdminHomePage/>:<Trip/>} />
           <Route path='/joinlobby' element={isAdmin?<AdminHomePage/>:<JoinLobby/>} />
           <Route path='/showlobbies' element={isAdmin?<AdminHomePage/>:<Lobbies/>} /> 
           <Route path = '/myLobby/:lobbyId' element = {isAdmin?<AdminHomePage/>:<Lobby/>} />
           <Route path='/preference' element={isAdmin?<AdminHomePage/>:<MainPreference/>} >
-              <Route path ='form' element={isAdmin?<AdminHomePage/>:<PreferenceForm/>}/>
+              <Route path ='form' element={isAdmin?<CreateEventForm/>:<PreferenceForm/>}/>
               <Route path ='matching' element={isAdmin?<AdminHomePage/>:<PreferenceMatching/>}/>
               <Route path ='results' element={isAdmin?<AdminHomePage/>:<ShowingResults/>}/>
               <Route path ='moredetails' element={isAdmin?<AdminHomePage/>:<MoreDetailsCard/>}/>

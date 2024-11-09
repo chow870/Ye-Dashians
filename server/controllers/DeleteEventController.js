@@ -1,5 +1,8 @@
+const EventsModel = require("../models/eventsModel");
+
 const DeleteEvent = async (req, res) => {
     const { id } = req.params;
+    console.log("the id is : ", id)
     try {
       const deletedEvent = await EventsModel.findByIdAndDelete(id);
       if (!deletedEvent) {

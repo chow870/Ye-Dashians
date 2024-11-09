@@ -19,6 +19,7 @@ const FetchEventsRouter = require('./routes/FetchEvents');
 const EventsPurchasedRouter = require('./routes/EventsPurchased');
 const CreateNewEventRouter = require('./routes/CreateNewEvent');
 const DeleteEventRouter = require('./routes/DeleteEvents');
+const FetchAdminEventsRouter = require('./routes/FetchAdminEvents');
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -73,4 +74,4 @@ app.use('/api/v1/fetchEvents',FetchEventsRouter);
 app.use('/api/v1/EventsPurchased',EventsPurchasedRouter);
 app.use('/api/v1/createNewEvent',CreateNewEventRouter);
 app.use('/api/v1/deleteEvent',DeleteEventRouter);
-app.use('/api/v1/fetchAdminEvents',DeleteEventRouter);
+app.use('/api/v1/fetchAdminEvents',FetchAdminEventsRouter);

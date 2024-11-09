@@ -11,7 +11,7 @@ function HomePage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('', {
+        const response = await axios.get('/api/v1/fetchAdminEvents', {
           params: { organiserId }
         });
         setEvents(response.data);
@@ -25,7 +25,7 @@ function HomePage() {
     if (organiserId) {
       fetchEvents();
     }
-    }, [organiserId]);
+    }, []);
 
   
     const handleDeletion = async (eventId) => {
@@ -43,6 +43,7 @@ function HomePage() {
 
         if (loading) return <p>Loading events...</p>;
         if (error) return <p>{error}</p>;
+        console.log(events)
   return (
     <div>HomePage
         {/* here i will show the card prop that will display the username, email, id, phone no, photo */}

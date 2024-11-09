@@ -1,5 +1,8 @@
+const EventsModel = require("../models/eventsModel");
+
 const FetchAdminEvents = async (req, res) => {
     const { organiserId } = req.query;
+    console.log("reached FetchAdminEvents ",organiserId)
     
     if (!organiserId) {
       return res.status(400).json({ message: "organiserId is required" });
