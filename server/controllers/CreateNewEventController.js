@@ -13,6 +13,7 @@ const CreateNewEvent = async (req, res) => {
       date,
       type
     } = req.body;
+    console.log("{reached the console of the CreateNewEvent: ",req.body)
   
     try {
       const newEvent = new EventsModel({

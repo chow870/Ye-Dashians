@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Autocomplete, LoadScript } from '@react-google-maps/api';
 
 const CreateEventForm = () => {
-  const organiserId = useSelector((state) => state.organiserId);
+  const organiserId = useSelector((state) => state.auth.user.uid);
+  const organiserName = useSelector((state)=>state.auth.user.name); // ----> undefined.
+  console.log(organiserName)
+  console.log(organiserId)
   const [currentStep, setCurrentStep] = useState(1);
+  const originRef = useRef(null);
   const [formData, setFormData] = useState({
     locationCoordinates: {},
     locationName: '',
     availableSeats: '',
     pricePerTicket: '',
-    organiserName: '',
     organiserBankDetails: '',
     details: '',
     time: '',
@@ -28,6 +32,19 @@ const CreateEventForm = () => {
     });
   };
 
+  const handleOriginChange = () => {
+    const place = originRef.current.getPlace();
+
+    if (place) {
+        setFormData((prevData) => ({
+            ...prevData,
+            locationName: place.name || '',  // or `place.formatted_address` if you want the full address
+            locationCoordinates: place.geometry
+                ? { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+                : {}
+        }));
+    }
+};
   const handleNext = () => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
@@ -38,10 +55,12 @@ const CreateEventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData)
     try {
       const response = await axios.post('/api/v1/createNewEvent', {
         ...formData,
         organiserId,
+              //  here has to put the organiser name.
       });
       console.log("Event created successfully:", response.data);
       navigate('')
@@ -49,6 +68,7 @@ const CreateEventForm = () => {
       console.error("Error creating event:", error);
     }
   };
+  
 
   return (
     <div className="bg-black text-white min-h-screen flex items-center justify-center p-4">
@@ -60,27 +80,17 @@ const CreateEventForm = () => {
           {currentStep === 1 && (
             <>
               <label className="block mb-4">
-                <span className="text-gray-300">Location Coordinates</span>
-                <input
-                  type="text"
-                  name="locationCoordinates"
-                  value={formData.locationCoordinates}
-                  onChange={handleChange}
-                  className="mt-1 block w-full bg-gray-700 text-white p-2 rounded"
-                  required
-                />
-              </label>
+                <span className="text-gray-300">Location Details </span>
+                      <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" libraries={["places"]}>
+                            <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
+                                <input
+                                    type="text"
+                                    className="w-full p-4 text-lg bg-gray-800 text-gray-100 rounded-md mb-8 border border-gray-700 focus:ring focus:ring-blue-500"
+                                    placeholder="Search Your Current Location"
+                                />
+                            </Autocomplete>
+                        </LoadScript>
 
-              <label className="block mb-4">
-                <span className="text-gray-300">Location Name</span>
-                <input
-                  type="text"
-                  name="locationName"
-                  value={formData.locationName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full bg-gray-700 text-white p-2 rounded"
-                  required
-                />
               </label>
 
               <button type="button" onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 w-full py-2 rounded mt-4">Next</button>

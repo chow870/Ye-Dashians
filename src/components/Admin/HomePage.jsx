@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import CreateEventForm from './CreateNewEvent';
 
 function HomePage() {
 
@@ -47,6 +48,7 @@ function HomePage() {
         {/* here i will show the card prop that will display the username, email, id, phone no, photo */}
         {/* create a new event */}
         {/* here  i will do the traversal */}
+        < CreateEventForm/>
         
     </div>
   )

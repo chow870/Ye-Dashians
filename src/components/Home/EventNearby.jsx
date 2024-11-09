@@ -9,7 +9,7 @@ function EventSearchForm() {
 
   // Available event types
   const typesOptions = ["Music", "Concert", "Meetup", "Festival", "Celebrations", "Events"];
-
+console.log(events)
   // Handle type selection
   const handleTypeChange = (type) => {
     setSelectedTypes((prevSelectedTypes) =>
@@ -162,6 +162,7 @@ function EventSearchForm() {
                   <>
                   <p className="text-green-600 font-bold">Tickets Available</p>
                   <button >Book The Seats !!!</button>
+                  <br/>
                   <button
                   onClick={()=>{
                     navigate('/createlobby', {

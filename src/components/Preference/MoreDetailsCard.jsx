@@ -9,8 +9,11 @@ export default function MoreDetailsCard() {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [currentGoogleReviewIndex, setCurrentGoogleReviewIndex] = useState(0);
     const [currentYeDashiansReviewIndex, setCurrentYeDashiansReviewIndex] = useState(0);
-    const { item, mylocation } = location.state || {};
     const [yeDashiansReview, setYeDashiansReview] = useState(null);
+    const queryParams = new URLSearchParams(location.search);
+    const item = JSON.parse(decodeURIComponent(queryParams.get('item')));
+    const mylocation = JSON.parse(decodeURIComponent(queryParams.get('mylocation')));
+    const destinationLocation = JSON.parse(decodeURIComponent(queryParams.get('destinationLocation')));
 
     useEffect(() => {
         async function fetchReviews() {
