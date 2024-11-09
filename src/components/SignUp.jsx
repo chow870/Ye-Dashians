@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { isLoaded } from 'react-redux-firebase'
 // import { connect } from "react-redux";
 // import * as authActions from '../../actions/authActions';
-import { setAdminTrue, signup } from "../redux/slices/authSlice";
+import { setAdminFalse, setAdminTrue, signup } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from '@mui/material/Card';
@@ -49,7 +49,7 @@ function SignUp(props) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [adress, setAdress] = useState('')
-  const [iAmAdmin , setIAmAdmin] = useState('');
+  const [iAmAdmin , setIAmAdmin] = useState(false);
   const [phoneNo , setPhoneNo] = useState('');
   const [OfficeAdress , setOfficeAdress] = useState('');
   const [website , setWebsite] = useState('');
@@ -69,7 +69,8 @@ function SignUp(props) {
     try {
         setError('');
         setLoading(true);
-        let userObj = await dispatch(signup({ email, password , isAdmin:false}));
+        let userObj = await dispatch(signup({ email, password }));
+        dispatch(setAdminFalse());
         if(!userObj.payload.uid)
         {
           // console.log(userObj.payload)
