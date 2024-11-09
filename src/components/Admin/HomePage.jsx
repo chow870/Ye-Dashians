@@ -1,35 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import CreateEventForm from './CreateNewEvent';
-import { useSelector } from 'react-redux';
 
-function AdminHomePage() {
+function HomePage() {
 
  const [isDeleting,setIsDeleting] = useState(false);
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const organiserId = useSelector((state) => state.auth.user.uid);
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('', {
+          params: { organiserId }
+        });
+        setEvents(response.data);
+      } catch (err) {
+        setError("Error fetching events.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-
-  // useEffect(() => {
-  //   const fetchEvents = async () => {
-  //     try {
-  //       const response = await axios.get('', {
-  //         params: { organiserId }
-  //       });
-  //       setEvents(response.data);
-  //     } catch (err) {
-  //       setError("Error fetching events.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (organiserId) {
-  //     fetchEvents();
-  //   }
-  //   }, [organiserId]);
+    if (organiserId) {
+      fetchEvents();
+    }
+    }, [organiserId]);
 
   
     const handleDeletion = async (eventId) => {
@@ -58,4 +54,4 @@ function AdminHomePage() {
   )
 }
 
-export default AdminHomePage
+export default HomePage

@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import MapWithRoute from './MoreDetailsMap';
+import PlacePhotos from './Cards/PhotoReference';
 
 export default function MoreDetailsCard() {
     const location = useLocation();
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [currentGoogleReviewIndex, setCurrentGoogleReviewIndex] = useState(0);
     const [currentYeDashiansReviewIndex, setCurrentYeDashiansReviewIndex] = useState(0);
-    const { item, mylocation } = location.state || {};
     const [yeDashiansReview, setYeDashiansReview] = useState(null);
+    const queryParams = new URLSearchParams(location.search);
+    const item = JSON.parse(decodeURIComponent(queryParams.get('item')));
+    const mylocation = JSON.parse(decodeURIComponent(queryParams.get('mylocation')));
+    const destinationLocation = JSON.parse(decodeURIComponent(queryParams.get('destinationLocation')));
 
     useEffect(() => {
         async function fetchReviews() {
@@ -66,14 +70,7 @@ export default function MoreDetailsCard() {
                 <h2 className="text-3xl font-bold mb-6">Place Details</h2>
 
                 <div className="space-y-6">
-                    <div className="flex flex-col items-center">
-                        <h3 className="text-xl font-semibold mb-2">Photos</h3>
-                        <img
-                            src={`/maps/v1/photo?photo_reference=${item.additionalDetails.result.photos[currentPhotoIndex].photo_reference}`}
-                            alt="Place"
-                            className="w-full h-64 object-cover rounded-lg shadow-lg"
-                        />
-                    </div>
+                <PlacePhotos photoReferences={item.additionalDetails.result.photos.map(photo => photo.photo_reference)} />
 
                     <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-2">
                         <p><strong>Name:</strong> {item.name || 'N/A'}</p>

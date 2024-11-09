@@ -6,7 +6,7 @@ const EventFetch = async (req, res) => {
       const events = await EventsModel.find({
         type: { $in: types } 
       });
-  
+      console.log(events)
       res.status(200).json(events);
     } catch (error) {
       console.error('Error fetching events:', error);

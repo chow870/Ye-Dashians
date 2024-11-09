@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const EventsSchema = new mongoose.Schema({
   locationCoordinates: {
-    
       type: Object,
       default: {},
       required: true,
@@ -25,11 +24,9 @@ const EventsSchema = new mongoose.Schema({
   },
   organiserName: {
     type: String,
-    required: true,
   },
   organiserBankDetails: {
     type: String,
-    required: true,
   },
   details: {
     type: String,
