@@ -11,7 +11,7 @@ import Alert from '@mui/material/Alert';
 import { TextField } from '@mui/material';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { login } from '../redux/slices/authSlice';
+import { login, setAdminFalse, setAdminTrue} from '../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { googleProvider , githubProvider} from '../firebase';
 import { auth } from '../firebase';
@@ -24,6 +24,7 @@ function SignIn() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [myUser, setMyUser] = useState(null);
+    const [iAmAdmin , setIAmAdmin] = useState(false);
     const navigate = useNavigate();
     const handleLogin = async () => {
         try {
@@ -32,6 +33,14 @@ function SignIn() {
             let res = await dispatch(login({ email, password }));
             // console.log(res);
             // console.log(user.user);
+            if(iAmAdmin)
+            {
+                dispatch(setAdminTrue());
+            }
+            else
+            {
+                dispatch(setAdminFalse());
+            }
             setLoading(false);
             navigate('/')
         } catch (error) {
@@ -66,6 +75,7 @@ function SignIn() {
 
 
             dispatch(setUser(user));
+            dispatch(setAdminFalse());
             navigate('/');
             setLoading(false);
             navigate('/');
@@ -98,7 +108,7 @@ function SignIn() {
 
 
             dispatch(setUser(user));
-            navigate('/');
+            dispatch(setAdminFalse());
             setLoading(false);
             navigate('/');
         } catch (error) {
@@ -111,10 +121,9 @@ function SignIn() {
 
     return (
         <div>
-            <div className='loginWrapper'>
-                <div className='loginCard' >
 
-                </div>
+            {!iAmAdmin?
+            <div className="flex justify-center">
                 <div className='loginCard'>
                     <Card sx={{ width: '25vw' }} variant="outlined">
 
@@ -163,7 +172,58 @@ function SignIn() {
                             </Typography></CardContent>
                     </Card>
                 </div>
+            </div>:<div className="flex justify-center">
+                <div className='loginCard' >
+
+                </div>
+                <div className='loginCard'>
+                    <Card sx={{ width: '25vw' }} variant="outlined">
+
+
+                        <CardContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
+                            textAlign: 'center'
+                        }}> <CardActionArea >
+                                <Typography component="div">
+                                    Lizard
+                                </Typography></CardActionArea>
+                            <TextField id="outlined-basic" label="Email" variant="outlined" margin="normal" size="small" value={email} onChange={(e) => {
+                                setEmail(e.target.value);
+                            }} />
+                            <TextField id="outlined-basic" label="Password" variant="outlined" margin="normal" size="small" value={password} onChange={(e) => {
+                                setPassword(e.target.value);
+                            }} />
+                            {error != '' && <Alert severity="error">{error}</Alert>}
+                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleLogin} disabled={loading}>
+                                Login
+                            </Button>
+                            <Typography variant='subtitle2' sx={{ color: 'grey', marginTop: '10px' }}>
+                                Password BhulGye?
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    <Card sx={{ width: '25vw' }} variant="outlined" margin="normal">
+                        <CardContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
+                            textAlign: 'center'
+                        }} component="div">
+                            <Typography component="div" variant='subtitle2' sx={{ color: 'grey', }}>
+                                Don't have an acccount? <Link to=''>SignUp</Link>
+                            </Typography></CardContent>
+                    </Card>
+                </div>
             </div>
+
+            }
+            <button onClick={()=>{
+  setIAmAdmin(!iAmAdmin)
+}}>{iAmAdmin?"i am user":"i am an admin"}</button>
         </div>
     )
 }

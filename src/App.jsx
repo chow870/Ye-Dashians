@@ -22,7 +22,7 @@ import HomePage from './components/Admin/HomePage';
 function App() {
   const [count, setCount] = useState(0)
   const isAdmin = useSelector(state=>{
-    return state.isAdmin;
+    return state.auth.isAdmin;
   })
   return (
     <>

@@ -72,7 +72,10 @@ export const signup = createAsyncThunk(
           },
         setAdminTrue(state,action){
           state.isAdmin = true;
-        }  
+        },
+        setAdminFalse(state,action){
+          state.isAdmin = false;
+        }
       },
     
     extraReducers : (builder) => {
@@ -108,6 +111,6 @@ export const signup = createAsyncThunk(
     }
   })
 
-  export const {resetAuthState , setLoading , setUser , setAdminTrue} = authSlice.actions;
+  export const {resetAuthState , setLoading , setUser , setAdminTrue , setAdminFalse} = authSlice.actions;
 
   export default authSlice.reducer;
