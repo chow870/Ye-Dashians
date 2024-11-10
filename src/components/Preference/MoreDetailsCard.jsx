@@ -62,7 +62,7 @@ export default function MoreDetailsCard() {
     return (
         <div className="flex h-screen bg-black text-gray-200">
             <div className="w-1/2 p-6 flex items-center justify-center">
-                <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w">
+                <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} >
                     <MapWithRoute myLocation={mylocation} lat={item.geometry.location.lat} lng={item.geometry.location.lng} />
                 </LoadScript>
             </div>
@@ -70,13 +70,13 @@ export default function MoreDetailsCard() {
                 <h2 className="text-3xl font-bold mb-6">Place Details</h2>
 
                 <div className="space-y-6">
-                <PlacePhotos photoReferences={item.additionalDetails.result.photos.map(photo => photo.photo_reference)} />
+                {/* <PlacePhotos photoReferences={item.additionalDetails.result.photos.map(photo => photo.photo_reference)} /> */}
 
                     <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-2">
                         <p><strong>Name:</strong> {item.name || 'N/A'}</p>
                         <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
-                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
-                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                        {/* <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p> */}
+                        {/* <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p> */}
                         <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
                         <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
                         <p><strong>Address:</strong> {item.additionalDetails.result.formatted_address || 'N/A'}</p>

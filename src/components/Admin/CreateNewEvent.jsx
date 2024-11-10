@@ -63,7 +63,7 @@ const CreateEventForm = () => {
               //  here has to put the organiser name.
       });
       console.log("Event created successfully:", response.data);
-      navigate('')
+      navigate('/home')
     } catch (error) {
       console.error("Error creating event:", error);
     }
@@ -81,12 +81,12 @@ const CreateEventForm = () => {
             <>
               <label className="block mb-4">
                 <span className="text-gray-300">Location Details </span>
-                      <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" libraries={["places"]}>
+                      <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={["places"]}>
                             <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
                                 <input
                                     type="text"
                                     className="w-full p-4 text-lg bg-gray-800 text-gray-100 rounded-md mb-8 border border-gray-700 focus:ring focus:ring-blue-500"
-                                    placeholder="Search Your Current Location"
+                                    placeholder="Search The Event  Location"
                                 />
                             </Autocomplete>
                         </LoadScript>
@@ -196,7 +196,14 @@ const CreateEventForm = () => {
 
               <div className="flex justify-between mt-4">
                 <button type="button" onClick={handleBack} className="bg-gray-600 hover:bg-gray-700 py-2 px-4 rounded">Back</button>
-                <button type="submit" className="bg-green-600 hover:bg-green-700 py-2 px-4 rounded">Submit</button>
+                <button
+                
+                className="bg-green-600 hover:bg-green-700 py-2 px-4 rounded"
+                onClick={handleSubmit}
+                  >
+                    Submit
+                  </button>
+
               </div>
             </>
           )}

@@ -82,7 +82,7 @@ function Trip() {
             <p>Longitude: {guestCurrentLocation?.lng}</p>
 
             {/* LoadScript is loaded only once to prevent reloading issues */}
-            <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w">
+            <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API}>
                 <MapWithTrack 
                     myInitialLocation={myCurrentLocation} 
                     partnerInitialLocation={guestCurrentLocation} 

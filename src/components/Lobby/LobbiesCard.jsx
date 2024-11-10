@@ -275,142 +275,165 @@ function LobbiesCard(props) {
 
 
     return (
-        <div style={{ border: '2px solid black', display: 'flex', position: 'relative' }}>
-
+        <div style={{
+            border: '2px solid #444',
+            backgroundColor: '#222',
+            padding: '20px',
+            borderRadius: '10px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            position: 'relative',
+            color: '#eee',
+          }}>
+            
             {/* Top-right Button */}
             <Button
-                variant="outlined"
-                size="small"
-                style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    zIndex: 1,
-                }}
-                onClick={deleteEverything} // Replace 'someFunction' with the function you want to trigger
+              variant="outlined"
+              size="small"
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 1,
+                color: '#f44336',
+                borderColor: '#f44336',
+              }}
+              onClick={deleteEverything}
             >
-                Band Karo Ye Tamasha
+              End This Session
             </Button>
-
+      
             <div style={{ width: '40%' }}>
-                <CardContent sx={{ textAlign: 'left' }}>
-                    <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        LobbyID: {lobbyId}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        date
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                        {date}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>time</Typography>
-                    <Typography variant="body2">{time}</Typography>
-                    <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>venue</Typography>
-                    <Typography variant="body2">{lobby?.venue}</Typography>
-                </CardContent>
-                <CardActions>
-                    {lobby?.venue == null ? (
-                        <Button size="small" variant="outlined" onClick={HandleCreateNewEvent}>
-                            Create The Plans
-                        </Button>
-                    ) : (
-                        <>
-                        <Button size="small" variant="outlined">
-                            <Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link>
-                        </Button>
-                        <Button size="small" variant="outlined" onClick={()=>{
-                            navigate('/trip' , {
-                                state: {
-                                    myId,
-                                    guest,
-                                    guestId,
-                                    lobbyId,
-                                    placeId : lobby?.venueId,
-                                    venueCoords
-                                }
-                            })
-                        }}>
-                       Start trip
-                    </Button>
-                    </>
-                    )}
-                    {(lobby && lobby.venueId) &&  <Button size="small" variant="outlined" onClick={handleOpen}>Review This Place</Button>}
-                    
-                </CardActions>
-            </div>
-
-            <div
-                style={{
-                    width: '60%',
-                    textAlign: 'right',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'right',
-                }}
-            >
-                <Typography style={{ fontSize: '30px', margin: '15px' }}>
-                    have to meet
+              <CardContent sx={{ textAlign: 'left' }}>
+                <Typography sx={{ color: '#bbb', fontSize: 14 }}>
+                  LobbyID: {lobbyId}
                 </Typography>
-                <Typography style={{ fontSize: '70px' }}>{guest}</Typography>
+                <Typography sx={{ color: '#bbb', fontSize: 14 }}>Date</Typography>
+                <Typography variant="h5" component="div">
+                  {date}
+                </Typography>
+                <Typography sx={{ color: '#bbb', mt: 1.5 }}>Time</Typography>
+                <Typography variant="body2">{time}</Typography>
+                <Typography sx={{ color: '#bbb', mt: 1.5 }}>Venue</Typography>
+                <Typography variant="body2">{lobby?.venue}</Typography>
+              </CardContent>
+              <CardActions>
+                {lobby?.venue == null ? (
+                  <Button size="small" variant="outlined" onClick={HandleCreateNewEvent} style={{ color: '#4caf50', borderColor: '#4caf50' }}>
+                    Create The Plans
+                  </Button>
+                ) : (
+                  <>
+                    <Button size="small" variant="outlined">
+                      <Link to={`/myLobby/${lobbyId}`} style={{ color: '#2196f3', textDecoration: 'none' }}>
+                        View/Alter Your Plans
+                      </Link>
+                    </Button>
+                    <Button size="small" variant="outlined" onClick={() => {
+                      navigate('/trip', {
+                        state: {
+                          myId,
+                          guest,
+                          guestId,
+                          lobbyId,
+                          placeId: lobby?.venueId,
+                          venueCoords
+                        }
+                      });
+                    }}>
+                      Start Trip
+                    </Button>
+                  </>
+                )}
+                {lobby?.venueId && (
+                  <Button size="small" variant="outlined" onClick={handleOpen}>
+                    Review This Place
+                  </Button>
+                )}
+              </CardActions>
             </div>
-
-
-            {/* THE MODAL THING WE WILL DO HERE */}
+      
+            <div style={{
+              width: '60%',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <Typography style={{ fontSize: '24px', margin: '10px', color: '#aaa' }}>
+                Meeting with
+              </Typography>
+              <Typography style={{ fontSize: '50px', color: '#fff' }}>{guest}</Typography>
+            </div>
+      
+            {/* Modal for Review Submission */}
             <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
             >
-                <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{ maxWidth: 600, margin: '2rem auto', padding: 3, boxShadow: 3, borderRadius: 2 , backgroundColor: '#ffffff'}}
-    >
-      <Typography variant="h5" gutterBottom align="center">
-        Submit Your Review
-      </Typography>
-
-      <Stack spacing={2}>
-
-        <TextField
-          label="User Name"
-          name="userName"
-          value={reviewData.userName}
-          onChange={handleChange}
-          required
-          fullWidth
-        />
-
-        <TextField
-          label="Review Text"
-          name="text"
-          value={reviewData.text}
-          onChange={handleChange}
-          multiline
-          rows={4}
-          required
-          fullWidth
-        />
-
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="body1">Rating:</Typography>
-          <Rating
-            name="stars"
-            value={reviewData.stars}
-            onChange={handleRatingChange}
-          />
-        </Box>
-
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Submit Review
-        </Button>
-      </Stack>
-    </Box>
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                sx={{
+                  maxWidth: 600,
+                  margin: '2rem auto',
+                  padding: 3,
+                  boxShadow: 3,
+                  borderRadius: 2,
+                  backgroundColor: '#333',
+                  color: '#eee',
+                }}
+              >
+                <Typography variant="h5" gutterBottom align="center" sx={{ color: '#4caf50' }}>
+                  Submit Your Review
+                </Typography>
+      
+                <Stack spacing={2}>
+                  <TextField
+                    label="User Name"
+                    name="userName"
+                    value={reviewData.userName}
+                    onChange={handleChange}
+                    required
+                    fullWidth
+                    sx={{ backgroundColor: '#444', borderRadius: 1 }}
+                    InputLabelProps={{ style: { color: '#bbb' } }}
+                    InputProps={{ style: { color: '#eee' } }}
+                  />
+      
+                  <TextField
+                    label="Review Text"
+                    name="text"
+                    value={reviewData.text}
+                    onChange={handleChange}
+                    multiline
+                    rows={4}
+                    required
+                    fullWidth
+                    sx={{ backgroundColor: '#444', borderRadius: 1 }}
+                    InputLabelProps={{ style: { color: '#bbb' } }}
+                    InputProps={{ style: { color: '#eee' } }}
+                  />
+      
+                  <Box display="flex" alignItems="center" justifyContent="space-between">
+                    <Typography variant="body1" sx={{ color: '#bbb' }}>Rating:</Typography>
+                    <Rating
+                      name="stars"
+                      value={reviewData.stars}
+                      onChange={handleRatingChange}
+                    />
+                  </Box>
+      
+                  <Button type="submit" variant="contained" color="primary" fullWidth sx={{ backgroundColor: '#4caf50' }}>
+                    Submit Review
+                  </Button>
+                </Stack>
+              </Box>
             </Modal>
-
-        </div>
+          </div>
 
     )
 }

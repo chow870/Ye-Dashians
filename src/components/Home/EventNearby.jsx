@@ -119,6 +119,7 @@ console.log(events)
   if(load){
     return (<p> We are loading the Nearby events for You </p>)
   }
+  console.log(events);
 
   return (
     <div className="p-6">
@@ -143,7 +144,7 @@ console.log(events)
           Search
         </button>
       </form>
-
+  
       {/* Carousel Display for Events */}
       {events.length > 0 ? (
         <div className="mt-8 relative">
@@ -160,20 +161,26 @@ console.log(events)
                 <p className="text-gray-600">Time: {event.time}</p>
                 {event.availableSeats > 0 ? (
                   <>
-                  <p className="text-green-600 font-bold">Tickets Available</p>
-                  <button >Book The Seats !!!</button>
-                  <br/>
-                  <button
-                  onClick={()=>{
-                    navigate('/createlobby', {
-                      state: {
-                          eventDetails:[event]
-                      }
-                  })
-                  }} 
-                  > Share And Plan It With your Friend </button>
+                    <p className="text-green-600 font-bold">Tickets Available</p>
+                    <button
+                      className="px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out"
+                    >
+                      Book The Seats !!!
+                    </button>
+                    <br />
+                    <button
+                      onClick={() => {
+                        navigate('/createlobby', {
+                          state: {
+                            eventDetails: [event]
+                          }
+                        });
+                      }}
+                      className="px-6 py-3 mt-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out"
+                    >
+                      Share And Plan It With Your Friend
+                    </button>
                   </>
-                  
                 ) : (
                   <p className="text-red-500 font-bold">Sold Out</p>
                 )}

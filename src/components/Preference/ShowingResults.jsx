@@ -260,6 +260,7 @@ export default function ShowingResults() {
         return (<h1>We are trying our best to give you the best suggestions...</h1>);
     }
     console.log(filteredCommonOptions)
+    console.log("the suggested page : ", suggested)
 
 
    
@@ -365,8 +366,8 @@ export default function ShowingResults() {
                                         <div key={index} style={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px', minWidth: '400px',color:'black' }}>
                                         <p><strong>Name:</strong> {item.name || 'N/A'}</p>
                                         <p><strong>Rating:</strong> {item.rating || 'N/A'}</p>
-                                        <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
-                                        <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p>
+                                        {/* <p><strong>Distance (You):</strong> {item.distances[0].distance.rows[0].elements[0].distance.text || 'N/A'}</p> */}
+                                        {/* <p><strong>Distance (Your Partner):</strong> {item.distances[1].distance.rows[0].elements[0].distance.text || 'N/A'}</p> */}
                                         <p><strong>Open Now:</strong> {item.additionalDetails.result.current_opening_hours?.open_now ? 'Yes' : 'No'}</p>
                                         <p><strong>Tags:</strong> {item.tags?.join(', ') || 'N/A'}</p>
                                         <p><strong>Address:</strong>{item.additionalDetails.result.formatted_address || 'N/A'}</p>

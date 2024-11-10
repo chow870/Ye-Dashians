@@ -59,13 +59,19 @@ function AdminHomePage() {
   </div>
 
   {/* Right Section: Events List */}
-  <div className="w-1/2 p-4 overflow-x-auto space-x-4 flex bg-black">
-    {events.map((item, index) => (
-      <div key={index} className="bg-gray-800 rounded-lg p-4 shadow-lg min-w-[300px] mr-4">
-        <CustomDisplayCard item={item} events={events} isDeleting={isDeleting} setIsDeleting={setIsDeleting} />
-      </div>
-    ))}
-  </div>
+  <div className="w-1/2 h-full p-4 overflow-y-auto flex flex-col space-y-4 bg-black scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+  {events.map((item, index) => (
+    <div key={index} className="bg-gray-800 rounded-lg p-4 shadow-lg min-w-[300px]">
+      <CustomDisplayCard
+        item={item}
+        events={events}
+        isDeleting={isDeleting}
+        setIsDeleting={setIsDeleting}
+      />
+    </div>
+  ))}
+</div>
+
 </div>
 
   )

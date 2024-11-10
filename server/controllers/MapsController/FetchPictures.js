@@ -1,8 +1,9 @@
 const axios = require('axios');
+require('dotenv').config();
 
 const FetchPictures = async (req, res) => {
     const { photo_reference } = req.query;
-    const apiKey = 'AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w';
+    const apiKey = process.env.GOOGLE_MAPS_API;
 
     if (!photo_reference) {
         return res.status(400).json({ error: 'Missing photo reference' });

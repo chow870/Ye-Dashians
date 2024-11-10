@@ -113,7 +113,7 @@ function PreferenceForm() {
                 {step === 1 && (
                     <div className="animate-fade-in">
                         <label className="block text-xl font-semibold mb-4 text-gray-300" htmlFor="location">Select Your Location:</label>
-                        <LoadScript googleMapsApiKey="AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w" libraries={libraries}>
+                        <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={libraries}>
                             <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
                                 <input
                                     type="text"
@@ -193,6 +193,7 @@ function PreferenceForm() {
                         >
                             <option value="vegetarian">Vegetarian</option>
                             <option value="vegan">Vegan</option>
+                            <option value="non-veg||nonVeg||Non-Vegetrian">Non-Veg</option>
                         
                         </select>
                         <div className="flex justify-between">
