@@ -18,11 +18,17 @@ function Lobby() {
   const [error , setError] = useState();
   const [loading , setLoading] = useState(true);
   const [guest , setGuest] = useState();
+  const [guestEmail,setGuestEmail] = useState();
+  const [me,setMe] = useState();
   const [messages, setMessages] = useState([])
   const [inputValue , setInputValue] = useState()
   const [socketLoading, setSocketLoading] = useState(true)
+  
   const myId = useSelector((state) => {
     return state?.auth?.user?.uid
+})
+const myEmail = useSelector((state)=>{
+  return state?.auth?.user?.email
 })
   const [venue , setVenue] = useState();
   const navigate = useNavigate();
@@ -99,7 +105,9 @@ useEffect(() => {
               const res = await database.users.doc(guestId).get();
               setGuest(res.data().fullname);  // Assuming res.data() has the guest information
               // console.log('Guest data:', res.data().fullname);
-              
+              setGuestEmail(res.data().email);
+              const res2 = await database.users.doc(myId).get();
+              setMe(res2.data().fullname);
           }
       } catch (error) {
           console.error('Error fetching guest:', error);
@@ -133,7 +141,7 @@ const handleUpdate = async() => {
         setLoading(false);
         throw new Error('Network response was not ok');
     }
-    if (data.success) {
+    if (response.ok) {
         setLoading(false);
         setError(null);
     }
@@ -145,8 +153,133 @@ const handleUpdate = async() => {
     }, 5000);
     console.error('Error updating lobby:', error);
 }
+sendMailForLobbySubscribeToGuest();
+sendMailForLobbySubscribeToMe();
+
+
+
 navigate("/showlobbies")
 }
+
+
+
+
+  // place for function for sending email that u've subscribed to a lobby
+  const sendMailForLobbySubscribeToGuest = async() => {
+   try {
+      const emailObj = {
+        name : guest,
+        email : guestEmail,
+        venue : venueName,
+        guest : me,
+        timeAndDate : dateAndTime
+       }
+     const res = await fetch('/api/v1/mail/send', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         "str" : "lobby created",
+         "data" : emailObj
+       }),
+     })
+
+
+   } catch (error) {
+      console.log("some error occurred while sending the lobby created email" , error)
+   }
+    
+  }
+
+
+  const sendMailForLobbySubscribeToMe = async() => {
+    try {
+       const emailObj = {
+         name : me,
+         email : myEmail,
+         venue : venueName,
+         guest : guest,
+         timeAndDate : dateAndTime
+        }
+      const res = await fetch('/api/v1/mail/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "str" : "lobby created",
+          "data" : emailObj
+        }),
+      })
+ 
+ 
+    } catch (error) {
+       console.log("some error occurred while sending the lobby created email" , error)
+    }
+     
+   }
+
+
+   const sendEmailBeforeScheduleToMe = async() => {
+    try {
+       const emailObj = {
+         name : me,
+         email : myEmail,
+         venue : venueName,
+         guest : guest,
+         timeAndDate : dateAndTime
+        }
+      const res = await fetch('/api/v1/mail/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "str" : "lobby is scheduled",
+          "data" : emailObj
+        }),
+      })
+ 
+ 
+    } catch (error) {
+       console.log("some error occurred while sending the lobby created email" , error)
+    }
+     
+   }
+
+ 
+
+   const sendEmailBeforeScheduleToGuest = async() => {
+    try {
+       const emailObj = {
+         name : guest,
+         email : guestEmail,
+         venue : venueName,
+         guest : me,
+         timeAndDate : dateAndTime
+        }
+      const res = await fetch('/api/v1/mail/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "str" : "lobby is scheduled",
+          "data" : emailObj
+        }),
+      })
+ 
+ 
+    } catch (error) {
+       console.log("some error occurred while sending the lobby created email" , error)
+    }
+     
+   }
+
+
+
+
 
   return (
     <div>
@@ -182,7 +315,7 @@ navigate("/showlobbies")
     {/* Venue Selector - Larger Card */}
     <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center justify-center text-center" style={{minHeight:'500px'}}>
   <h2 className="text-xl font-semibold mb-4">Venue Selector</h2>
-  
+  <h2 className="text-xl font-bold mb-4">{venueName}</h2>
   <div className="flex w-full space-x-4">
   {/* Left Div - 40% Width */}
   
@@ -211,6 +344,9 @@ navigate("/showlobbies")
   </div>
   <button onClick = {handleUpdate} class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
   Update Lobby
+</button>
+<button onClick = {()=>{navigate('/showlobbies')}} class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+  My Friend Would do it for me
 </button>
 </div>
 

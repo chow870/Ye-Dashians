@@ -120,7 +120,7 @@ function Trip() {
                         fetchMyFriendsLocation();
                     },
                     (error) => console.log("Unable to retrieve location", error),
-                    { enableHighAccuracy: true, timeout: 100, maximumAge: 0 }
+                    { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 }
                 );
             }, 10000);
             return () => clearInterval(intervalId);
@@ -147,35 +147,6 @@ function Trip() {
 
     return (
         <div>
-
-            {/* the snack bars */}
-            <Snackbar
-                open={stateForForMe.open}
-                onClose={handleCloseForMe}
-                TransitionComponent={stateForForMe.Transition}
-                message="You Have Reached The Beat Point"
-                key={stateForForMe.Transition.name}
-                autoHideDuration={10000}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Center top position
-            />
-            <Snackbar
-        open={stateForFriend.open}
-        onClose={handleCloseForFriend}
-        TransitionComponent={stateForFriend.Transition}
-        message="Your Friend Reached The Beat Point"
-        key={stateForFriend.Transition.name}
-        autoHideDuration={1200}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Center top position
-      />
-      <Snackbar
-        open={stateForForUs.open}
-        onClose={handleCloseForUs}
-        TransitionComponent={stateForForUs.Transition}
-        message="U Both have Reached the BeatPoint"
-        key={stateForForMe.Transition.name}
-        autoHideDuration={1200}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Center top position
-      />
             <Collapse in={friendHasReachedAlert && guestHaveReached}>
                 <Alert
                     action={

@@ -315,8 +315,20 @@ function LobbiesCard(props) {
                         </Button>
                     ) : (
                         <>
-                        <Button size="small" variant="outlined">
-                            <Link to={`/myLobby/${lobbyId}`}>View/Alter Your Plans</Link>
+                        <Button size="small" variant="outlined" onClick={()=>{
+                            navigate(`/myLobby/${lobbyId}` , {
+                                state: {
+                                    myId,
+                                    guest,
+                                    guestId,
+                                    lobbyId,
+                                    venuePlaceId : lobby?.venueId,
+                                    locationCoords : venueCoords,
+                                    venueName : lobby?.venue
+                                }
+                            })
+                        }}>
+                            Alter/change ur plans
                         </Button>
                         <Button size="small" variant="outlined" onClick={()=>{
                             navigate('/trip' , {

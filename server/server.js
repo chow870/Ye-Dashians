@@ -19,6 +19,8 @@ const FetchEventsRouter = require('./routes/FetchEvents');
 const EventsPurchasedRouter = require('./routes/EventsPurchased');
 const CreateNewEventRouter = require('./routes/CreateNewEvent');
 const DeleteEventRouter = require('./routes/DeleteEvents');
+const mailrouter = require('./routes/mailroutes')
+const paymentroute = require('./routes/PaymentRoutes')
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
   cors: {
@@ -59,7 +61,9 @@ mongoose.connect(db_link)
 
 app.use(cors());
 app.use('/api/v1/lobby', lobbyRouter);
+app.use('/api/v1/mail', mailrouter);
 app.use('/api/v1/review' , reviewRouter);
+app.use('/api/v1/pay' , paymentroute);
 app.use('/api/v1/preferenceSubmit',PreferenceFormSubmitRouter );
 app.use('/api/v1/fetchCoordinates',FetchCoordinatesRouter );
 app.use('/maps/v1/NearbySearch',NearbySearchRouter);

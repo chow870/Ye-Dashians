@@ -1,14 +1,12 @@
-import Razorpay from 'razorpay'
-import  dotenv from "dotenv";
-dotenv.config();
-const RAZORPAY_ID_KEY=process.env.RAZORPAY_ID_KEY
-const RAZORPAY_SECRET_KEY=process.env.RAZORPAY_SECRET_KEY;
+const Razorpay = require('razorpay')
+const RAZORPAY_ID_KEY="rzp_test_gG3gI5tkHLZ1OE"
+const RAZORPAY_SECRET_KEY="QjaXuwWbWA0dMgfvJjVlda9o"
 const razorpayInstance = new Razorpay({
     key_id: RAZORPAY_ID_KEY,
     key_secret: RAZORPAY_SECRET_KEY
 });
 
-export const renderProductPage = async(req,res)=>{
+module.exports.renderProductPage = async(req,res)=>{
 
     try {
         
@@ -20,7 +18,7 @@ export const renderProductPage = async(req,res)=>{
 
 }
 
-export const createOrder = async(req,res)=>{
+module.exports.createOrder = async(req,res)=>{
     try {
         const amount = req.body.amount*100
         const options = {
