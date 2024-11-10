@@ -304,44 +304,56 @@ function LobbiesCard(props) {
             </Button>
       
             <div style={{ width: '40%' }}>
-              <CardContent sx={{ textAlign: 'left' }}>
-                <Typography sx={{ color: '#bbb', fontSize: 14 }}>
-                  LobbyID: {lobbyId}
-                </Typography>
-                <Typography sx={{ color: '#bbb', fontSize: 14 }}>Date</Typography>
-                <Typography variant="h5" component="div">
-                  {date}
-                </Typography>
-                <Typography sx={{ color: '#bbb', mt: 1.5 }}>Time</Typography>
-                <Typography variant="body2">{time}</Typography>
-                <Typography sx={{ color: '#bbb', mt: 1.5 }}>Venue</Typography>
-                <Typography variant="body2">{lobby?.venue}</Typography>
-              </CardContent>
-              <CardActions>
-                {lobby?.venue == null ? (
-                  <Button size="small" variant="outlined" onClick={HandleCreateNewEvent} style={{ color: '#4caf50', borderColor: '#4caf50' }}>
-                    Create The Plans
-                  </Button>
-                ) : (
-                  <>
-                    <Button size="small" variant="outlined">
-                      <Link to={`/myLobby/${lobbyId}`} style={{ color: '#2196f3', textDecoration: 'none' }}>
-                        View/Alter Your Plans
-                      </Link>
-                    </Button>
-                    <Button size="small" variant="outlined" onClick={() => {
-                      navigate('/trip', {
-                        state: {
-                          myId,
-                          guest,
-                          guestId,
-                          lobbyId,
-                          placeId: lobby?.venueId,
-                          venueCoords
-                        }
-                      });
-                    }}>
-                      Start Trip
+                <CardContent sx={{ textAlign: 'left' }}>
+                    <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+                        LobbyID: {lobbyId}
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>
+                        date
+                    </Typography>
+                    <Typography variant="h5" component="div">
+                        {date}
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>time</Typography>
+                    <Typography variant="body2">{time}</Typography>
+                    <Typography sx={{ color: 'text.secondary', mt: 1.5 }}>venue</Typography>
+                    <Typography variant="body2">{lobby?.venue}</Typography>
+                </CardContent>
+                <CardActions>
+                    {lobby?.venue == null ? (
+                        <Button size="small" variant="outlined" onClick={HandleCreateNewEvent}>
+                            Create The Plans
+                        </Button>
+                    ) : (
+                        <>
+                        <Button size="small" variant="outlined" onClick={()=>{
+                            navigate(`/myLobby/${lobbyId}` , {
+                                state: {
+                                    myId,
+                                    guest,
+                                    guestId,
+                                    lobbyId,
+                                    venuePlaceId : lobby?.venueId,
+                                    locationCoords : venueCoords,
+                                    venueName : lobby?.venue
+                                }
+                            })
+                        }}>
+                            Alter/change ur plans
+                        </Button>
+                        <Button size="small" variant="outlined" onClick={()=>{
+                            navigate('/trip' , {
+                                state: {
+                                    myId,
+                                    guest,
+                                    guestId,
+                                    lobbyId,
+                                    placeId : lobby?.venueId,
+                                    venueCoords
+                                }
+                            })
+                        }}>
+                       Start trip
                     </Button>
                   </>
                 )}

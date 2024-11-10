@@ -32,18 +32,18 @@ console.log(events)
   };
 
 
-  const handlePayment = async () => {
+  const handlePayment = async (event) => {
     try {
       // Send a request to your backend to create a Razorpay order using fetch
-      const response = await fetch('http://localhost:3000/createOrder', {
+      const response = await fetch('/api/v1/pay/createOrder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: totalPrice,
-          name: 'Cart Purchase',
-          description: 'Payment for items in your cart',
+          amount: event.pricePerTicket,
+          name: event.locationName,
+          description: 'Payment for event',
         }),
       });
   
@@ -57,40 +57,9 @@ console.log(events)
           currency: "INR",
           name: data.product_name,
           description: data.description,
-          image: ShoppingCartTwoToneIcon, // Optional image
           order_id: data.order_id, // Order ID returned from your backend
           handler: async function (response) {
-            alert("Payment Successful");
-           
-            const cartOrder={
-              userId: currUser.currentUser._id, // Replace with actual user ID
-              cart: cart,
-              totalPrice: totalPrice,
-              paymentId: response.razorpay_payment_id,
-            }
-            console.log(cart);
-               // Once the payment is successful, create an order in your system
-            await fetch('/api/order/create', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(cartOrder),
-            });
-            await fetch('/api/crop/updateQty', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({cart}),
-            });
-            
-            dispatch(signoutCart());
-            // when payment is successful we empty the card
-            // Optionally, you can handle post-payment logic here 
-            navigate('/market');
-  
-            // Optionally, you can handle post-payment logic here
+            alert("Payment Successful");           
           },
           prefill: {
             name: data.name,
@@ -161,25 +130,20 @@ console.log(events)
                 <p className="text-gray-600">Time: {event.time}</p>
                 {event.availableSeats > 0 ? (
                   <>
-                    <p className="text-green-600 font-bold">Tickets Available</p>
-                    <button
-                      className="px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out"
-                    >
-                      Book The Seats !!!
-                    </button>
-                    <br />
-                    <button
-                      onClick={() => {
-                        navigate('/createlobby', {
-                          state: {
-                            eventDetails: [event]
-                          }
-                        });
-                      }}
-                      className="px-6 py-3 mt-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out"
-                    >
-                      Share And Plan It With Your Friend
-                    </button>
+                  <p className="text-green-600 font-bold">Tickets Available</p>
+                  <button onClick={()=>{
+                    handlePayment(event);
+                  }}>Book The Seats !!!</button>
+                  <br/>
+                  <button
+                  onClick={()=>{
+                    navigate('/createlobby', {
+                      state: {
+                          eventDetails:[event]
+                      }
+                  })
+                  }} 
+                  > Share And Plan It With your Friend </button>
                   </>
                 ) : (
                   <p className="text-red-500 font-bold">Sold Out</p>
