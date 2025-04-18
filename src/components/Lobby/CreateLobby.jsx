@@ -229,7 +229,7 @@ function CreateLobby() {
         )}
         sx={{ mb: 2 }}
       />
-
+         <Box sx={{ maxHeight: 120, overflowY: 'auto' }}>
       <List dense>
         {filteredUsers.map((user) => (
           <ListItem
@@ -254,6 +254,7 @@ function CreateLobby() {
           </ListItem>
         ))}
       </List>
+      </Box>
     </Card>)}
                 {error && (
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
