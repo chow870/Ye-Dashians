@@ -94,7 +94,7 @@ function SignIn() {
           
 
           const user = result.user;
-          // console.log(user);
+          //console.log(user);
 
           
           
@@ -108,11 +108,12 @@ function SignIn() {
               fullname: user.displayName,
               isAdmin: false, 
               phoneno: user.phoneNumber,
-              localUser : false
+              localUser : false,
+              profileImage : user.photoURL
             };
 
 
-            const response2 = await fetch("http://localhost:5000/api/v1/auth/signup", {
+            const response2 = await fetch("/api/v1/auth/signup", {
               method: "POST",
               credentials: "include",
               headers: {

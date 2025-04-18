@@ -245,7 +245,7 @@ function CreateLobby() {
             }
           >
             <ListItemAvatar>
-              <Avatar src={user.avatarUrl} alt={user.fullname} />
+              <Avatar src={user.profileImage} alt={user.fullname} />
             </ListItemAvatar>
             <ListItemText
               primary={user.fullname}
