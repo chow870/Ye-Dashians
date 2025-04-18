@@ -24,10 +24,11 @@ module.exports.addLobby = async function addLobby(req, res) {
 module.exports.joinLobby =  async function joinLobby(req,res){
     let lobbyId = req.body.lobbyId;
     let guest = req.body.guestId;
+    let status = req.body.acceptedByUser2;
     try {
         let mongoRes = await lobbyModel.findOneAndUpdate(
             {_id : lobbyId} , 
-            {user2 : guest} ,
+            {user2 : guest , acceptedByUser2 : status} ,
             { new: true , returnDocument: 'after',
                 upsert: false  }
         );
@@ -43,6 +44,41 @@ module.exports.joinLobby =  async function joinLobby(req,res){
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+module.exports.acceptByUser2 = async function(req,res){
+    try{
+        const myId = req.id;
+        const lobbyId = req.body.lobbyId;
+        const lobby = await lobbyModel.findById(lobbyId);
+        if(lobby.user2!=myId)
+        {
+            throw new Error('only user2 can accept the invitation');
+        }
+        let updatedLobby = await lobbyModel.findByIdAndUpdate(lobbyId,{acceptedByUser2:true},{runValidators:false,new:true})
+        if(updatedLobby)
+        {
+            return res.json({
+                success : true,
+                message : "user 2 accepted successfully",
+                data : updatedLobby
+            })
+        }
+        else
+        {
+            return res.json({
+                success : false,
+                message : `error while accepting by user 2 `
+            })
+        }
+    }catch(err)
+    {
+        return res.json({
+            success : false,
+            message : `error while accepting by user 2 , ${err.message}`
+        })
+    }
+}
+
 module.exports.getAllLobies = async function getAllLobies(req,res){
     try {
         let mongoRes = await lobbyModel.find();

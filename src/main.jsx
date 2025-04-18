@@ -9,14 +9,7 @@ import { setAdminFalse, setAdminTrue, setLoading , setUser } from './redux/slice
 import {onAuthStateChanged} from 'firebase/auth'
 import { store } from './redux/store.jsx';
 import { database } from './firebase.jsx';
-auth.onAuthStateChanged(async(user) => {
-  let res = await database.users.doc(user.uid).get();
-  if(!res.exists)store.dispatch(setAdminTrue());
-  else store.dispatch(setAdminFalse());
-  store.dispatch(setUser(user));
-  store.dispatch(setLoading(false));
-  
-});
+
 
 
 

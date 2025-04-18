@@ -24,18 +24,18 @@ import UserHomePage from './components/UserHomePage';
 import CreateEventForm from './components/Admin/CreateNewEvent';
 function App() {
   const [count, setCount] = useState(0)
-  const state = useSelector(state=>{
-    return state;
-  })
   const isAdmin = useSelector(state=>{
     return state.auth.isAdmin;
+  })
+  const user = useSelector(state => {
+    return state.auth.user;
   })
   console.log(isAdmin)
   return (
     <>
     <Navbar/>
       <Routes>
-      <Route path='/' element={state.auth.user?(state.auth.isAdmin?<AdminHomePage/>:<UserHomePage/>):<LandingPage/>} />
+      <Route path='/' element={user?(isAdmin?<AdminHomePage/>:<UserHomePage/>):<LandingPage/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/signin' element={<SignIn/>} />
           <Route path='/home' element={isAdmin?<AdminHomePage/>:<MapWrapper/>} />

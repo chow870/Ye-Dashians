@@ -1,6 +1,14 @@
 const express = require('express')
 const lobbyRouter = express.Router();
-const {addLobby , joinLobby , getAllLobies , updateLobby , deleteLobby} = require('../controllers/lobbyController')
+const {addLobby , joinLobby , getAllLobies , updateLobby , deleteLobby,acceptByUser2} = require('../controllers/lobbyController');
+const { protectRoute } = require('./AuthHelper');
+
+lobbyRouter.use(protectRoute)
+
+lobbyRouter
+  .route('/acceptByUser2')
+  .patch(acceptByUser2)
+
 lobbyRouter
   .route('/createNew')
   .post(addLobby)

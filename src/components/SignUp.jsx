@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { isLoaded } from 'react-redux-firebase'
 // import { connect } from "react-redux";
 // import * as authActions from '../../actions/authActions';
-import { setAdminFalse, setAdminTrue, signup } from "../redux/slices/authSlice";
+import { setUser } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Card from '@mui/material/Card';
@@ -15,7 +15,7 @@ import CardActions from '@mui/material/CardActions';
 import Alert from '@mui/material/Alert';
 import { TextField } from '@mui/material';
 import { Link } from "react-router-dom";
-import {  database , storage } from "../firebase";
+import {storage} from "../firebase";
 
 
 
@@ -23,10 +23,10 @@ import {  database , storage } from "../firebase";
 
 function SignUp(props) {
   const loads = useSelector((state) => {
-    return state.auth.loading;
+    return state?.auth?.loading;
   })
   const user = useSelector((state) => {
-    return state?.auth?.user?.uid
+    return state?.auth?.user;
   })
 
 
@@ -43,6 +43,7 @@ function SignUp(props) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword,setConfirmPassword] = useState('')
   const [fullname, setFullname] = useState('');
   // never give the default value of a file type as string , it would result in errors
   const [file, setFile] = useState(null);
@@ -53,7 +54,7 @@ function SignUp(props) {
   const [phoneNo , setPhoneNo] = useState('');
   const [OfficeAdress , setOfficeAdress] = useState('');
   const [website , setWebsite] = useState('');
-  
+  const [imgUrl,setImgUrl] = useState('');
 
 
   // dispatch(signup({ email, password }));
@@ -69,57 +70,105 @@ function SignUp(props) {
     try {
         setError('');
         setLoading(true);
-        let userObj = await dispatch(signup({ email, password }));
-        dispatch(setAdminFalse());
-        if(!userObj.payload.uid)
+
+
+        const userData = {
+          email: email,
+          fullname: fullname,
+          isAdmin: iAmAdmin, 
+          mywebsite: website,
+          officeadress: OfficeAdress, 
+          phoneno: phoneNo,
+          password : password,
+          confirmpassword : confirmPassword,
+          localUser : true
+
+        };
+
+
+        const response = await fetch("/api/v1/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+        
+        const responseData = await response.json()
+
+        if (!response.ok) {
+          console.error("Signup failed:", data.message || data);
+          return;
+        } else {
+          console.log("Signup successful:");     
+        }
+        let userObj = responseData.data;
+      
+        let message = responseData.message;
+
+        if(!userObj)
         {
-          // console.log(userObj.payload)
-          setError(userObj.payload)
+          setError(message)
           setTimeout(() => {
             setError('')
         }, 4000);
         setLoading(false)
           return;
         }
-        console.log("userobj is" , userObj.payload.uid)
-        let uid = userObj.payload.uid;
-        console.log(uid);
+        
+        let id = userObj._id;
+        
 
-        const uploadTask = storage.ref(`/users/${uid}/ProfileImage`).put(file);
-        uploadTask.on('state_changed', fn1, fn2, fn3);
+       
 
-        function fn1(snapshot) {
-            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`upload is ${progress}% done.`);
-        }
+        const uploadTask = storage.ref(`/users/${id}/ProfileImage`).put(file);
+        
 
-        function fn2(err) {
-            console.log(err.message);
-            setError(err.message);
-            setTimeout(() => {
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done.`);
+            },
+            (err) => {
+              console.error(err.message);
+              setError(err.message);
+              setTimeout(() => {
                 setError('');
-            }, 4000);
-            setLoading(false);
-        }
+              }, 4000);
+              setLoading(false);
+              reject(err);
+            },
+            async () => {
+              const url = await uploadTask.snapshot.ref.getDownloadURL();
+              setImgUrl(url);
+              console.log(url);
+              resolve(url);
 
-        function fn3() {
-            uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                console.log(url);
-                
-                database.users.doc(uid).set({
-                    email: email,
-                    userId: uid,
-                    fullname: fullname,
-                    profileUrl: url,
-                    permLoc : adress,
-                    curLoc : adress,
-                    lobbies : [],
-                    isAdmin : false
-                });
-            });
-            setLoading(false);
-            navigate('/');
-        }
+
+              const newuser = await fetch(`/api/v1/user/${id}`,{
+          method : 'PATCH',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({profileImage:url}),
+        })
+        const newuserRes = await newuser.json();
+        console.log(newuserRes.updatedData)
+        dispatch(setUser(newuserRes.updatedData));
+
+            }
+          );
+        });
+
+
+
+        
+        setLoading(false);
+        navigate('/');
+        
+
     } catch (error) {
         console.log(error.message);
         setError(error.message);
@@ -130,49 +179,8 @@ function SignUp(props) {
     }
 };
 
-
-
-const handleSignup2 = async() => {
-  try {
-        setError('');
-        setLoading(true);
-        let userObj = await dispatch(signup({ email, password}));
-        if(!userObj.payload.uid)
-        {
-          // console.log(userObj.payload)
-          setError(userObj.payload)
-          setTimeout(() => {
-            setError('')
-        }, 4000);
-        setLoading(false)
-          return;
-        }
-        let uid = userObj.payload.uid;
-        database.admins.doc(uid).set({
-          email: email,
-          userId: uid,
-          fullname: fullname,
-          isAdmin : true,
-          phoneno: phoneNo,
-          officeadress : OfficeAdress,
-          mywebsite : website
-      });
-      dispatch(setAdminTrue());
-      setLoading(false);
-  } catch (error) {
-    setError(error.message);
-        setTimeout(() => {
-            setError('');
-        }, 4000);
-        setLoading(false);
-  }
-}
-
-
-
-
-
   useEffect(() => {
+    
     if (user != null) {
       navigate('/')
     }
@@ -180,7 +188,28 @@ const handleSignup2 = async() => {
 
 
 
+//   function fn1(snapshot) {
+//     let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//     console.log(`upload is ${progress}% done.`);
+// }
 
+// function fn2(err) {
+//     console.log(err.message);
+//     setError(err.message);
+//     setTimeout(() => {
+//         setError('');
+//     }, 4000);
+//     setLoading(false);
+//     reject(err);
+// }
+
+// async function fn3() {
+//     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
+//         setImgUrl(url);
+//     });
+//     setLoading(false);
+//     navigate('/');
+// }
 
 
 
@@ -211,6 +240,9 @@ const handleSignup2 = async() => {
                   }} />
                   <TextField id="outlined-basic" label="Password" variant="outlined" margin="normal" size="small" value={password} onChange={(e) => {
                     setPassword(e.target.value);
+                  }} />
+                  <TextField id="outlined-basic" label="cnfmPassword" variant="outlined" margin="normal" size="small" value={confirmPassword} onChange={(e) => {
+                    setConfirmPassword(e.target.value);
                   }} />
                   <TextField id="outlined-basic" label="Full-Name" variant="outlined" margin="normal" size="small" value={fullname} onChange={(e) => {
                     setFullname(e.target.value);

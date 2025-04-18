@@ -1,52 +1,66 @@
-import React from 'react'
-import { useState  , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import LobbiesCard from './LobbiesCard';
-import { database } from '../../firebase';
 import { useSelector } from 'react-redux';
+
 function Lobbies() {
-    const [error,setError] = useState();
-    const [lobbies,setLobbies] = useState();
-    const myId = useSelector((state) => {
-        return state?.auth?.user?.uid
-    })
-    useEffect(() => {
-        console.log("inside the useEffect of Lobbies.jsx")
-     
-        async function fetchLobbies() {
-            try {
-                const userDoc = await database.users.doc(myId).get();
-                if (userDoc.exists) {
-                    const data = userDoc.data();
-                    setLobbies(data.lobbies || []);
-                    console.log("Fetched lobbies:", data.lobbies || []);
-                } else {
-                    setError("Document not found");
-                }
-            } catch (error) {
-                setError(error.message);
-                console.error("Error fetching lobbies:", error);
-            }
-        }
+  const [error, setError] = useState();
+  const [lobbies, setLobbies] = useState();
+  const [refresh, setRefresh] = useState(Date.now()); // State to trigger re-fetching
+  const myId = useSelector((state) => state?.auth?.user?._id);
 
+  async function fetchLobbies() {
+    try {
+      let res = await fetch('/api/v1/user/userProfile/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
        
-        fetchLobbies();
-
+        throw new Error('Network response was not ok');
+      }
        
-        const unsubscribe = database.users.onSnapshot((snapshot) => {
-            console.log("Users collection changed, re-fetching lobbies...");
-            fetchLobbies();
-        });
+      const resData = await res.json();
+      
+      if (resData.success) {
+        setError(null);
+        const user = resData.data;
+        setLobbies(user.lobbies);
+        // console.log(user.lobbies);
+      }
+    } catch (error) {
+      
+      setError(error.message);
+      console.error('Error fetching lobbies:', error);
+    }
+  }
+  // Call fetchLobbies whenever `refresh` changes
+  useEffect(() => {
+    fetchLobbies();
+  }, [refresh]);
 
-     
-        return () => unsubscribe();
-    }, []);
+
+  const handleRefresh = async () => {
+    setRefresh(Date.now());
+    await fetchLobbies();
+  }
+
   return (
     <div>
-        { lobbies && lobbies.map((lobby) => (
-                    <LobbiesCard lobbyId = {lobby}></LobbiesCard>
-                ))}
+      <button
+        onClick={() => handleRefresh()} // Toggle refresh state to trigger re-fetch
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        Refresh Lobbies
+      </button>
+      {lobbies &&
+        lobbies.map((lobby) => (
+          <LobbiesCard key={lobby} lobbyId={lobby} refresh = {refresh} refreshParent = {handleRefresh}></LobbiesCard>
+        ))}
+      {error && <p className="text-red-500">{error}</p>}
     </div>
-  )
+  );
 }
 
-export default Lobbies
+export default Lobbies;

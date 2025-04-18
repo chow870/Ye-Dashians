@@ -1,4 +1,4 @@
-const { NightShelter } = require('@mui/icons-material');
+const { NightShelter, CheckBoxOutlineBlankSharp } = require('@mui/icons-material');
 const mongoose = require('mongoose');
 const lobbySchema = mongoose.Schema({
       user1: {
@@ -31,8 +31,12 @@ const lobbySchema = mongoose.Schema({
       eventDetails: {
         type: Array,
         default: []
+      },
+      acceptedByUser2 :{
+        type : Boolean,
+        default : false
       }
 });
-const lobbyModel = mongoose.model('userModel', lobbySchema);
+const lobbyModel = mongoose.model('lobby', lobbySchema);
 module.exports = lobbyModel;
 // since i will be using require in the app4 file so i have to export like thin {only}

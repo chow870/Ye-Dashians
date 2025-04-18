@@ -1,13 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState , useMemo} from 'react';
 import { useSelector } from 'react-redux';
 import { database } from '../../firebase';
 import { useLocation } from 'react-router-dom';
+import {
+    Card,
+    Typography,
+    Autocomplete,
+    TextField,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Avatar,
+    ListItemText,
+    Button,
+    Box,
+  } from '@mui/material';
 function CreateLobby() {
+    const [users , setUsers] = useState(null)
+    const [filter, setFilter] = useState('');
+    const filteredUsers = useMemo(() => {
+        if(users)
+        {
+             return users.filter((user) =>
+            user.fullname.toLowerCase().includes(filter.toLowerCase())
+            );
+        }
+       
+      }, [users, filter]);
+
+
+
+
+
     const [lobbyId, setLobbyId] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    
     const userId = useSelector((state) => {
-        return state?.auth?.user?.uid
+        return state?.auth?.user?._id
     })
     const location = useLocation();
     const {eventDetails} = location.state||[];
@@ -29,33 +59,145 @@ function CreateLobby() {
             }
 
             const data = await response.json();
-
+            
             if (data.success) {
                 setLoading(false);
                 setLobbyId(data.lobby._id);
-                setError(null);
+                setError(null);}
 
                 // adding this lobby into the users firebase database
-                let userDoc = await database.users.doc(userId).get();
-                let userDocData = userDoc?.data();
-                let obj
-                if (userDocData?.lobbies != []) {
-                    obj = [...userDocData.lobbies,data.lobby._id]
+            let newLobby = data.lobby._id;  
+            
+            
+            setLoading(true);
+            const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({lobbyId:newLobby}),
+                });
+            
+                if (!response2.ok) {
+                    setLoading(false);
+                    throw new Error('Network response was not ok');
                 }
-                else {
-                    obj = [data.lobby._id]
-                }
-                database.users.doc(userId).update({
-                    lobbies: obj
-                })
+                
+                const data2 = await response2.json();
 
-            }
+                if (data2.success) {
+                    setLoading(false);
+                    setError(null);
+                }
+
+            
         } catch (error) {
             setLoading(false);
             setError(error.message);
             console.error('Error creating lobby:', error);
         }
     };
+
+
+    const sendRequest = async function(lobby,guestId)
+    {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/v1/lobby/join', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    "guestId" : guestId,
+                    "lobbyId" : lobby,
+                    "acceptedByUser2" : false
+                 }),
+            });
+
+            if (!response.ok) {
+                setLoading(false);
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                setLoading(false);
+                setError(null);
+
+                const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({lobbyId:lobbyId,id:guestId}),
+                });
+                
+
+                if (!response2.ok) {
+                    setLoading(false);
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data2 = await response2.json();
+
+                console.log(data2)
+
+                if (data2.success) {
+                    setLoading(false);
+                    setError(null);
+                }
+                
+
+            }
+        } catch (error) {
+            setLoading(false);
+            setError(error.message);
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+            console.error('Error joining lobby:', error);
+        }
+    }
+
+    const fetchFriends = async function(){
+
+        try {
+            setLoading(true);
+            let response = await fetch('api/v1/user/getAll',{
+                method : "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            if (!response.ok) {
+                setLoading(false);
+                throw new Error('Network response was not ok');
+            }
+            setLoading(false);
+            const resData = await response.json();
+            if(resData.success)
+            {
+                setUsers(resData.data)
+            }
+
+
+        } catch (error) {
+            setLoading(false);
+            setError(error.message);
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+            console.error('Error fetching users:', error);
+        }
+    
+    }
+
+     useEffect(() => {
+        fetchFriends();
+      }, [] );
+
     return (
         <div>
             <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-500 to-blue-300">
@@ -73,6 +215,46 @@ function CreateLobby() {
                         <h2 className="text-2xl font-semibold text-gray-800">share this lobby id with ur friends to invite them</h2>
                     </div>
                 )}
+                {(lobbyId && users) && ( <Card sx={{ maxWidth: 500, margin: 'auto', padding: 3 }}>
+      <Typography variant="h6" gutterBottom>
+        Invite Friends to Lobby
+      </Typography>
+
+      <Autocomplete
+        options={users}
+        getOptionLabel={(option) => option.fullname}
+        onInputChange={(event, newInputValue) => setFilter(newInputValue)}
+        renderInput={(params) => (
+          <TextField {...params} label="Search friends…" variant="outlined" />
+        )}
+        sx={{ mb: 2 }}
+      />
+
+      <List dense>
+        {filteredUsers.map((user) => (
+          <ListItem
+            key={user._id}
+            secondaryAction={
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => sendRequest(lobbyId, user._id)}
+              >
+                Invite
+              </Button>
+            }
+          >
+            <ListItemAvatar>
+              <Avatar src={user.avatarUrl} alt={user.fullname} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={user.fullname}
+              secondary={user.email}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Card>)}
                 {error && (
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         <strong class="font-bold">he bhagwan !!</strong>

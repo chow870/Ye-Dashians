@@ -10,7 +10,7 @@ function JoinLobby() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const userId = useSelector((state) => {
-        return state?.auth?.user?.uid
+        return state?.auth?.user?._id
     })
 
     const handleJoin = async(e) => {
@@ -23,7 +23,8 @@ function JoinLobby() {
                 },
                 body: JSON.stringify({ 
                     "guestId" : userId,
-                    "lobbyId" : lobbyId
+                    "lobbyId" : lobbyId,
+                    "acceptedByUser2" : true
                  }),
             });
 
@@ -39,19 +40,29 @@ function JoinLobby() {
                 setLobbyId(data.lobby._id);
                 setError(null);
 
-                // adding this lobby into the users firebase database
-                let userDoc = await database.users.doc(userId).get();
-                let userDocData = userDoc?.data();
-                let obj
-                if (userDocData?.lobbies != []) {
-                    obj = [...userDocData.lobbies,data.lobby._id]
+                const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({lobbyId:lobbyId}),
+                });
+                
+
+                if (!response2.ok) {
+                    setLoading(false);
+                    throw new Error('Network response was not ok');
                 }
-                else {
-                    obj = [data.lobby._id]
+                
+                const data2 = await response2.json();
+
+                console.log(data2)
+
+                if (data2.success) {
+                    setLoading(false);
+                    setError(null);
                 }
-                database.users.doc(userId).update({
-                    lobbies: obj
-                })
+                
 
             }
         } catch (error) {
