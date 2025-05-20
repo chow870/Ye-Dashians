@@ -15,6 +15,9 @@ import {
     Rating,
     Stack
 } from '@mui/material';
+import io from 'socket.io-client'
+const socket = io.connect('http://localhost:5000')
+
 
 const style = {
     position: 'absolute',
@@ -313,7 +316,21 @@ function LobbiesCard(props) {
         }
       }
       
+      
+      const sendRequest = function(){
+        const sentLobbyId = lobbyId
+        navigate('/createlobby', {
+        state: { sentLobbyId }
+        });
+      }
 
+
+      useEffect(() => {
+        socket.on('lobby_updated',async ()=>{
+          console.log("the lobby updated event is received")
+          await props.refreshParent();
+        })
+      },[])
 
 
     return (
@@ -344,7 +361,23 @@ function LobbiesCard(props) {
         >
           End This Session
         </Button>
-  
+          
+          {(guest==undefined || guest=='') && (<Button
+          variant="outlined"
+          size="small"
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '170px',
+            zIndex: 1,
+            color: '#f44336',
+            borderColor: '#f44336',
+          }}
+          onClick={sendRequest}
+        >
+          send request
+        </Button>)}
+
         <div style={{ width: '40%' }}>
             <CardContent sx={{ textAlign: 'left' }}>
                 <Typography sx={{ color: 'text.secondary', fontSize: 14 }}>

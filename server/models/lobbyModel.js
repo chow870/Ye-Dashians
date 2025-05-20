@@ -37,6 +37,15 @@ const lobbySchema = mongoose.Schema({
         default : false
       }
 });
+
+
+lobbySchema.post( ['save', 'findOneAndUpdate', 'updateOne' , 'findOneAndDelete','findByIdAndUpdate'],async function(doc){
+  if(global.io)
+  {
+    global.io.emit('lobby_updated')
+  }
+})
+
 const lobbyModel = mongoose.model('lobby', lobbySchema);
 module.exports = lobbyModel;
 // since i will be using require in the app4 file so i have to export like thin {only}
