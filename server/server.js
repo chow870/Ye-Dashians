@@ -50,8 +50,8 @@ io.on("connection", (socket) => {
   })
 })
 
-httpServer.listen(5000,()=>{
-  console.log("server is listening on port 5000")
+httpServer.listen(8000,()=>{
+  console.log("server is listening on port 8000")
 });
 
 

@@ -50,35 +50,41 @@ async function signupUser(req, res) {
     try {
         let userDetails = req.body;
         let user = await userModel.findOne({email : req.body.email});
-        if(user===null)
-        {
-            user = await userModel.create(userDetails);
+
+        // ✅ ADDED: if user already exists, return response to avoid empty reply
+        if (user !== null) {
+            return res.json({
+                success: false,
+                message: "user already exists with this email"
+            });
         }
+
+        // if user not found then create
+        user = await userModel.create(userDetails);
+
         if(user) {
-            
             const uid = user._id;
             const token = jwt.sign({ payload: uid }, jwt_key);
             res.cookie('isLoggedIn', token, { httpOnly: true });
-            res.json({
+
+            return res.json({
                 success : true,
                 message: "new user registered successfully",
                 data : user
-            })
+            });
         }
         else {
             return res.json({
                 success : false,
                 message: "error in registering user "
-            })
+            });
         }
-        
+
     } catch (err) { 
-            return res.json({
+        return res.json({
             success : false,
             message: `error while registering new user , ${err.message}`
-            })
-        
-        
+        });
     }
 }
 
@@ -93,7 +99,7 @@ function isAuthorised(roles) {
             return res.status(401).json({
                 // 401 means unauthorised access
                 message: "operation not permitted to userd"
-            })
+            });
         }
     }
 }
@@ -131,20 +137,19 @@ async function forgotPassword(req, res) {
 
             return res.json({
                 message: `you will get an email with reset Token : ${resetToken}`
-            })
-            
+            });
+
         }
         else {
             return res.json({
                 message: "forgotPassword : user with this email is not registered"
-            })
+            });
         }
-
 
     } catch (err) {
         return res.json({
             message: `some error occurred while forgot password , ${err.message}`
-        })
+        });
     }
 }
 
@@ -164,30 +169,29 @@ async function resetPassword(req, res) {
             await user.save();
             return res.json({
                 message : "your password has been changed successfully"
-            })
+            });
         }
         else
         {
             return res.json({
                 message : "reset password : user entry in database missing"
-            })
+            });
         }
     } catch (err) {
         return res.json({
             message : `some error occurred while resetting your password ${err.message}`
-        })
+        });
     }
 
 }
 
 function logout(req,res){
-    res.cookie('isLoggedIn','',{maxAge:1})
+    res.cookie('isLoggedIn','',{maxAge:1});
     // cookie ka naam // cookie ki value // extra options such as cookie ki age
     // what this does is basically destroys the cookie after 1ms
     res.json({
         message : "the user was successfully logged out"
-    })
+    });
 }
 
-
-module.exports = { loginUser, signupUser, isAuthorised, forgotPassword, resetPassword , logout};
+module.exports = { loginUser, signupUser, isAuthorised, forgotPassword, resetPassword , logout };
