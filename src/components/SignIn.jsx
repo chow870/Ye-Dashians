@@ -167,24 +167,23 @@ function SignIn() {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* Left Section - Branding */}
       <Box
-        sx={{
-          flex: 1,
-          background: 'linear-gradient(135deg, #2196F3 30%, #21CBF3 90%)',
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          flexDirection: 'column',
-          p: 5,
-        }}
-      >
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
-          HangoutSpot
-        </Typography>
-        <Typography variant="h6" textAlign="center" maxWidth="400px">
-          Discover new people and meet up at cool spots around you!
-        </Typography>
-      </Box>
+  sx={{
+    flex: 1,
+    display: { xs: 'none', md: 'block' },
+  }}
+>
+  <Box
+    component="img"
+    src="/yvette-de-wit-8XLapfNMW04-unsplash.jpg"
+    alt="Hangout Visual"
+    sx={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    }}
+  />
+</Box>
+
   
       {/* Right Section - SignIn Form */}
       <Box
@@ -196,135 +195,153 @@ function SignIn() {
           p: 3,
         }}
       >
-        <Paper elevation={4} sx={{ p: 4, borderRadius: 4, width: '100%', maxWidth: 420 }}>
-          <Box textAlign="center" mb={3}>
-            <Typography variant="h5" fontWeight="bold">
-              {iAmAdmin ? 'Admin Sign In' : 'Welcome Back!'}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Please enter your credentials to continue
-            </Typography>
-          </Box>
-  
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-  
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-  
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={handleLogin}
-            disabled={loading}
-            sx={{
-              py: 1.4,
-              mt: 2,
-              mb: 1,
-              borderRadius: 3,
-              fontWeight: 'bold',
-              background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-              '&:hover': {
-                background: 'linear-gradient(45deg, #1565C0 30%, #0D47A1 90%)',
-              },
-            }}
-          >
-            Sign In
-          </Button>
-  
-          {!iAmAdmin && (
-            <>
-              <Divider sx={{ my: 2 }}>OR</Divider>
-  
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                onClick={handleGoogleSignIn}
-                disabled={loading}
-                sx={{
-                  py: 1.3,
-                  mb: 2,
-                  borderRadius: 3,
-                  borderColor: '#DB4437',
-                  color: '#DB4437',
-                  '&:hover': {
-                    borderColor: '#C31E0F',
-                    backgroundColor: 'rgba(219, 68, 55, 0.04)',
-                  },
-                }}
-              >
-                Continue with Google
-              </Button>
-  
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GitHubIcon />}
-                onClick={handleGithubSignIn}
-                disabled={loading}
-                sx={{
-                  py: 1.3,
-                  mb: 2,
-                  borderRadius: 3,
-                  borderColor: '#333',
-                  color: '#333',
-                  '&:hover': {
-                    borderColor: '#000',
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  },
-                }}
-              >
-                Continue with GitHub
-              </Button>
-            </>
-          )}
-  
-          <Box sx={{ textAlign: 'center', mt: 1 }}>
-            <Typography variant="body2">
-              <Link to="#" style={{ color: '#2196F3', textDecoration: 'none' }}>
-                Forgot password?
-              </Link>
-            </Typography>
-          </Box>
-  
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="body2">
-              Don&apos;t have an account?{' '}
-              <Link to="/signup" style={{ color: '#2196F3', fontWeight: 'bold', textDecoration: 'none' }}>
-                Sign Up
-              </Link>
-            </Typography>
-          </Box>
-  
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Button
-              variant="text"
-              onClick={() => setIAmAdmin(!iAmAdmin)}
-              sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
-            >
-              {iAmAdmin ? 'Switch to User Login' : 'Switch to Admin Login'}
-            </Button>
-          </Box>
-        </Paper>
+        <Paper
+  elevation={4}
+  sx={{
+    p: 4,
+    borderRadius: 4,
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#000',
+    color: '#fff',
+  }}
+>
+  <Box textAlign="center" mb={3}>
+    <Typography variant="h5" fontWeight="bold" sx={{ color: '#fff' }}>
+      {iAmAdmin ? 'Admin Sign In' : 'Welcome Back!'}
+    </Typography>
+    <Typography variant="body2" sx={{ color: '#ccc' }}>
+      Please enter your credentials to continue
+    </Typography>
+  </Box>
+
+  {error && (
+    <Alert severity="error" sx={{ mb: 2 }}>
+      {error}
+    </Alert>
+  )}
+
+  <TextField
+    label="Email"
+    variant="outlined"
+    fullWidth
+    margin="normal"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    InputLabelProps={{ style: { color: '#ccc' } }}
+    InputProps={{
+      style: { color: '#fff', backgroundColor: '#121212' },
+    }}
+  />
+  <TextField
+    label="Password"
+    type="password"
+    variant="outlined"
+    fullWidth
+    margin="normal"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    InputLabelProps={{ style: { color: '#ccc' } }}
+    InputProps={{
+      style: { color: '#fff', backgroundColor: '#121212' },
+    }}
+  />
+
+  <Button
+    fullWidth
+    variant="contained"
+    onClick={handleLogin}
+    disabled={loading}
+    sx={{
+      py: 1.4,
+      mt: 2,
+      mb: 1,
+      borderRadius: 3,
+      fontWeight: 'bold',
+      background: 'linear-gradient(45deg, #9C27B0 30%, #7B1FA2 90%)',
+      '&:hover': {
+        background: 'linear-gradient(45deg, #6A1B9A 30%, #4A148C 90%)',
+      },
+    }}
+  >
+    Sign In
+  </Button>
+
+  {!iAmAdmin && (
+    <>
+      <Divider sx={{ my: 2, borderColor: '#444' }}>OR</Divider>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        startIcon={<GoogleIcon />}
+        onClick={handleGoogleSignIn}
+        disabled={loading}
+        sx={{
+          py: 1.3,
+          mb: 2,
+          borderRadius: 3,
+          borderColor: '#DB4437',
+          color: '#DB4437',
+          '&:hover': {
+            borderColor: '#C31E0F',
+            backgroundColor: 'rgba(219, 68, 55, 0.08)',
+          },
+        }}
+      >
+        Continue with Google
+      </Button>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        startIcon={<GitHubIcon />}
+        onClick={handleGithubSignIn}
+        disabled={loading}
+        sx={{
+          py: 1.3,
+          mb: 2,
+          borderRadius: 3,
+          borderColor: '#fff',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          },
+        }}
+      >
+        Continue with GitHub
+      </Button>
+    </>
+  )}
+
+  <Box sx={{ textAlign: 'center', mt: 1 }}>
+    <Typography variant="body2">
+      <Link to="#" style={{ color: '#9575CD', textDecoration: 'none' }}>
+        Forgot password?
+      </Link>
+    </Typography>
+  </Box>
+
+  <Box sx={{ textAlign: 'center', mt: 2 }}>
+    <Typography variant="body2">
+      Don&apos;t have an account?{' '}
+      <Link to="/signup" style={{ color: '#BA68C8', fontWeight: 'bold', textDecoration: 'none' }}>
+        Sign Up
+      </Link>
+    </Typography>
+  </Box>
+
+  <Box sx={{ textAlign: 'center', mt: 2 }}>
+    <Button
+      variant="text"
+      onClick={() => setIAmAdmin(!iAmAdmin)}
+      sx={{ color: '#ccc', fontSize: '0.875rem' }}
+    >
+      {iAmAdmin ? 'Switch to User Login' : 'Switch to Admin Login'}
+    </Button>
+  </Box>
+</Paper>
+
       </Box>
     </Box>
   );
