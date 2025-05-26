@@ -31,15 +31,16 @@ function CreateLobby() {
 
 
 
-
-    const [lobbyId, setLobbyId] = useState('');
+    const location = useLocation();
+    
+    const [lobbyId, setLobbyId] = useState(location?.state?.sentLobbyId? location.state.sentLobbyId : '');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     
     const userId = useSelector((state) => {
         return state?.auth?.user?._id
     })
-    const location = useLocation();
+
     const {eventDetails} = location.state||[];
     console.log(eventDetails);
     const handleButtonClick = async (e) => {
