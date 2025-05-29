@@ -153,8 +153,8 @@ const handleUpdate = async() => {
     }, 5000);
     console.error('Error updating lobby:', error);
 }
-sendMailForLobbySubscribeToGuest();
-sendMailForLobbySubscribeToMe();
+// sendMailForLobbySubscribeToGuest();
+// sendMailForLobbySubscribeToMe();
 
 
 
