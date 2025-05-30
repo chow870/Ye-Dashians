@@ -52,12 +52,18 @@ async function signupUser(req, res) {
         let user = await userModel.findOne({email : req.body.email});
 
         // ✅ ADDED: if user already exists, return response to avoid empty reply
-        if (user !== null) {
+        if (user) {
+            // ✅ Return existing user and a token
+            const uid = user._id;
+            const token = jwt.sign({ payload: uid }, jwt_key);
+            res.cookie('isLoggedIn', token, { httpOnly: true });
+      
             return res.json({
-                success: false,
-                message: "user already exists with this email"
+              success: true,
+              message: "User already exists, logged in instead",
+              data: user,
             });
-        }
+          }
 
         // if user not found then create
         user = await userModel.create(userDetails);
