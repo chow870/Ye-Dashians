@@ -19,6 +19,7 @@ function Lobbies() {
       if (!res.ok) {
        
         throw new Error('Network response was not ok');
+        
       }
        
       const resData = await res.json();
