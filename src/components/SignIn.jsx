@@ -50,8 +50,8 @@ function SignIn() {
       });
 
       let resp = await res.json();
-
-      if(resp) {
+      console.log("login response : ",resp);
+      if(resp.success) {
         let user = resp.userDetails;
         dispatch(setUser(user));
       } else {

@@ -22,6 +22,7 @@ import AdminHomePage from './components/Admin/AdminHomePage';
 import LandingPage from './components/LandingPage';
 import UserHomePage from './components/UserHomePage';
 import CreateEventForm from './components/Admin/CreateNewEvent';
+import ProfilePage from './components/Admin/ProfilePage';
 function App() {
   const [count, setCount] = useState(0)
   const isAdmin = useSelector(state=>{
@@ -33,29 +34,29 @@ function App() {
   console.log(isAdmin)
   return (
     <>
-    <Navbar/>
-      <Routes>
-      <Route path='/' element={user?(isAdmin?<AdminHomePage/>:<UserHomePage/>):<LandingPage/>} />
-          <Route path='/signup' element={<SignUp/>} />
-          <Route path='/signin' element={<SignIn/>} />
-          <Route path='/home' element={isAdmin?<AdminHomePage/>:<MapWrapper/>} />
-          <Route path='/createlobby' element={isAdmin?<CreateEventForm/>:<CreateLobby/>} />
-          <Route path='/trip' element={isAdmin?<AdminHomePage/>:<Trip/>} />
-          <Route path='/joinlobby' element={isAdmin?<AdminHomePage/>:<JoinLobby/>} />
-          <Route path='/showlobbies' element={isAdmin?<AdminHomePage/>:<Lobbies/>} /> 
-          <Route path = '/myLobby/:lobbyId' element = {isAdmin?<AdminHomePage/>:<Lobby/>} />
-          <Route path='/preference' element={isAdmin?<AdminHomePage/>:<MainPreference/>} >
-              <Route path ='form' element={isAdmin?<CreateEventForm/>:<PreferenceForm/>}/>
-              <Route path ='matching' element={isAdmin?<AdminHomePage/>:<PreferenceMatching/>}/>
-              <Route path ='results' element={isAdmin?<AdminHomePage/>:<ShowingResults/>}/>
-              <Route path ='moredetails' element={isAdmin?<AdminHomePage/>:<MoreDetailsCard/>}/>
-          </Route>
+      <Navbar />
+      <Routes> 
+        <Route path='/' element={user ? (isAdmin ? <AdminHomePage /> : <UserHomePage />) : <LandingPage />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/signin' element={<SignIn />} />
+        <Route path='/home' element={isAdmin ? <AdminHomePage /> : <MapWrapper />} />
+        <Route path='/createlobby' element={isAdmin ? <CreateEventForm /> : <CreateLobby />} />
+        <Route path='/profile' element={<ProfilePage/>}/>
 
-          
+        <Route path='/trip' element={isAdmin ? <AdminHomePage /> : <Trip />} />
+        <Route path='/joinlobby' element={isAdmin ? <AdminHomePage /> : <JoinLobby />} />
+        <Route path='/showlobbies' element={isAdmin ? <AdminHomePage /> : <Lobbies />} />
+        <Route path='/myLobby/:lobbyId' element={isAdmin ? <AdminHomePage /> : <Lobby />} />
+        
+        <Route path='/preference' element={isAdmin ? <AdminHomePage /> : <MainPreference />}>
+          <Route path='form' element={isAdmin ? <CreateEventForm /> : <PreferenceForm />} />
+          <Route path='matching' element={isAdmin ? <AdminHomePage /> : <PreferenceMatching />} />
+          <Route path='results' element={isAdmin ? <AdminHomePage /> : <ShowingResults />} />
+          <Route path='moredetails' element={isAdmin ? <AdminHomePage /> : <MoreDetailsCard />} />
+        </Route>
       </Routes>
-      
     </>
-  )
+  );
 }
 
 export default App
