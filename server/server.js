@@ -39,9 +39,19 @@ io.on("connection", (socket) => {
   // console.log(socket);
   console.log("socket is active to be connected")
   console.log("the id of socket is",socket.id)
-  socket.on('Join Room' , (room)=>{
+  socket.on('join_room' , (room)=>{
+    console.log("joining room",room);
     socket.join(room)
   })
+
+  socket.on('leave_room' , (room)=>{
+    socket.leave(room)
+  })
+  socket.on("change_in_location" , (data) => {
+    console.log("change in location is",data);
+    io.to(data.lobbyId).emit("update_friend_location", data);
+  });
+
   socket.on("PrivateMessage" , (data) => {
     console.log(data);
     io.to(data.lobbyId).emit("private-message-recieved", data)
