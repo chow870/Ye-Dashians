@@ -117,8 +117,7 @@ function SignUp() {
         
         setLoading(false);
         navigate('/signin');
-        
-
+      }
     } catch (error) {
       setError(error.message);
       setTimeout(() => setError(''), 4000);

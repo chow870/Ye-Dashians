@@ -51,33 +51,25 @@ function SignIn() {
 
       let resp = await res.json();
 
-            if(resp)
-            {
-                let user = resp.userDetails;
-                
-                dispatch(setUser(user)); 
-            }
-            else
-            {
-                setError("sign-in attemp failed");
-                setTimeout(() => {
-                setError('')
-                }, 4000);
-            }
-            
-
-
-
-            setLoading(false);
-            navigate('/'); 
-        } catch (error) {
-            console.log(error.message);
-            setError(error.message);
-            setTimeout(() => {
-                setError('')
-            }, 4000);
-            setLoading(false)
-        }
+      if (resp) {
+        let user = resp.userDetails;
+        dispatch(setUser(user));
+        setLoading(false);
+        navigate('/');
+      } else {
+        setError("sign-in attemp failed");
+        setTimeout(() => {
+          setError('');
+        }, 4000);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error.message);
+      setError(error.message);
+      setTimeout(() => {
+        setError('');
+      }, 4000);
+      setLoading(false);
     }
   };
 
