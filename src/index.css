@@ -5,4 +5,5 @@
 
 body {
     @apply min-h-screen bg-black;
+    background-image: url('/pexels-pixabay-220072.jpg');
   }

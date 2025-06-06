@@ -1,55 +1,55 @@
-import '../index.css'
+import '../index.css';
 import React, { useState, useEffect } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
-import Alert from '@mui/material/Alert';
-import { TextField } from '@mui/material';
-import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-import { setAdminFalse, setAdminTrue} from '../redux/slices/authSlice';
-import { useDispatch , useSelector} from 'react-redux';
-import { googleProvider , githubProvider} from '../firebase';
-import { auth } from '../firebase';
+import { 
+  Card, 
+  CardContent, 
+  Typography, 
+  Button, 
+  TextField, 
+  Alert,
+  Divider,
+  Box,
+  Container,
+  Paper
+} from '@mui/material';
+import { Google as GoogleIcon, GitHub as GitHubIcon } from '@mui/icons-material';
+import { Link, useNavigate } from "react-router-dom";
+import { setAdminFalse, setAdminTrue } from '../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { googleProvider, githubProvider, auth, database } from '../firebase';
 import { setUser } from '../redux/slices/authSlice';
-import { database } from '../firebase';
+
 function SignIn() {
+  const user = useSelector((state) => state?.auth?.user);
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [myUser, setMyUser] = useState(null);
+  const [iAmAdmin, setIAmAdmin] = useState(false);
+  const navigate = useNavigate();
 
-   const user = useSelector((state) => {
-       return state?.auth?.user;
-     })
-    const dispatch = useDispatch();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [myUser, setMyUser] = useState(null);
-    const [iAmAdmin , setIAmAdmin] = useState(false);
-    const navigate = useNavigate();
-    const handleLogin = async () => {
-        try {
-            setError('');
-            setLoading(true);
-            
-            const userData = {
-                userEmail : email,
-                userPassword : password
-            }
+  // Login handlers remain the same
+  const handleLogin = async () => {
+    try {
+      setError('');
+      setLoading(true);
+      
+      const userData = {
+        userEmail: email,
+        userPassword: password
+      };
 
-            let res = await fetch("/api/v1/auth/login",{
-                method : "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                  },
-                body: JSON.stringify(userData),  
-            })
+      let res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),  
+      });
 
-
-            let resp = await res.json();
+      let resp = await res.json();
 
             if(resp)
             {
@@ -79,225 +79,281 @@ function SignIn() {
             setLoading(false)
         }
     }
-
-
-    const handleGoogleSignIn = async () => {
-      try {
-          setError('');
-          setLoading(true);
-          const result = await auth.signInWithPopup(googleProvider);
-          
-          
-
-          const user = result.user;
-          //console.log(user);
-
-          
-          
-
-          const userEmail = user.email;
-          // console.log(userEmail)
-          
-              
-             const newUserData = {
-              email: userEmail,
-              fullname: user.displayName,
-              isAdmin: false, 
-              phoneno: user.phoneNumber,
-              localUser : false,
-              profileImage : user.photoURL
-            };
-
-
-            const response2 = await fetch("/api/v1/auth/signup", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newUserData),
-            });
-            
-            
-    
-            if (!response2.ok) {
-              console.error("Signup failed:", data.message || data);
-              return;
-            } else {
-              console.log("Signup successful:");    
-            
-            const responseData = await response2.json()
-             console.log(responseData)
-            if(responseData.success)
-            {
-              let dbUser = responseData.data;
-          //     console.log(responseData)
-          //    console.log(dbUser)
-              dispatch(setUser(dbUser));
-            }
-          }  
-          navigate('/');
-          setLoading(false);       
-          }
-         
-
-        
-           catch (error) {
-          console.error("Google sign-in error:", error);
-          setError(error.message);
-          setTimeout(() => setError(''), 4000);
-          setLoading(false);
-      }
   };
+
+  const handleGoogleSignIn = async () => {
+    // Original Google sign-in logic remains unchanged
+    try {
+      setError('');
+      setLoading(true);
+      const result = await auth.signInWithPopup(googleProvider);
       
+      const user = result.user;
+      const userEmail = user.email;
+      
+      const newUserData = {
+        email: userEmail,
+        fullname: user.displayName,
+        isAdmin: false, 
+        phoneno: user.phoneNumber,
+        localUser: false,
+        profileImage: user.photoURL
+      };
 
-    const handleGithubSignIn = async() => {
-        try {
-            setError('');
-            setLoading(true);
-            const result = await auth.signInWithPopup(githubProvider);
-            const user = result.user;
-            setMyUser(user);
-
-            const res = await database.users.doc(user.uid).get();
-            if(!res.exists)
-            {
-            const newres = await database.users.doc(user.uid).set({
-                userId: user.uid,
-                fullname: user.uid,
-                profileUrl: user.photoURL,
-                permLoc: "",
-                curLoc: "",
-                lobbies: [],
-                isAdmin : false
-            });
+      const response2 = await fetch("/api/v1/auth/signup", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUserData),
+      });
+      
+      if (!response2.ok) {
+        console.error("Signup failed");
+        return;
+      } else {
+        console.log("Signup successful:");    
+      
+        const responseData = await response2.json();
+        if(responseData.success) {
+          let dbUser = responseData.data;
+          dispatch(setUser(dbUser));
         }
-
-            dispatch(setUser(user));
-            setLoading(false);
-            navigate('/');
-        } catch (error) {
-            console.error("Google sign-in error:", error);
-            setError(error.message);
-            setTimeout(() => setError(''), 4000);
-            setLoading(false);
-        }
+      }  
+      navigate('/');
+      setLoading(false);       
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setError(error.message);
+      setTimeout(() => setError(''), 4000);
+      setLoading(false);
     }
+  };
 
-     useEffect(() => {
-        
-        if (user != null) {
-          navigate('/')
-        }
-      }, [user])
+  const handleGithubSignIn = async() => {
+    // Original GitHub sign-in logic remains unchanged
+    try {
+      setError('');
+      setLoading(true);
+      const result = await auth.signInWithPopup(githubProvider);
+      const user = result.user;
+      setMyUser(user);
 
-    return (
-        <div>
+      const res = await database.users.doc(user.uid).get();
+      if(!res.exists) {
+        await database.users.doc(user.uid).set({
+          userId: user.uid,
+          fullname: user.uid,
+          profileUrl: user.photoURL,
+          permLoc: "",
+          curLoc: "",
+          lobbies: [],
+          isAdmin: false
+        });
+      }
 
-            {!iAmAdmin?
-            <div className="flex justify-center">
-                <div className='loginCard'>
-                    <Card sx={{ width: '25vw' }} variant="outlined">
+      dispatch(setUser(user));
+      setLoading(false);
+      navigate('/');
+    } catch (error) {
+      console.error("GitHub sign-in error:", error);
+      setError(error.message);
+      setTimeout(() => setError(''), 4000);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    if (user != null) {
+      navigate('/');
+    }
+  }, [user]);
 
-                        <CardContent sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-around',
-                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
-                            textAlign: 'center'
-                        }}> <CardActionArea >
-                                <Typography component="div">
-                                    Lizard
-                                </Typography></CardActionArea>
-                            <TextField id="outlined-basic" label="Email" variant="outlined" margin="normal" size="small" value={email} onChange={(e) => {
-                                setEmail(e.target.value);
-                            }} />
-                            <TextField id="outlined-basic" label="Password" variant="outlined" margin="normal" size="small" value={password} onChange={(e) => {
-                                setPassword(e.target.value);
-                            }} />
-                            {error != '' && <Alert severity="error">{error}</Alert>}
-                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleLogin} disabled={loading}>
-                                Login
-                            </Button>
-                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleGoogleSignIn} disabled={loading}>
-                                Login with google
-                            </Button>
-                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleGithubSignIn} disabled={loading}>
-                                Login with github
-                            </Button>
-                            <Typography variant='subtitle2' sx={{ color: 'grey', marginTop: '10px' }}>
-                                Password BhulGye?
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                    <Card sx={{ width: '25vw' }} variant="outlined" margin="normal">
-                        <CardContent sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-around',
-                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
-                            textAlign: 'center'
-                        }} component="div">
-                            <Typography component="div" variant='subtitle2' sx={{ color: 'grey', }}>
-                                Don't have an acccount? <Link to=''>SignUp</Link>
-                            </Typography></CardContent>
-                    </Card>
-                </div>
-            </div>:<div className="flex justify-center">
-                <div className='loginCard' >
+  // Improved UI design
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Left Section - Branding */}
+      <Box
+  sx={{
+    flex: 1,
+    display: { xs: 'none', md: 'block' },
+  }}
+>
+  <Box
+    component="img"
+    src="/yvette-de-wit-8XLapfNMW04-unsplash.jpg"
+    alt="Hangout Visual"
+    sx={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    }}
+  />
+</Box>
 
-                </div>
-                <div className='loginCard'>
-                    <Card sx={{ width: '25vw' }} variant="outlined">
+  
+      {/* Right Section - SignIn Form */}
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 3,
+        }}
+      >
+        <Paper
+  elevation={4}
+  sx={{
+    p: 4,
+    borderRadius: 4,
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#000',
+    color: '#fff',
+  }}
+>
+  <Box textAlign="center" mb={3}>
+    <Typography variant="h5" fontWeight="bold" sx={{ color: '#fff' }}>
+      {iAmAdmin ? 'Admin Sign In' : 'Welcome Back!'}
+    </Typography>
+    <Typography variant="body2" sx={{ color: '#ccc' }}>
+      Please enter your credentials to continue
+    </Typography>
+  </Box>
 
+  {error && (
+    <Alert severity="error" sx={{ mb: 2 }}>
+      {error}
+    </Alert>
+  )}
 
-                        <CardContent sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-around',
-                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
-                            textAlign: 'center'
-                        }}> <CardActionArea >
-                                <Typography component="div">
-                                    Lizard
-                                </Typography></CardActionArea>
-                            <TextField id="outlined-basic" label="Email" variant="outlined" margin="normal" size="small" value={email} onChange={(e) => {
-                                setEmail(e.target.value);
-                            }} />
-                            <TextField id="outlined-basic" label="Password" variant="outlined" margin="normal" size="small" value={password} onChange={(e) => {
-                                setPassword(e.target.value);
-                            }} />
-                            {error != '' && <Alert severity="error">{error}</Alert>}
-                            <Button fullWidth={true} color="primary" sx={{ width: '100%', marginTop: '2%', marginBottom: '2%', }} variant='contained' onClick={handleLogin} disabled={loading}>
-                                Login
-                            </Button>
-                            <Typography variant='subtitle2' sx={{ color: 'grey', marginTop: '10px' }}>
-                                Password BhulGye?
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                    <Card sx={{ width: '25vw' }} variant="outlined" margin="normal">
-                        <CardContent sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-around',
-                            alignItems: 'center',  // Note: alignItems 'space-around' is not a valid value, so I used 'center'
-                            textAlign: 'center'
-                        }} component="div">
-                            <Typography component="div" variant='subtitle2' sx={{ color: 'grey', }}>
-                                Don't have an acccount? <Link to=''>SignUp</Link>
-                            </Typography></CardContent>
-                    </Card>
-                </div>
-            </div>
+  <TextField
+    label="Email"
+    variant="outlined"
+    fullWidth
+    margin="normal"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    InputLabelProps={{ style: { color: '#ccc' } }}
+    InputProps={{
+      style: { color: '#fff', backgroundColor: '#121212' },
+    }}
+  />
+  <TextField
+    label="Password"
+    type="password"
+    variant="outlined"
+    fullWidth
+    margin="normal"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    InputLabelProps={{ style: { color: '#ccc' } }}
+    InputProps={{
+      style: { color: '#fff', backgroundColor: '#121212' },
+    }}
+  />
 
-            }
-            <button onClick={()=>{
-  setIAmAdmin(!iAmAdmin)
-}}>{iAmAdmin?"i am user":"i am an admin"}</button>
-        </div>
-    )
+  <Button
+    fullWidth
+    variant="contained"
+    onClick={handleLogin}
+    disabled={loading}
+    sx={{
+      py: 1.4,
+      mt: 2,
+      mb: 1,
+      borderRadius: 3,
+      fontWeight: 'bold',
+      background: 'linear-gradient(45deg, #9C27B0 30%, #7B1FA2 90%)',
+      '&:hover': {
+        background: 'linear-gradient(45deg, #6A1B9A 30%, #4A148C 90%)',
+      },
+    }}
+  >
+    Sign In
+  </Button>
+
+  {!iAmAdmin && (
+    <>
+      <Divider sx={{ my: 2, borderColor: '#444' }}>OR</Divider>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        startIcon={<GoogleIcon />}
+        onClick={handleGoogleSignIn}
+        disabled={loading}
+        sx={{
+          py: 1.3,
+          mb: 2,
+          borderRadius: 3,
+          borderColor: '#DB4437',
+          color: '#DB4437',
+          '&:hover': {
+            borderColor: '#C31E0F',
+            backgroundColor: 'rgba(219, 68, 55, 0.08)',
+          },
+        }}
+      >
+        Continue with Google
+      </Button>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        startIcon={<GitHubIcon />}
+        onClick={handleGithubSignIn}
+        disabled={loading}
+        sx={{
+          py: 1.3,
+          mb: 2,
+          borderRadius: 3,
+          borderColor: '#fff',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          },
+        }}
+      >
+        Continue with GitHub
+      </Button>
+    </>
+  )}
+
+  <Box sx={{ textAlign: 'center', mt: 1 }}>
+    <Typography variant="body2">
+      <Link to="#" style={{ color: '#9575CD', textDecoration: 'none' }}>
+        Forgot password?
+      </Link>
+    </Typography>
+  </Box>
+
+  <Box sx={{ textAlign: 'center', mt: 2 }}>
+    <Typography variant="body2">
+      Don&apos;t have an account?{' '}
+      <Link to="/signup" style={{ color: '#BA68C8', fontWeight: 'bold', textDecoration: 'none' }}>
+        Sign Up
+      </Link>
+    </Typography>
+  </Box>
+
+  <Box sx={{ textAlign: 'center', mt: 2 }}>
+    <Button
+      variant="text"
+      onClick={() => setIAmAdmin(!iAmAdmin)}
+      sx={{ color: '#ccc', fontSize: '0.875rem' }}
+    >
+      {iAmAdmin ? 'Switch to User Login' : 'Switch to Admin Login'}
+    </Button>
+  </Box>
+</Paper>
+
+      </Box>
+    </Box>
+  );
+  
 }
 
-export default SignIn
+export default SignIn;

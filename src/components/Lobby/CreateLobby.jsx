@@ -199,76 +199,113 @@ function CreateLobby() {
         fetchFriends();
       }, [] );
 
-    return (
-        <div>
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-500 to-blue-300">
-                <h1 className="text-3xl font-bold text-white mb-8">Lobby Generator</h1>
-                <button
-                    onClick={handleButtonClick} disabled={loading}
-                    className="px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out"
-                >
-                    Generate Lobby ID
-                </button>
-                {lobbyId && (
-                    <div className="mt-8 p-4 bg-white rounded-lg shadow-lg text-center">
-                        <h2 className="text-2xl font-semibold text-gray-800">Your Lobby ID:</h2>
-                        <p className="text-xl text-gray-600">{lobbyId}</p>
-                        <h2 className="text-2xl font-semibold text-gray-800">share this lobby id with ur friends to invite them</h2>
-                    </div>
-                )}
-                {(lobbyId && users) && ( <Card sx={{ maxWidth: 500, margin: 'auto', padding: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Invite Friends to Lobby
-      </Typography>
-
-      <Autocomplete
-        options={users}
-        getOptionLabel={(option) => option.fullname}
-        onInputChange={(event, newInputValue) => setFilter(newInputValue)}
-        renderInput={(params) => (
-          <TextField {...params} label="Search friends…" variant="outlined" />
-        )}
-        sx={{ mb: 2 }}
-      />
-         <Box sx={{ maxHeight: 120, overflowY: 'auto' }}>
-      <List dense>
-        {filteredUsers.map((user) => (
-          <ListItem
-            key={user._id}
-            secondaryAction={
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => sendRequest(lobbyId, user._id)}
-              >
-                Invite
-              </Button>
-            }
+      return (
+        <div
+          className="flex flex-col items-center justify-center min-h-screen"
+          style={{
+            backgroundImage: 'url("/pexels-pixabay-220072.jpg")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <h1 className="text-3xl font-bold text-black mb-8">Lobby Generator</h1>
+          <button
+            onClick={handleButtonClick}
+            disabled={loading}
+            className="px-6 py-3 text-lg font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 transition duration-300 ease-in-out"
           >
-            <ListItemAvatar>
-              <Avatar src={user.profileImage} alt={user.fullname} />
-            </ListItemAvatar>
-            <ListItemText
-              primary={user.fullname}
-              secondary={user.email}
-            />
-          </ListItem>
-        ))}
-      </List>
-      </Box>
-    </Card>)}
-                {error && (
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <strong class="font-bold">he bhagwan !!</strong>
-                        <span class="block sm:inline">{error}</span>
-                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" /></svg>
-                        </span>
-                    </div>
-                )}
+            Generate Lobby ID
+          </button>
+    
+          {lobbyId && (
+            <div className="mt-8 p-4 bg-black bg-opacity-80 rounded-lg shadow-lg text-center text-white max-w-xl">
+              <h2 className="text-2xl font-semibold">Your Lobby ID:</h2>
+              <p className="text-xl break-all">{lobbyId}</p>
+              <h2 className="text-2xl font-semibold mt-2">
+                Share this lobby ID with your friends to invite them
+              </h2>
             </div>
+          )}
+    
+          {lobbyId && users?.length > 0 && (
+            <Card
+              sx={{
+                maxWidth: 500,
+                marginTop: 4,
+                padding: 3,
+                backgroundColor: "#000",
+                color: "white",
+              }}
+            >
+              <Typography variant="h6" gutterBottom color="white">
+                Invite Friends to Lobby
+              </Typography>
+    
+              <Autocomplete
+                options={users}
+                getOptionLabel={(option) => option.fullname}
+                onInputChange={(event, newInputValue) => setFilter(newInputValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Search friends…"
+                    variant="outlined"
+                    InputLabelProps={{ style: { color: "#ccc" } }}
+                    InputProps={{
+                      ...params.InputProps,
+                      style: { color: "white" },
+                    }}
+                  />
+                )}
+                sx={{ mb: 2 }}
+              />
+    
+              <Box sx={{ maxHeight: 120, overflowY: "auto" }}>
+                <List dense>
+                  {filteredUsers.map((user) => (
+                    <ListItem
+                      key={user._id}
+                      secondaryAction={
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            backgroundColor: "#7e22ce",
+                            "&:hover": { backgroundColor: "#6b21a8" },
+                          }}
+                          onClick={() => sendRequest(lobbyId, user._id)}
+                        >
+                          INVITE
+                        </Button>
+                      }
+                    >
+                      <ListItemAvatar>
+                        <Avatar src={user.profileImage} alt={user.fullname} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={user.fullname}
+                        secondary={user.email}
+                        primaryTypographyProps={{ style: { color: "white" } }}
+                        secondaryTypographyProps={{ style: { color: "#ccc" } }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Card>
+          )}
+    
+          {error && (
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4"
+              role="alert"
+            >
+              <strong className="font-bold">he bhagwan !!</strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
         </div>
-    )
+      );
 }
 
 export default CreateLobby
