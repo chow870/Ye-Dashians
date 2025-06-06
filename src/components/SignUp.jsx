@@ -156,8 +156,8 @@ function SignUp(props) {
         })
         const newuserRes = await newuser.json();
         console.log(newuserRes.updatedData)
-        dispatch(setUser(newuserRes.updatedData));
-
+        // /dispatch(setUser(newuserRes.updatedData)); // Chow870 : updated this. i will prefer to navigate him to the login page. 
+                                                        // it will logically get inclined to the widely used logic
             }
           );
         });
@@ -166,7 +166,7 @@ function SignUp(props) {
 
         
         setLoading(false);
-        navigate('/');
+        navigate('/signin');
         
 
     } catch (error) {

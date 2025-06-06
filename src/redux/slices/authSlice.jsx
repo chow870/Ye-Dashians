@@ -1,6 +1,8 @@
 import { createSlice , createAsyncThunk } from "@reduxjs/toolkit";
 import { auth } from '../../firebase';
 import { database } from '../../firebase';
+
+
 const initialState = {
     user: null,
     loading: false,
@@ -9,7 +11,6 @@ const initialState = {
   };
 
 
-  
 
 //   logout thunk (logout name is given due to export const logout): This is the async function that performs the actual logout logic using Firebase’s signOut method. It handles the request to log the user out of Firebase.
 // extraReducers with .addCase(logout.fulfilled): This part listens for the status of the logout thunk. When the thunk is successful (i.e., the signOut operation completes), it triggers the fulfilled case
@@ -19,6 +20,7 @@ const initialState = {
     initialState,
     reducers: {
         resetAuthState : (state , action) => {
+          console.log("reached here");
           state.user = null;
           state.error = null;
           state.loading = false;

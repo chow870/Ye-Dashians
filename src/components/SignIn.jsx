@@ -55,11 +55,7 @@ function SignIn() {
             {
                 let user = resp.userDetails;
                 
-                dispatch(setUser(user));
-                
-                
-                console.log("fend",user2);  
-
+                dispatch(setUser(user)); 
             }
             else
             {
@@ -73,7 +69,7 @@ function SignIn() {
 
 
             setLoading(false);
-            navigate('/')
+            navigate('/'); 
         } catch (error) {
             console.log(error.message);
             setError(error.message);
