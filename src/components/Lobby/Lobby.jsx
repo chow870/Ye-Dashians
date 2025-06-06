@@ -129,8 +129,6 @@ const handleUpdate = async() => {
         },
         body: JSON.stringify({ 
               "lobbyId" : lobbyId,
-              "user1":myId,
-              "user2":guestId,
               "venue" : venueName,
               "venueId":venuePlaceId,
               "time" : dateAndTime,
