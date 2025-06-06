@@ -347,20 +347,22 @@ function LobbiesCard(props) {
         
         {/* Top-right Button */}
         <Button
-          variant="outlined"
-          size="small"
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            zIndex: 1,
-            color: '#f44336',
-            borderColor: '#f44336',
-          }}
-          onClick={deleteEverything}
-        >
-          End This Session
-        </Button>
+            variant="outlined"
+             size="small"
+             style={{
+               position: 'absolute',
+                top: '10px',
+               right: '10px',
+              zIndex: 1,
+               color: '#ffffff',        
+             borderColor: '#ffffff',   
+           backgroundColor: 'transparent', 
+  }}
+  onClick={deleteEverything}
+>
+  End This Session
+</Button>
+
           
           {(guest==undefined || guest=='') && (<Button
           variant="outlined"
@@ -370,8 +372,8 @@ function LobbiesCard(props) {
             top: '10px',
             right: '170px',
             zIndex: 1,
-            color: '#f44336',
-            borderColor: '#f44336',
+            color: '#ffffff',
+            borderColor: '#ffffff',
           }}
           onClick={sendRequest}
         >
@@ -540,8 +542,8 @@ function LobbiesCard(props) {
                 top: '10px',
                 right: '10px',
                 zIndex: 1,
-                color: '#f44336',
-                borderColor: '#f44336',
+                color: '#ffffff',
+                borderColor: '#ffffff',
               }}
               onClick={deleteEverything}
             >
@@ -573,8 +575,8 @@ function LobbiesCard(props) {
                     top: '10px',
                     right: '170px',
                     zIndex: 1,
-                    color: '#f44336',
-                    borderColor: '#f44336',
+                    color: '#ffffff',
+                    borderColor: '#ffffff',
                   }}
                   onClick={acceptRequest}
                 >
