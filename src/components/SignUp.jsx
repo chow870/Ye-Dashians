@@ -97,25 +97,27 @@ function SignUp() {
               const url = await uploadTask.snapshot.ref.getDownloadURL();
               setImgUrl(url);
 
-              const newuser = await fetch(`/api/v1/user/${id}`, {
-                method: 'PATCH',
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ profileImage: url }),
-              });
-
-              const newuserRes = await newuser.json();
-              dispatch(setUser(newuserRes.updatedData));
-              resolve();
+              const newuser = await fetch(`/api/v1/user/${id}`,{
+          method : 'PATCH',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({profileImage:url}),
+        })
+        const newuserRes = await newuser.json();
+        console.log(newuserRes.updatedData)
+        // /dispatch(setUser(newuserRes.updatedData)); // Chow870 : updated this. i will prefer to navigate him to the login page. 
+                                                        // it will logically get inclined to the widely used logic
             }
           );
         });
-      } else {
-        dispatch(setUser(userObj));
+
+
+
+        
+        setLoading(false);
+        navigate('/signin');
       }
-
-      setLoading(false);
-      navigate('/');
-
     } catch (error) {
       setError(error.message);
       setTimeout(() => setError(''), 4000);

@@ -227,7 +227,7 @@ function CreateLobby() {
             </div>
           )}
     
-          {lobbyId && users.length > 0 && (
+          {lobbyId && users?.length > 0 && (
             <Card
               sx={{
                 maxWidth: 500,

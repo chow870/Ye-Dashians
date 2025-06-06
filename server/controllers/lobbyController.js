@@ -115,17 +115,25 @@ module.exports.getAllLobies = async function getAllLobies(req,res){
 module.exports.updateLobby =  async function updateLobby(req,res){
     let lobbyId = req.body.lobbyId;
     try {
-        let mongoRes = await lobbyModel.findOneAndUpdate(
-            {_id : lobbyId} , 
-            {user2 : req.body.user2,
-             user1 : req.body.user1,
-             venue : req.body.venue,
-             venueId:req.body.venueId,
-             time :  req.body.time,
-             venueCoordinates : req.body.venCords
-            } ,
-            { new: true , returnDocument: 'after',
-                upsert: false  }
+        
+        let updateObj = {
+            venue: req.body.venue,
+            venueId: req.body.venueId,
+            time: req.body.time,
+            venueCoordinates: req.body.venCords
+        };
+
+        if (req.body.user1 !== undefined) {
+            updateObj.user1 = req.body.user1;
+        }
+        if (req.body.user2 !== undefined) {
+            updateObj.user2 = req.body.user2;
+        }
+
+       let mongoRes = await lobbyModel.findOneAndUpdate(
+            { _id: lobbyId },
+            updateObj,
+            { new: true, returnDocument: 'after', upsert: false }
         );
         if (!mongoRes) {
             res.status(500).json({ message : "such a lobby doesnt exist", success: false});

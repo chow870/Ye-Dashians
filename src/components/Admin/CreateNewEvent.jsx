@@ -81,7 +81,7 @@ const CreateEventForm = () => {
             <>
               <label className="block mb-4">
                 <span className="text-gray-300">Location Details </span>
-                      <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={["places"]}>
+                      <LoadScript googleMapsApiKey= {AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w} libraries={["places"]}>
                             <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
                                 <input
                                     type="text"
