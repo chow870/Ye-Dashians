@@ -23,6 +23,7 @@ import LandingPage from './components/LandingPage';
 import UserHomePage from './components/UserHomePage';
 import CreateEventForm from './components/Admin/CreateNewEvent';
 import ProfilePage from './components/Admin/ProfilePage';
+import Setting from './components/Admin/Setting';
 function App() {
   const [count, setCount] = useState(0)
   const isAdmin = useSelector(state=>{
@@ -42,7 +43,7 @@ function App() {
         <Route path='/home' element={isAdmin ? <AdminHomePage /> : <MapWrapper />} />
         <Route path='/createlobby' element={isAdmin ? <CreateEventForm /> : <CreateLobby />} />
         <Route path='/profile' element={<ProfilePage/>}/>
-
+        <Route path='/setting' element={<Setting/>}/>
         <Route path='/trip' element={isAdmin ? <AdminHomePage /> : <Trip />} />
         <Route path='/joinlobby' element={isAdmin ? <AdminHomePage /> : <JoinLobby />} />
         <Route path='/showlobbies' element={isAdmin ? <AdminHomePage /> : <Lobbies />} />

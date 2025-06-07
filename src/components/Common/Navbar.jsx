@@ -9,7 +9,7 @@ import {
 } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const navigation = [
   { name: 'signup', href: '/signup', current: true },
   { name: 'signin', href: '/signin', current: false },
@@ -22,8 +22,9 @@ const navigation = [
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
+const defaultImageUrl = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
 export default function Navbar() {
+  const user = useSelector((state)=> state.auth.user);
   return (
     <Disclosure as="nav" className="bg-purple-950">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -83,8 +84,8 @@ export default function Navbar() {
               <div>
                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                   <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt="User"
+                    src={user?.profileImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
                     className="h-8 w-8 rounded-full"
                   />
                 </MenuButton>
@@ -99,12 +100,12 @@ export default function Navbar() {
                   </Link>
                 </MenuItem>
                 <MenuItem>
-                  <a
-                    href="#"
+                <Link
+                    to="/setting"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Settings
-                  </a>
+                  </Link>
                 </MenuItem>
                 <MenuItem>
                   <a
