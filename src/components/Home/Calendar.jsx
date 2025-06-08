@@ -230,6 +230,12 @@ export default function Calendar() {
                         event: event,
                         month: { dateHeader: CustomDateHeader }
                     }}
+                    onSelectEvent={event => {
+                        navigate("/showlobbies" , {
+                            state : { highlightLobbyId : event.id}
+                        });
+                    }}
+
                 />
             </div>
         </div>

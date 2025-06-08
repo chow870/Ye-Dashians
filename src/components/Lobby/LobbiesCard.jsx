@@ -197,7 +197,8 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
     borderRadius: 2,
     border: '1px solid #333',
     boxShadow: '0 0 10px rgba(0,0,0,0.6)',
-    marginBottom: 2,
+    marginBottom: 1,
+    margin : 1,
     display: 'flex',
     justifyContent: 'space-between',
   };
