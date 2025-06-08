@@ -8,20 +8,20 @@ function Lobbies() {
   const [refresh, setRefresh] = useState(Date.now()); // State to trigger re-fetching
   const myId = useSelector((state) => state?.auth?.user?._id);
 
-  async function fetchLobbies() {
-    try {
-      let res = await fetch('/api/v1/user/userProfile/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!res.ok) {
-       
-        throw new Error('Network response was not ok');
+    async function fetchLobbies() {
+      try {
+        let res = await fetch('/api/v1/user/userProfile/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!res.ok) {
         
-      }
-       
+          throw new Error('Network response was not ok');
+          
+        }
+        
       const resData = await res.json();
       
       if (resData.success) {

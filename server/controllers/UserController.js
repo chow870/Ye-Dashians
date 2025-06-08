@@ -216,3 +216,36 @@ module.exports.deleteLobbyFromUser = async function(req, res) {
 }
 
 
+module.exports.getMyLobbies = async function(req, res) {
+  let id = req.id;
+  
+  try {
+    let thatOneUser = await userModel.findById(id).populate({
+      path: 'lobbies',
+      populate: [
+        { path: 'user1', select: '_id fullname' },
+        { path: 'user2', select: '_id fullname' }
+      ]
+    });
+    if (thatOneUser) {
+      
+      return res.json({
+        success: true,
+        message: "user has been fetched",
+        data: thatOneUser.lobbies
+      });
+    } else {
+      return res.json({
+        success: false,
+        message: "the user doesnt exist"
+      });
+    }
+  } catch (err) {
+    console.log(err.message)
+    return res.status(500).json({
+      success: false,
+      message: `err in fetching user by id ${err.message}`
+      
+    });
+  }
+}

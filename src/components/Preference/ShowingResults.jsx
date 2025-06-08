@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-
+const socket = io.connect('http://localhost:8000');
 export default function ShowingResults() {
     const [commonOptions, setCommonOptions] = useState([]);
     const [myOptions, setMyOptions] = useState([]); // State to hold my options
@@ -11,7 +11,7 @@ export default function ShowingResults() {
     const [socketLoading, setSocketLoading] = useState(true);
     const [sortOption, setSortOption] = useState('rating'); // State for sorting options
     const [filterType, setFilterType] = useState(''); // State for filtering by type of place
-    const socket = io.connect('http://localhost:8000');
+    
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
     const [friendSuggestedIds, setFriendSuggestedIds] = useState(new Set()); // suggested ids.

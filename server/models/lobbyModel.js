@@ -1,47 +1,47 @@
 const { NightShelter, CheckBoxOutlineBlankSharp } = require('@mui/icons-material');
 const mongoose = require('mongoose');
 const lobbySchema = mongoose.Schema({
-      user1: {
-        type: String,
-        required: true,
-        trim : true
-      },
-      user2: {
-        type: String,
-        // not making these requried true becuase create karte samay se sab kuch mere pas nhi rhega 
-        default: null,
-        trim : true
-      },
-      venue: {
-        type: String,
-        default: null,
-      },
-      venueId:{
-        type: String,
-        default: null,
-      },
-      venueCoordinates :{
-        type:Array,
-        default:null
-      },
-      time: {
-        type: Date,
-        default: null,
-      },
-      eventDetails: {
-        type: Array,
-        default: []
-      },
-      acceptedByUser2 :{
-        type : Boolean,
-        default : false
-      }
+  user1: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // or whatever your user model is called
+    required: true,
+    trim: true
+  },
+  user2: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null,
+    trim: true
+  },
+  venue: {
+    type: String,
+    default: null,
+  },
+  venueId: {
+    type: String,
+    default: null,
+  },
+  venueCoordinates: {
+    type: Array,
+    default: null
+  },
+  time: {
+    type: Date,
+    default: null,
+  },
+  eventDetails: {
+    type: Array,
+    default: []
+  },
+  acceptedByUser2: {
+    type: Boolean,
+    default: false
+  }
 });
 
 
-lobbySchema.post( ['save', 'findOneAndUpdate', 'updateOne' , 'findOneAndDelete','findByIdAndUpdate'],async function(doc){
-  if(global.io)
-  {
+lobbySchema.post(['save', 'findOneAndUpdate', 'updateOne', 'findOneAndDelete', 'findByIdAndUpdate'], async function (doc) {
+  if (global.io) {
     global.io.emit('lobby_updated')
   }
 })

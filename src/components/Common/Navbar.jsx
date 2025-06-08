@@ -31,6 +31,7 @@ export default function Navbar() {
     { name: 'Create Lobby', href: '/createlobby' },
     { name: 'Join Lobby', href: '/joinlobby' },
     { name: 'Show Lobbies', href: '/showlobbies' },
+    { name: 'Calendar' , href : '/calendar'}
   ];
 
   const visibleNavigation = user ? userNavigation : guestNavigation;

@@ -24,6 +24,7 @@ import UserHomePage from './components/UserHomePage';
 import CreateEventForm from './components/Admin/CreateNewEvent';
 import ProfilePage from './components/Admin/ProfilePage';
 import Setting from './components/Admin/Setting';
+import Calendar from './components/Home/Calendar';
 function App() {
   const [count, setCount] = useState(0)
   const isAdmin = useSelector(state=>{
@@ -40,6 +41,7 @@ function App() {
         <Route path='/' element={user ? (isAdmin ? <AdminHomePage /> : <UserHomePage />) : <LandingPage />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/signin' element={<SignIn />} />
+        <Route path = '/calendar' element = {<Calendar/>} />
         <Route path='/home' element={isAdmin ? <AdminHomePage /> : <MapWrapper />} />
         <Route path='/createlobby' element={isAdmin ? <CreateEventForm /> : <CreateLobby />} />
         <Route path='/profile' element={<ProfilePage/>}/>

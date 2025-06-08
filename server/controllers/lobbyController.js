@@ -6,7 +6,7 @@ module.exports.addLobby = async function addLobby(req, res) {
       user1: req.body.creatorId,
       user2: null,  // Setting user2 to null initially
       venue: null,   // Setting venue to null initially
-      time: null,   // Setting time to null initially,
+      time: req?.body?.eventDetails?.time ?? null,
       eventDetails : req.body.eventDetails
     };
   
