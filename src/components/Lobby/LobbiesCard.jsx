@@ -9,7 +9,7 @@ import { database } from '../../firebase';
 import dayjs from 'dayjs';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:8000');
+import socket from '../../Socket';
 
 const modalStyle = {
   position: 'absolute',
@@ -107,6 +107,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
     socket.on('lobby_updated', async () => {
       await refreshParent();
     });
+
   }, []);
 
   // Event Handlers

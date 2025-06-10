@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const socket = io.connect('http://localhost:8000');
+import socket from '../../Socket';
 // always the connection should be at the top level because otherwise the socket would re connect everytime a reconnection happens
 // react top level means static components
 

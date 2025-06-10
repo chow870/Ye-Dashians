@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-const socket = io.connect('http://localhost:8000');
+import socket from '../../Socket';
 export default function ShowingResults() {
     const [commonOptions, setCommonOptions] = useState([]);
     const [myOptions, setMyOptions] = useState([]); // State to hold my options
@@ -89,9 +89,9 @@ export default function ShowingResults() {
             })
         })
         return () => {
-            socket.disconnect();
-        };
-    }, []);
+            socket.emit("leave_room", roomId);
+  };
+    }, [slotId]);
 
     const handleSubmit2 = (e) => {
         const lobbyId = slotId;

@@ -9,7 +9,7 @@ import { database } from '../../firebase';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
-const socket = io.connect('http://localhost:8000')
+import socket from '../../Socket';
 function Lobby() {
   const {lobbyId} = useParams();
   const [dateAndTime, setDateAndTime] = useState(dayjs());

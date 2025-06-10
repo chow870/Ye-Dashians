@@ -8,7 +8,7 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:8000');
+import socket from '../../Socket';
 
 function Trip() {
   const { myId, guestId, venueCoords, lobbyId } = useLocation().state || {};
@@ -46,7 +46,7 @@ function Trip() {
   useEffect(() => {
     if (!lobbyId || !myId || !guestId) return;
 
-    socket.emit("join_room", lobbyId);
+    socket.emit("Join Room", lobbyId);
     socket.on("update_friend_location", (data) => {
         console.log("[frontend] inside the controller to update_friend_location", data);
       if (data.userId === guestId) {

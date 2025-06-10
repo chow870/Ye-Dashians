@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   // console.log(socket);
   console.log("socket is active to be connected")
   console.log("the id of socket is",socket.id)
-  socket.on('join_room' , (room)=>{
+  socket.on('Join Room' , (room)=>{
     console.log("joining room",room);
     socket.join(room)
   })
