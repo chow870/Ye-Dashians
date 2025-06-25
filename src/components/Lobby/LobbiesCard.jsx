@@ -9,7 +9,7 @@ import { database } from '../../firebase';
 import dayjs from 'dayjs';
 import io from 'socket.io-client';
 
-import socket from '../../Socket';
+const socket = io.connect('http://localhost:8000');
 
 const modalStyle = {
   position: 'absolute',
