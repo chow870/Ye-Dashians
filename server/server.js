@@ -70,9 +70,7 @@ httpServer.listen(process.env.PORT,()=>{
 
 
 
-
-const db_link = 'mongodb+srv://ashutoshdigital:pXzjcCqx9L58oJz3@cluster0.vy40p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-mongoose.connect(db_link)
+mongoose.connect(process.env.DB_LINK)
   .then(() => console.log("MongoDB connection for beatBonds db is successful"))
   .catch(err => console.log(err));
 
