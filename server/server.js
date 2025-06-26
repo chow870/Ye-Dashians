@@ -77,7 +77,7 @@ mongoose.connect(db_link)
   .catch(err => console.log(err));
 
   const corsOptions = {
-    origin: 'http://localhost:5173', // Your frontend's origin
+    origin: 'https://ye-dashians-frontend.onrender.com', // Your frontend's origin
     credentials: true // Allow credentials like cookies
   };
   app.use(cors(corsOptions));
