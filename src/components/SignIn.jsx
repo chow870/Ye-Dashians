@@ -45,7 +45,7 @@ function SignIn() {
         },
         body: JSON.stringify(userData),
       });
-
+      console.log("LOGIN res ",res);
       const resp = await res.json();
 
       if (resp.success) {

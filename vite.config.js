@@ -5,16 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
-        target: 'https://ye-dashians-backend.onrender.com',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/maps': {
-        target: 'https://ye-dashians-backend.onrender.com',
-        changeOrigin: true,
-        secure: false,
-      },
+      '/api':"https://ye-dashians-backend.onrender.com",
+      '/maps':"https://ye-dashians-backend.onrender.com",
     },
   },
 })
