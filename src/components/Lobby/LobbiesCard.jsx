@@ -9,7 +9,7 @@ import { database } from '../../firebase';
 import dayjs from 'dayjs';
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:8000');
+const socket = io.connect('https://ye-dashians-backend.onrender.com');
 
 const modalStyle = {
   position: 'absolute',

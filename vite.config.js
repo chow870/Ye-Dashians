@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server:{
     proxy:{
-      '/api':"http://localhost:8000",
-      '/maps':"http://localhost:8000",
+      '/api':"https://ye-dashians-backend.onrender.com",
+      '/maps':"https://ye-dashians-backend.onrender.com",
 
     }
   },

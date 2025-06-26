@@ -11,7 +11,7 @@ export default function ShowingResults() {
     const [socketLoading, setSocketLoading] = useState(true);
     const [sortOption, setSortOption] = useState('rating'); // State for sorting options
     const [filterType, setFilterType] = useState(''); // State for filtering by type of place
-    const socket = io.connect('http://localhost:8000');
+    const socket = io.connect('https://ye-dashians-backend.onrender.com');
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
     const [friendSuggestedIds, setFriendSuggestedIds] = useState('') // suggested ids.
