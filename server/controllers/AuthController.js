@@ -8,6 +8,7 @@ async function loginUser(req, res) {
 
         if (userEmail != '' && userEmail != '') {
             let user = await userModel.findOne({ email: userEmail });
+            console.log("Tried user mail ",userEmail);
             if (user) {
                 if ((user.password == userPassword)) {
                     const uid = user._id;
