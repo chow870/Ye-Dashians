@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const cookieParser = require('cookie-parser')
 const app = express();
 const mongoose = require('mongoose');
@@ -61,7 +62,7 @@ io.on("connection", (socket) => {
   })
 })
 
-httpServer.listen(8000,()=>{
+httpServer.listen(process.env.PORT,()=>{
   console.log("server is listening on port 8000")
 });
 
