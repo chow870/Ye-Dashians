@@ -1,4 +1,4 @@
-const { NightShelter, CheckBoxOutlineBlankSharp } = require('@mui/icons-material');
+
 const mongoose = require('mongoose');
 const lobbySchema = mongoose.Schema({
   user1: {
