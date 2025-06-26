@@ -16,12 +16,12 @@ function AdminHomePage() {
 
   const organiserId = useSelector((state) => state.auth.user.uid);
 
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         console.log("inside the fetch events")
-        const response = await axios.get('/api/v1/fetchAdminEvents', {
+        const response = await axios.get(`${BackendBaseUrl}/api/v1/fetchAdminEvents`, {
           params: { organiserId }
         });
         setEvents(response.data);

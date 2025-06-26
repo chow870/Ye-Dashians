@@ -16,7 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { googleProvider, githubProvider, auth, database } from '../firebase';
 import { setUser } from '../redux/slices/authSlice';
-
+const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
 function SignIn() {
   const user = useSelector((state) => state?.auth?.user);
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ function SignIn() {
         userPassword: password,
       };
 
-      const res = await fetch('/api/v1/auth/login', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ function SignIn() {
         profileImage: user.photoURL,
       };
 
-      const response2 = await fetch('/api/v1/auth/signup', {
+      const response2 = await fetch(`${BackendBaseUrl}/api/v1/auth/signup`, {
         method: 'POST',
         credentials: 'include',
         headers: {

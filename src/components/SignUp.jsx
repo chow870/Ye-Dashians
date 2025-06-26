@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import { storage } from "../firebase";
 import signupImage from "/aleksandr-popov-JhYnL-BiP18-unsplash.jpg";
-
+const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
 function SignUp() {
   const loads = useSelector((state) => state?.auth?.loading);
   const user = useSelector((state) => state?.auth?.user);
@@ -57,7 +57,7 @@ function SignUp() {
         localUser: true,
       };
 
-      const response = await fetch("/api/v1/auth/signup", {
+      const response = await fetch(`${BackendBaseUrl}/api/v1/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -97,7 +97,7 @@ function SignUp() {
               const url = await uploadTask.snapshot.ref.getDownloadURL();
               setImgUrl(url);
 
-              const newuser = await fetch(`/api/v1/user/${id}`,{
+              const newuser = await fetch(`${BackendBaseUrl}/api/v1/user/${id}`,{
           method : 'PATCH',
           headers: {
             "Content-Type": "application/json",
