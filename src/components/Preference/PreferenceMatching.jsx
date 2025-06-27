@@ -235,7 +235,7 @@ useEffect(() => {
 
                 for (const ambience of preference.ambience) {
                     fetchPromises.push(
-                        fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${ambience}`, {
+                        fetch(`${BackendBaseUrl}/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${ambience}`, {
                             method: "GET",
                             headers: { "Content-Type": "application/json" }
                         })
@@ -266,7 +266,7 @@ useEffect(() => {
 
                 for (const food of preference.foodPreference) {
                     fetchPromises.push(
-                        fetch(`/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${food}`, {
+                        fetch(`${BackendBaseUrl}/maps/v1/NearbySearch?lat=${searchLat}&lng=${searchLng}&type=${element}&keyword=${food}`, {
                             method: "GET",
                             headers: { "Content-Type": "application/json" }
                         })
@@ -293,7 +293,7 @@ useEffect(() => {
             console.log("now time for the detailFetchPromises")
             const detailFetchPromises = newResults.map(async (place) => {
                 const updatedResults = await Promise.all(place.result.map(async (item) => {
-                    const response = await fetch(`/maps/v1/PlaceIdSearch?lat=${searchLat}&lng=${searchLng}&keyword=${item.tags.join(',')}&type=${place.typeOfPlace}&userId1=${myId}&userId2=${guestId}&coordinate1=${mylocation.lat},${mylocation.lng}&coordinate2=${coordinate2.lat},${coordinate2.lng}&place_id=${item.place_id}`);
+                    const response = await fetch(`${BackendBaseUrl}/maps/v1/PlaceIdSearch?lat=${searchLat}&lng=${searchLng}&keyword=${item.tags.join(',')}&type=${place.typeOfPlace}&userId1=${myId}&userId2=${guestId}&coordinate1=${mylocation.lat},${mylocation.lng}&coordinate2=${coordinate2.lat},${coordinate2.lng}&place_id=${item.place_id}`);
                     
                     if (!response.ok) throw new Error('Failed to fetch additional details');
 

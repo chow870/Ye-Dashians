@@ -5,7 +5,7 @@ export default function Aqi() {
   const [loading, setLoading] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const fetchData = async () => {
     if (currentLocation == null) {
       setLoading(false);
@@ -15,7 +15,7 @@ export default function Aqi() {
     setLoading(true);
     try {
       let response = await fetch(
-        `/maps/v1/WatherSearch?lat=${currentLocation.lat}&lng=${currentLocation.lng}`
+        `${BackendBaseUrl}/maps/v1/WatherSearch?lat=${currentLocation.lat}&lng=${currentLocation.lng}`
       );
       if (response.ok) {
         let result = await response.json();

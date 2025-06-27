@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
 const PlacePhotos = ({ photoReferences }) => {
     const [photos, setPhotos] = useState([]);
     console.log(photoReferences)
@@ -9,7 +9,7 @@ const PlacePhotos = ({ photoReferences }) => {
         const fetchPhotos = async () => {
             try {
                 const photoPromises = photoReferences.map(async (photoReference) => {
-                    const response = await axios.get(`/maps/v1/photo`, {
+                    const response = await axios.get(`${BackendBaseUrl}/maps/v1/photo`, {
                         params: { photo_reference: photoReference },
                         timeout: 10000, // 10 seconds
                     });
