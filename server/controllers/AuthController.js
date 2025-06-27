@@ -16,11 +16,10 @@ async function loginUser(req, res) {
                     res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
-                       domain: "ye-dashians-backend.onrender.com",
+                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
-
+                   console.log("Set-Cookie header sent:", res.getHeader("Set-Cookie"));
                     return res.json({
                         success : true,
                         message: "user has logged in",
@@ -66,11 +65,10 @@ async function signupUser(req, res) {
             res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
-                       domain: "ye-dashians-backend.onrender.com",
+                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
-      
+            console.log("Set-Cookie header sent:", res.getHeader("Set-Cookie"));
             return res.json({
               success: true,
               message: "User already exists, logged in instead",
@@ -87,8 +85,7 @@ async function signupUser(req, res) {
             res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
-                       domain: "ye-dashians-backend.onrender.com",
+                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
 
@@ -214,8 +211,7 @@ function logout(req,res){
     res.cookie("isLoggedIn", "", {
   httpOnly: true,
   secure: true,
-  sameSite: "none",
-  domain: "ye-dashians-backend.onrender.com",
+  sameSite: "None",
   expires: new Date(0) // Immediately expires cookie
 });
 
