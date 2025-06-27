@@ -16,8 +16,8 @@ async function loginUser(req, res) {
                     res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       domain: ".onrender.com",
+                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
+                       domain: "ye-dashians-backend.onrender.com",
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
 
@@ -66,8 +66,8 @@ async function signupUser(req, res) {
             res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       domain: ".onrender.com",
+                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
+                       domain: "ye-dashians-backend.onrender.com",
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
       
@@ -87,8 +87,8 @@ async function signupUser(req, res) {
             res.cookie("isLoggedIn", token, {
                        httpOnly: true,
                        secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       domain: ".onrender.com",
+                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
+                       domain: "ye-dashians-backend.onrender.com",
                        maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
                    });
 
@@ -214,8 +214,8 @@ function logout(req,res){
     res.cookie("isLoggedIn", "", {
   httpOnly: true,
   secure: true,
-  sameSite: "None",
-  domain: ".onrender.com",
+  sameSite: "none",
+  domain: "ye-dashians-backend.onrender.com",
   expires: new Date(0) // Immediately expires cookie
 });
 
