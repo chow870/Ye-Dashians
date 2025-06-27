@@ -61,7 +61,7 @@ function CreateLobby() {
             }
 
             const data = await response.json();
-            
+            console.log("Data is ",data);
             if (data.success) {
                 setLoading(false);
                 setLobbyId(data.lobby._id);
