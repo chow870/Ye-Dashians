@@ -54,7 +54,7 @@ function CreateLobby() {
                 },
                 body: JSON.stringify({ "creatorId": userId, eventDetails:eventDetails }),
             });
-
+            console.log("Create lobby resp :",response);
             if (!response.ok) {
                 setLoading(false);
                 throw new Error('Network response was not ok');
