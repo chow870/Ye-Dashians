@@ -27,9 +27,15 @@ const FetchAdminEventsRouter = require('./routes/FetchAdminEvents');
 const userRouter = require('./routes/UserRoutes')
 const authRouter = require('./routes/AuthRoutes')
 const httpServer = createServer(app);
+const corsOptions = {
+    origin: process.env.FRONTEND_URL, // Your frontend's origin
+    credentials: true // Allow credentials like cookies
+  };
+app.use(cors(corsOptions));
 const io = new Server(httpServer, { 
   cors: {
-    origin: "*"
+    origin: process.env.FRONTEND_URL,
+    credentials : true
   }
  });
  global.io = io;
@@ -73,12 +79,6 @@ httpServer.listen(process.env.PORT,()=>{
 mongoose.connect(process.env.DB_LINK)
   .then(() => console.log("MongoDB connection for beatBonds db is successful"))
   .catch(err => console.log(err));
-
-  const corsOptions = {
-    origin: process.env.FRONTEND_URL, // Your frontend's origin
-    credentials: true // Allow credentials like cookies
-  };
-  app.use(cors(corsOptions));
 app.use('/api/v1/lobby', lobbyRouter);
 app.use('/api/v1/mail', mailrouter);
 app.use('/api/v1/review' , reviewRouter);

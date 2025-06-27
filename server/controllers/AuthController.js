@@ -13,7 +13,12 @@ async function loginUser(req, res) {
                 if ((user.password == userPassword)) {
                     const uid = user._id;
                     const token = jwt.sign({ payload: uid }, jwt_key);
-                    res.cookie('isLoggedIn', token, { httpOnly: true });
+                    res.cookie("isLoggedIn", token, {
+                       httpOnly: true,
+                       secure: true,         // ⬅️ Required for HTTPS (which Render uses)
+                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
+                       maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
+                   });
 
                     return res.json({
                         success : true,
@@ -72,7 +77,12 @@ async function signupUser(req, res) {
         if(user) {
             const uid = user._id;
             const token = jwt.sign({ payload: uid }, jwt_key);
-            res.cookie('isLoggedIn', token, { httpOnly: true });
+            res.cookie("isLoggedIn", token, {
+                       httpOnly: true,
+                       secure: true,         // ⬅️ Required for HTTPS (which Render uses)
+                       sameSite: "none",     // ⬅️ Allows cross-origin cookies
+                       maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
+                   });
 
             return res.json({
                 success : true,
@@ -193,7 +203,13 @@ async function resetPassword(req, res) {
 }
 
 function logout(req,res){
-    res.cookie('isLoggedIn','',{maxAge:1});
+    res.cookie("isLoggedIn", "", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  expires: new Date(0) // Immediately expires cookie
+});
+
     // cookie ka naam // cookie ki value // extra options such as cookie ki age
     // what this does is basically destroys the cookie after 1ms
     res.json({
