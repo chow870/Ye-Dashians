@@ -167,7 +167,7 @@ function CreateLobby() {
 
         try {
             setLoading(true);
-            let response = await fetch('api/v1/user/getAll',{
+            let response = await fetch(`${BackendBaseUrl}/api/v1/user/getAll`,{
                 method : "GET",
                 headers: {
                     'Content-Type': 'application/json',
