@@ -17,8 +17,8 @@ function PreferenceForm() {
     const [nextPagebol, setNextPageBol] = useState(false);
     const [step, setStep] = useState(1);
     const { slotId, myId, guestId, eventDetails } = location.state || {};
-    console.log("event Details are : ", eventDetails);
-
+   // console.log("event Details are : ", eventDetails);
+   const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     useEffect(() => {
         console.log("Reached the PreferenceForm component");
     }, []);
@@ -51,7 +51,7 @@ function PreferenceForm() {
         try {
             console.log("Reached the HandleBackendPreferenceSubmission", preferenceData);
 
-            const response = await fetch(`/api/v1/preferenceSubmit?slotId=${slotId}&myId=${myId}`, {
+            const response = await fetch(`${BackendBaseUrl}/api/v1/preferenceSubmit?slotId=${slotId}&myId=${myId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

@@ -7,11 +7,11 @@ function HomePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('/api/v1/fetchAdminEvents', {
+        const response = await axios.get(`${BackendBaseUrl}/api/v1/fetchAdminEvents`, {
           params: { organiserId }
         });
         setEvents(response.data);
@@ -31,7 +31,7 @@ function HomePage() {
     const handleDeletion = async (eventId) => {
         setIsDeleting(true);
         try {
-          const response = await axios.delete(`/api/v1/deleteEvent/${eventId}`);
+          const response = await axios.delete(`${BackendBaseUrl}/api/v1/deleteEvent/${eventId}`);
           console.log(response.data.message); // "Event deleted successfully"
           onEventDeleted(eventId); // Callback to remove the event from the UI, if needed
         } catch (error) {

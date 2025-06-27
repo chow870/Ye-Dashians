@@ -28,7 +28,7 @@ const modalStyle = {
 function LobbiesCard({ lobbyId, refresh, refreshParent }) {
   const myId = useSelector((state) => state?.auth?.user?._id);
   const navigate = useNavigate();
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const [lobby, setLobby] = useState(null);
   const [guest, setGuest] = useState('');
   const [date, setDate] = useState('');
@@ -50,7 +50,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
   useEffect(() => {
     async function fetchLobbyDetails() {
       try {
-        const res = await fetch('/api/v1/lobby/getAll');
+        const res = await fetch(`${BackendBaseUrl}/api/v1/lobby/getAll`);
         const data = await res.json();
         if (data.success) {
           const foundLobby = data.lobby.find((l) => l._id === lobbyId);
@@ -88,7 +88,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
         setGuestId(otherUserId);
 
         try {
-          const res = await fetch(`/api/v1/user/userProfile/${otherUserId}`);
+          const res = await fetch(`${BackendBaseUrl}/api/v1/user/userProfile/${otherUserId}`);
           const resData = await res.json();
           if (resData.success) {
             setGuest(resData.data.fullname);
@@ -121,7 +121,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch('/api/v1/review/createNew', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/review/createNew`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,19 +144,19 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
   const deleteSession = async () => {
     try {
       await Promise.all([
-        fetch('/api/v1/user/removeLobby', {
+        fetch(`${BackendBaseUrl}/api/v1/user/removeLobby`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: myId, lobby_id: lobbyId }),
         }),
-        fetch('/api/v1/user/removeLobby', {
+        fetch(`${BackendBaseUrl}/api/v1/user/removeLobby`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: guestId, lobby_id: lobbyId }),
         }),
-        fetch(`/api/v1/lobby/delete?slotId=${lobbyId}`, { method: 'DELETE' }),
-        fetch(`/api/v1/preferenceSubmit?slotId=${lobbyId}`, { method: 'DELETE' }),
-        fetch(`/api/v1/preferenceMatching?slotId=${lobbyId}`, { method: 'DELETE' }),
+        fetch(`${BackendBaseUrl}/api/v1/lobby/delete?slotId=${lobbyId}`, { method: 'DELETE' }),
+        fetch(`${BackendBaseUrl}/api/v1/preferenceSubmit?slotId=${lobbyId}`, { method: 'DELETE' }),
+        fetch(`${BackendBaseUrl}/api/v1/preferenceMatching?slotId=${lobbyId}`, { method: 'DELETE' }),
       ]);
       refreshParent();
     } catch (err) {
@@ -166,7 +166,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
 
   const acceptRequest = async () => {
     try {
-      const res = await fetch('/api/v1/lobby/acceptByUser2', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/lobby/acceptByUser2`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lobbyId: lobby?._id }),

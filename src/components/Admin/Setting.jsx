@@ -17,7 +17,7 @@ import { setUser } from '../../redux/slices/authSlice'; // optional – update R
 function SettingsPage() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   if (!user) return null;
 
   const { _id: organiserId, email } = user;
@@ -53,7 +53,7 @@ function SettingsPage() {
             async () => {
               const url = await uploadTask.snapshot.ref.getDownloadURL();
 
-              const res = await fetch(`/api/v1/user/${organiserId}`, {
+              const res = await fetch(`${BackendBaseUrl}/api/v1/user/${organiserId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ profileImage: url }),
@@ -70,7 +70,7 @@ function SettingsPage() {
       }
 
       // ---------------- text/password branch ----------------
-      const res = await fetch(`/api/v1/user/${organiserId}`, {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/user/${organiserId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: value }),

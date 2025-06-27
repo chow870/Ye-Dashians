@@ -8,7 +8,7 @@ function PreferenceMatching() {
   const [othersPreference, setOthersPreference] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
-
+ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const { slotId, myId, mylocation, guestId, preference,eventDetails } = location.state || {};
 //   console.log("Reached Preference Matching page with:", slotId, myId, mylocation, guestId, preference);
 
@@ -16,7 +16,7 @@ function PreferenceMatching() {
   useEffect(() => {
     const fetchCoordinates = async () => {
       try {
-        const response = await fetch(`/api/v1/fetchCoordinates?slotId=${slotId}&userId=${guestId}`, {
+        const response = await fetch(`${BackendBaseUrl}/api/v1/fetchCoordinates?slotId=${slotId}&userId=${guestId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -324,7 +324,7 @@ useEffect(() => {
 const  optionsSubmission = async ()=>{
     try{
         console.log("Reached the PreferenceMatchingSubmission so the result i will submit is : ", results);
-            const response = await fetch(`/api/v1/preferenceMatching?slotId=${slotId}&myId=${myId}`, {
+            const response = await fetch(`${BackendBaseUrl}/api/v1/preferenceMatching?slotId=${slotId}&myId=${myId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(results),

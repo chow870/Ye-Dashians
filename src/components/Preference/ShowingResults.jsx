@@ -27,7 +27,7 @@ export default function ShowingResults() {
         preferenceother,
         myoptions, // Assuming myoptions is passed from props
     } = useLocation().state || {};
-
+   const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
 
 
     useEffect(() => {
@@ -131,7 +131,7 @@ export default function ShowingResults() {
     useEffect(() => {
         const fetchOtherPreferences = async () => {
             try {
-                const response = await fetch(`/api/v1/fetchOthersPreference?slotId=${slotId}&userId=${guestId}`, {
+                const response = await fetch(`${BackendBaseUrl}/api/v1/fetchOthersPreference?slotId=${slotId}&userId=${guestId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"

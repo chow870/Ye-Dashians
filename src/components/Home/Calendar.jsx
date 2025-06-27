@@ -33,7 +33,7 @@ export default function Calendar() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState("");
     const navigate = useNavigate()
-
+    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     useEffect(() => {
         if (Array.isArray(lobbies)) {
             const mappedEvents = lobbies.map(lobby => {
@@ -65,7 +65,7 @@ export default function Calendar() {
     async function fetchLobbies() {
         try {
 
-            let res = await fetch('/api/v1/user/myLobbies', {
+            let res = await fetch(`${BackendBaseUrl}/api/v1/user/myLobbies`, {
 
                 method: 'GET',
                 headers: {

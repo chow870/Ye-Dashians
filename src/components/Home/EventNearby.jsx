@@ -6,7 +6,7 @@ function EventSearchForm() {
   const [events, setEvents] = useState([]);
   const [load, setLoad]=useState(false);
   const navigate = useNavigate();
-
+ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   // Available event types
   const typesOptions = ["Music", "Concert", "Meetup", "Festival", "Celebrations", "Events"];
 console.log(events)
@@ -24,7 +24,7 @@ console.log(events)
     e.preventDefault();
     const typesQuery = selectedTypes.join(',');
     setLoad(true);
-    fetch(`/api/v1/fetchEvents?types=${typesQuery}`)
+    fetch(`${BackendBaseUrl}/api/v1/fetchEvents?types=${typesQuery}`)
       .then((response) => response.json())
       .then((data) => setEvents(data))
       .catch((error) => console.error('Error fetching events:', error));
@@ -35,7 +35,7 @@ console.log(events)
   const handlePayment = async (event) => {
     try {
       // Send a request to your backend to create a Razorpay order using fetch
-      const response = await fetch('/api/v1/pay/createOrder', {
+      const response = await fetch(`${BackendBaseUrl}/api/v1/pay/createOrder`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

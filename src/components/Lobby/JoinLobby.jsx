@@ -8,11 +8,11 @@ function JoinLobby() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const userId = useSelector((state) => state?.auth?.user?._id);
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const handleJoin = async (e) => {
     try {
       setLoading(true);
-      const response = await fetch('/api/v1/lobby/join', {
+      const response = await fetch(`${BackendBaseUrl}/api/v1/lobby/join`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ function JoinLobby() {
 
       if (data.success) {
         setLobbyId(data.lobby._id);
-        const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+        const response2 = await fetch(`${BackendBaseUrl}/api/v1/user/addNewLobbyToUser`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ lobbyId: lobbyId }),

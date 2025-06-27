@@ -11,10 +11,10 @@ function Lobbies() {
   const location = useLocation();
   const highlightId = location.state?.highlightLobbyId;
   const highlightRef = useRef(null);
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     async function fetchLobbies() {
       try {
-        let res = await fetch('/api/v1/user/userProfile/me', {
+        let res = await fetch(`${BackendBaseUrl}/api/v1/user/userProfile/me`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

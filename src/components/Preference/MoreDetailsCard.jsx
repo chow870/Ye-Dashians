@@ -14,11 +14,11 @@ export default function MoreDetailsCard() {
     const item = JSON.parse(decodeURIComponent(queryParams.get('item')));
     const mylocation = JSON.parse(decodeURIComponent(queryParams.get('mylocation')));
     const destinationLocation = JSON.parse(decodeURIComponent(queryParams.get('destinationLocation')));
-
+    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     useEffect(() => {
         async function fetchReviews() {
             try {
-                let response = await fetch(`/api/v1/fetchReviews?place_id=${item.place_id}`);
+                let response = await fetch(`${BackendBaseUrl}/api/v1/fetchReviews?place_id=${item.place_id}`);
                 if (response.ok) {
                     let result = await response.json();
                     setYeDashiansReview(result.reviews);

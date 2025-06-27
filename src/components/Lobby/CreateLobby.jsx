@@ -18,6 +18,7 @@ import {
 function CreateLobby() {
     const [users , setUsers] = useState(null)
     const [filter, setFilter] = useState('');
+    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     const filteredUsers = useMemo(() => {
         if(users)
         {
@@ -46,7 +47,7 @@ function CreateLobby() {
     const handleButtonClick = async (e) => {
         try {
             setLoading(true);
-            const response = await fetch('/api/v1/lobby/createNew', {
+            const response = await fetch(`${BackendBaseUrl}/api/v1/lobby/createNew`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ function CreateLobby() {
             
             
             setLoading(true);
-            const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+            const response2 = await fetch(`${BackendBaseUrl}/api/v1/user/addNewLobbyToUser`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ function CreateLobby() {
     {
         try {
             setLoading(true);
-            const response = await fetch('/api/v1/lobby/join', {
+            const response = await fetch(`${BackendBaseUrl}/api/v1/lobby/join`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ function CreateLobby() {
                 setLoading(false);
                 setError(null);
 
-                const response2 = await fetch('/api/v1/user/addNewLobbyToUser', {
+                const response2 = await fetch(`${BackendBaseUrl}/api/v1/user/addNewLobbyToUser`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

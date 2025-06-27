@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 function ProfilePage() {
   const user = useSelector((state) => state.auth.user);
-
+ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const [editMode, setEditMode] = useState({});
   const [fieldValues, setFieldValues] = useState({
     phoneno: user?.phoneno || '',
@@ -39,7 +39,7 @@ function ProfilePage() {
   };
   const updateUserProfileField = async (field, value) => {
     try {
-      const res = await fetch(`/api/v1/user/${organiserId}`, {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/user/${organiserId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

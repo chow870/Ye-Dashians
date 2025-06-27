@@ -23,7 +23,7 @@ function Lobby() {
   const [messages, setMessages] = useState([])
   const [inputValue , setInputValue] = useState()
   const [socketLoading, setSocketLoading] = useState(true)
-  
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const myId = useSelector((state) => {
     return state?.auth?.user?.uid
 })
@@ -62,7 +62,7 @@ const myEmail = useSelector((state)=>{
   useEffect(() => {
     async function fetchThatOne() {
         try {
-            const response = await fetch('/api/v1/lobby/getAll', {
+            const response = await fetch(`${BackendBaseUrl}/api/v1/lobby/getAll`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ useEffect(() => {
 const handleUpdate = async() => {
   try {
     setLoading(true);
-    const response = await fetch('/api/v1/lobby/updateLobby', {
+    const response = await fetch(`${BackendBaseUrl}/api/v1/lobby/updateLobby`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ navigate("/showlobbies")
         guest : me,
         timeAndDate : dateAndTime
        }
-     const res = await fetch('/api/v1/mail/send', {
+     const res = await fetch(`${BackendBaseUrl}/api/v1/mail/send`, {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ navigate("/showlobbies")
          guest : guest,
          timeAndDate : dateAndTime
         }
-      const res = await fetch('/api/v1/mail/send', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/mail/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ navigate("/showlobbies")
          guest : guest,
          timeAndDate : dateAndTime
         }
-      const res = await fetch('/api/v1/mail/send', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/mail/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -257,7 +257,7 @@ navigate("/showlobbies")
          guest : me,
          timeAndDate : dateAndTime
         }
-      const res = await fetch('/api/v1/mail/send', {
+      const res = await fetch(`${BackendBaseUrl}/api/v1/mail/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

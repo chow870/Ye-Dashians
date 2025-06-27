@@ -23,7 +23,7 @@ const CreateEventForm = () => {
     type: 'Music',
   });
   const navigate = useNavigate();
-
+  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -57,7 +57,7 @@ const CreateEventForm = () => {
     e.preventDefault();
     console.log(formData)
     try {
-      const response = await axios.post('/api/v1/createNewEvent', {
+      const response = await axios.post(`${BackendBaseUrl}/api/v1/createNewEvent`, {
         ...formData,
         organiserId,
               //  here has to put the organiser name.
