@@ -56,7 +56,8 @@ function PreferenceForm() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(preferenceData)
+                body: JSON.stringify(preferenceData),
+                credentials : "include"
             });
 
             if (response.ok) {

@@ -50,7 +50,9 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
   useEffect(() => {
     async function fetchLobbyDetails() {
       try {
-        const res = await fetch(`${BackendBaseUrl}/api/v1/lobby/getAll`);
+        const res = await fetch(`${BackendBaseUrl}/api/v1/lobby/getAll`, {
+  credentials: 'include',
+});
         const data = await res.json();
         if (data.success) {
           const foundLobby = data.lobby.find((l) => l._id === lobbyId);
@@ -88,7 +90,9 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
         setGuestId(otherUserId);
 
         try {
-          const res = await fetch(`${BackendBaseUrl}/api/v1/user/userProfile/${otherUserId}`);
+          const res = await fetch(`${BackendBaseUrl}/api/v1/user/userProfile/${otherUserId}`,{
+            credentials : "include"
+          });
           const resData = await res.json();
           if (resData.success) {
             setGuest(resData.data.fullname);
@@ -132,6 +136,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
           stars: reviewData.stars,
           placeId: lobby?.venueId,
         }),
+        credentials : "include"
       });
       setLoading(false);
       if (!res.ok) throw new Error('Review failed');
@@ -148,15 +153,17 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: myId, lobby_id: lobbyId }),
+          credentials : "include"
         }),
         fetch(`${BackendBaseUrl}/api/v1/user/removeLobby`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: guestId, lobby_id: lobbyId }),
+          credentials : "include"
         }),
-        fetch(`${BackendBaseUrl}/api/v1/lobby/delete?slotId=${lobbyId}`, { method: 'DELETE' }),
-        fetch(`${BackendBaseUrl}/api/v1/preferenceSubmit?slotId=${lobbyId}`, { method: 'DELETE' }),
-        fetch(`${BackendBaseUrl}/api/v1/preferenceMatching?slotId=${lobbyId}`, { method: 'DELETE' }),
+        fetch(`${BackendBaseUrl}/api/v1/lobby/delete?slotId=${lobbyId}`, { method: 'DELETE' ,credentials : "include" }),
+        fetch(`${BackendBaseUrl}/api/v1/preferenceSubmit?slotId=${lobbyId}`, { method: 'DELETE' ,credentials : "include"}),
+        fetch(`${BackendBaseUrl}/api/v1/preferenceMatching?slotId=${lobbyId}`, { method: 'DELETE',credentials : "include" }),
       ]);
       refreshParent();
     } catch (err) {
@@ -170,6 +177,7 @@ function LobbiesCard({ lobbyId, refresh, refreshParent }) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lobbyId: lobby?._id }),
+        credentials : "include"
       });
       const resp = await res.json();
       if (resp.success) refreshParent();

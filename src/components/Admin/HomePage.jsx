@@ -12,7 +12,8 @@ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     const fetchEvents = async () => {
       try {
         const response = await axios.get(`${BackendBaseUrl}/api/v1/fetchAdminEvents`, {
-          params: { organiserId }
+          params: { organiserId },
+          withCredentials : true
         });
         setEvents(response.data);
       } catch (err) {
@@ -31,7 +32,9 @@ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
     const handleDeletion = async (eventId) => {
         setIsDeleting(true);
         try {
-          const response = await axios.delete(`${BackendBaseUrl}/api/v1/deleteEvent/${eventId}`);
+          const response = await axios.delete(`${BackendBaseUrl}/api/v1/deleteEvent/${eventId}`,{
+            withCredentials : true
+          });
           console.log(response.data.message); // "Event deleted successfully"
           onEventDeleted(eventId); // Callback to remove the event from the UI, if needed
         } catch (error) {

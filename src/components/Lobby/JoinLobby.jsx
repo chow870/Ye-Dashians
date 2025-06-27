@@ -22,6 +22,7 @@ function JoinLobby() {
           lobbyId: lobbyId,
           acceptedByUser2: true,
         }),
+        credentials : "include"
       });
 
       if (!response.ok) throw new Error('Network response was not ok');
@@ -33,6 +34,7 @@ function JoinLobby() {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ lobbyId: lobbyId }),
+          credentials : "include"
         });
 
         if (!response2.ok) throw new Error('Network response was not ok');

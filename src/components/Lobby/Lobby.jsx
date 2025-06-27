@@ -67,6 +67,7 @@ const myEmail = useSelector((state)=>{
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials : "include"
             });
 
             if (!response.ok) {
@@ -134,6 +135,7 @@ const handleUpdate = async() => {
               "time" : dateAndTime,
               "venCords" : locationCoords
          }),
+         credentials: "include"
     });
     if (!response.ok) {
         setLoading(false);
@@ -181,6 +183,7 @@ navigate("/showlobbies")
          "str" : "lobby created",
          "data" : emailObj
        }),
+       credentials : "include"
      })
 
 
@@ -209,6 +212,7 @@ navigate("/showlobbies")
           "str" : "lobby created",
           "data" : emailObj
         }),
+        credentials : "include"
       })
  
  
@@ -237,6 +241,7 @@ navigate("/showlobbies")
           "str" : "lobby is scheduled",
           "data" : emailObj
         }),
+        credentials : "include"
       })
  
  
@@ -266,6 +271,7 @@ navigate("/showlobbies")
           "str" : "lobby is scheduled",
           "data" : emailObj
         }),
+        credentials : "include"
       })
  
  

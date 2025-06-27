@@ -21,6 +21,7 @@ function PreferenceMatching() {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials : "include"
         });
 
         if (response.ok) {
@@ -328,6 +329,7 @@ const  optionsSubmission = async ()=>{
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(results),
+                credentials : "include"
             });
 
             if (response.ok) {

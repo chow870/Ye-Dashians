@@ -57,6 +57,7 @@ function SettingsPage() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ profileImage: url }),
+                credentials : "include"
               });
               if (!res.ok) throw new Error('Update failed');
 
@@ -74,6 +75,7 @@ function SettingsPage() {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: value }),
+        credentials : "include"
       });
       if (!res.ok) throw new Error('Update failed');
 

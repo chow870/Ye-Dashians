@@ -22,7 +22,8 @@ function AdminHomePage() {
       try {
         console.log("inside the fetch events")
         const response = await axios.get(`${BackendBaseUrl}/api/v1/fetchAdminEvents`, {
-          params: { organiserId }
+          params: { organiserId },
+          withCredentials: true
         });
         setEvents(response.data);
       } catch (err) {

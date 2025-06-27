@@ -61,6 +61,7 @@ const CreateEventForm = () => {
         ...formData,
         organiserId,
               //  here has to put the organiser name.
+        withCredentials: true
       });
       console.log("Event created successfully:", response.data);
       navigate('/home')

@@ -45,6 +45,7 @@ console.log(events)
           name: event.locationName,
           description: 'Payment for event',
         }),
+        credentials: "include"
       });
   
       const data = await response.json();

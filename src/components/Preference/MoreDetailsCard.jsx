@@ -18,7 +18,7 @@ export default function MoreDetailsCard() {
     useEffect(() => {
         async function fetchReviews() {
             try {
-                let response = await fetch(`${BackendBaseUrl}/api/v1/fetchReviews?place_id=${item.place_id}`);
+                let response = await fetch(`${BackendBaseUrl}/api/v1/fetchReviews?place_id=${item.place_id}`,{credentials : "include"});
                 if (response.ok) {
                     let result = await response.json();
                     setYeDashiansReview(result.reviews);

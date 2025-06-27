@@ -135,7 +135,8 @@ export default function ShowingResults() {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json"
-                    }
+                    },
+                    credentials : "include"
                 });
 
                 if (response.ok) {

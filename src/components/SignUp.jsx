@@ -61,6 +61,7 @@ function SignUp() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
+        credentials : "include"
       });
 
       const responseData = await response.json();
@@ -103,6 +104,7 @@ function SignUp() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({profileImage:url}),
+          credentials : "include"
         })
         const newuserRes = await newuser.json();
         console.log(newuserRes.updatedData)

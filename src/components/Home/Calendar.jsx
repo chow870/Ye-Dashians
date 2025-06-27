@@ -71,6 +71,7 @@ export default function Calendar() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials : "include"
             });
 
             if (!res.ok) {

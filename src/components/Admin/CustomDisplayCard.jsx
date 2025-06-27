@@ -7,7 +7,9 @@ const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
 const handleDeletion = async (eventId) => {
         setIsDeleting(true);
         try {
-          const response = await axios.delete(`${BackendBaseUrl}/api/v1/deleteEvent/${eventId}`);
+          const response = await axios.delete(`${BackendBaseUrl}/api/v1/deleteEvent/${eventId}`, {
+  withCredentials: true
+});
           console.log(response.data.message); // "Event deleted successfully"
         //   onEventDeleted(eventId); // Callback to remove the event from the UI, if needed
         } catch (error) {
