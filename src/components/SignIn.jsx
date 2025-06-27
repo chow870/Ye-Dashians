@@ -44,6 +44,7 @@ function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
+        credentials : "include"
       });
       console.log("LOGIN res ",res);
       const resp = await res.json();
@@ -89,6 +90,7 @@ function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newUserData),
+        credentials : "include"
       });
 
       if (response2.ok) {
