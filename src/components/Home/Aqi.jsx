@@ -5,7 +5,7 @@ export default function Aqi() {
   const [loading, setLoading] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const fetchData = async () => {
     if (currentLocation == null) {
       setLoading(false);

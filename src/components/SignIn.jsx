@@ -16,7 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { googleProvider, githubProvider, auth, database } from '../firebase';
 import { setUser } from '../redux/slices/authSlice';
-const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
 function SignIn() {
   const user = useSelector((state) => state?.auth?.user);
   const dispatch = useDispatch();
@@ -90,7 +90,6 @@ function SignIn() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newUserData),
-        credentials : "include"
       });
 
       if (response2.ok) {

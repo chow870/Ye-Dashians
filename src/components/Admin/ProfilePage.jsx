@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 function ProfilePage() {
   const user = useSelector((state) => state.auth.user);
- const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+ const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const [editMode, setEditMode] = useState({});
   const [fieldValues, setFieldValues] = useState({
     phoneno: user?.phoneno || '',

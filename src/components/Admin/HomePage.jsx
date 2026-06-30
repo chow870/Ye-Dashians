@@ -7,7 +7,7 @@ function HomePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {

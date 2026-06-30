@@ -23,7 +23,7 @@ function Lobby() {
   const [messages, setMessages] = useState([])
   const [inputValue , setInputValue] = useState()
   const [socketLoading, setSocketLoading] = useState(true)
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const myId = useSelector((state) => {
     return state?.auth?.user?.uid
 })

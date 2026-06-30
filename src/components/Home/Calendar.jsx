@@ -33,7 +33,7 @@ export default function Calendar() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState("");
     const navigate = useNavigate()
-    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+    const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
     useEffect(() => {
         if (Array.isArray(lobbies)) {
             const mappedEvents = lobbies.map(lobby => {

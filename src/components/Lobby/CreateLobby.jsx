@@ -18,7 +18,7 @@ import {
 function CreateLobby() {
     const [users , setUsers] = useState(null)
     const [filter, setFilter] = useState('');
-    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+    const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
     const filteredUsers = useMemo(() => {
         if(users)
         {

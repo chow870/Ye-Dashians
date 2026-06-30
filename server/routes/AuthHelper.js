@@ -1,6 +1,7 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
-const jwt_key = 'abcdefghijkl';
+const jwt_key = process.env.JWT_SECRET;
 
 async function protectRoute(req, res, next) {
     try {
@@ -30,15 +31,7 @@ async function protectRoute(req, res, next) {
                 });
             }
         } else {
-            const client = req.get('User-Agent');
-            if(client.includes("Mozilla")==true)
-            {
-                return res.json({
-                    message: "please login, operation not allowed"
-                });
-
-            }
-            return res.json({
+            return res.status(401).json({
                 message: "please login, operation not allowed"
             });
         }

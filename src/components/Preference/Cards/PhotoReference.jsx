@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
 const PlacePhotos = ({ photoReferences }) => {
     const [photos, setPhotos] = useState([]);
     console.log(photoReferences)

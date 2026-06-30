@@ -17,7 +17,7 @@ import { setUser } from '../../redux/slices/authSlice'; // optional – update R
 function SettingsPage() {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   if (!user) return null;
 
   const { _id: organiserId, email } = user;

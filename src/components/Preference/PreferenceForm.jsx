@@ -18,7 +18,7 @@ function PreferenceForm() {
     const [step, setStep] = useState(1);
     const { slotId, myId, guestId, eventDetails } = location.state || {};
    // console.log("event Details are : ", eventDetails);
-   const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+   const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
     useEffect(() => {
         console.log("Reached the PreferenceForm component");
     }, []);
@@ -114,7 +114,7 @@ function PreferenceForm() {
                 {step === 1 && (
                     <div className="animate-fade-in">
                         <label className="block text-xl font-semibold mb-4 text-gray-300" htmlFor="location">Select Your Location:</label>
-                        <LoadScript googleMapsApiKey= {"AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w"} libraries={libraries}>
+                        <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={libraries}>
                             <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
                                 <input
                                     type="text"

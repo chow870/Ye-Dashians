@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import { storage } from "../firebase";
 import signupImage from "/aleksandr-popov-JhYnL-BiP18-unsplash.jpg";
-const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
 function SignUp() {
   const loads = useSelector((state) => state?.auth?.loading);
   const user = useSelector((state) => state?.auth?.user);

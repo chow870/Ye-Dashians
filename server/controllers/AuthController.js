@@ -1,25 +1,35 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const jwt_key = 'abcdefghijkl';
+const nodemailer = require('nodemailer');
 const userModel = require('../models/userModel');
+
+const jwt_key = process.env.JWT_SECRET;
+
+// shared cookie options for the auth cookie
+const authCookieOptions = {
+    httpOnly: true,
+    secure: true,         // Required for HTTPS (which Render uses)
+    sameSite: "None",     // Allows cross-origin cookies
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
+
+// signs a 7-day token for the given user id and sets it as a cookie
+function issueAuthCookie(res, userId) {
+    const token = jwt.sign({ payload: userId }, jwt_key, { expiresIn: '7d' });
+    res.cookie("isLoggedIn", token, authCookieOptions);
+}
 
 async function loginUser(req, res) {
     try {
         let { userEmail, userPassword } = req.body;
 
-        if (userEmail != '' && userEmail != '') {
+        if (userEmail != '' && userPassword != '') {
             let user = await userModel.findOne({ email: userEmail });
-            console.log("Tried user mail ",userEmail);
+            console.log("Tried user mail ", userEmail);
             if (user) {
-                if ((user.password == userPassword)) {
-                    const uid = user._id;
-                    const token = jwt.sign({ payload: uid }, jwt_key);
-                    res.cookie("isLoggedIn", token, {
-                       httpOnly: true,
-                       secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
-                   });
-                   console.log("Set-Cookie header sent:", res.getHeader("Set-Cookie"));
+                const passwordMatches = await user.comparePassword(userPassword);
+                if (passwordMatches) {
+                    issueAuthCookie(res, user._id);
                     return res.json({
                         success : true,
                         message: "user has logged in",
@@ -40,7 +50,7 @@ async function loginUser(req, res) {
         } else {
             return res.json({
                 success : false,
-                message: "enter email"
+                message: "enter email and password"
             });
         }
     } catch (error) {
@@ -57,18 +67,9 @@ async function signupUser(req, res) {
         let userDetails = req.body;
         let user = await userModel.findOne({email : req.body.email});
 
-        // ✅ ADDED: if user already exists, return response to avoid empty reply
+        // if user already exists, return response to avoid empty reply
         if (user) {
-            // ✅ Return existing user and a token
-            const uid = user._id;
-            const token = jwt.sign({ payload: uid }, jwt_key);
-            res.cookie("isLoggedIn", token, {
-                       httpOnly: true,
-                       secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
-                   });
-            console.log("Set-Cookie header sent:", res.getHeader("Set-Cookie"));
+            issueAuthCookie(res, user._id);
             return res.json({
               success: true,
               message: "User already exists, logged in instead",
@@ -80,15 +81,7 @@ async function signupUser(req, res) {
         user = await userModel.create(userDetails);
 
         if(user) {
-            const uid = user._id;
-            const token = jwt.sign({ payload: uid }, jwt_key);
-            res.cookie("isLoggedIn", token, {
-                       httpOnly: true,
-                       secure: true,         // ⬅️ Required for HTTPS (which Render uses)
-                       sameSite: "None",     // ⬅️ Allows cross-origin cookies
-                       maxAge: 7 * 24 * 60 * 60 * 1000, // Optional: 7 days
-                   });
-
+            issueAuthCookie(res, user._id);
             return res.json({
                 success : true,
                 message: "new user registered successfully",
@@ -102,7 +95,7 @@ async function signupUser(req, res) {
             });
         }
 
-    } catch (err) { 
+    } catch (err) {
         return res.json({
             success : false,
             message: `error while registering new user , ${err.message}`
@@ -131,42 +124,42 @@ async function forgotPassword(req, res) {
     let { email } = req.body;
     try {
         let user = await userModel.findOne({ email })
-        // i could use 
-        // let user = await userModel.findOne({email: userEmail})
-        // but when variable names matched with key name 
-        // then shorthand can be used 
 
         if (user) {
             const resetToken = user.createResetToken();
-            // the above thing modifies our document in memory
-            // now we will save our changes 
             await user.save({ validateBeforeSave: false });
 
+            const resetPasswordLink = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
 
-            // what does createResetTokenDo ? 
-            // actually in our schema there is a field 
-            // called resetToken which was empty when the user was
-            // created ! 
-            // createResetToken generates a token and fills into the field and also
-            // gives it to us at hand 
-
-            let resetPasswordLink = `${req.protocol}://${req.get(
-                "host"
-            )}/resetpassword/${resetToken}`;
-
-            // now send this link in the user's email
-            // nodemailer  
-
-            return res.json({
-                message: `you will get an email with reset Token : ${resetToken}`
-            });
-
+            // send the reset link by email instead of returning the token
+            try {
+                const transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    },
+                });
+                await transporter.sendMail({
+                    from: `"BeatBonds" <${process.env.EMAIL_USER}>`,
+                    to: user.email,
+                    subject: "Reset your BeatBonds password",
+                    html: `<p>You requested a password reset.</p>
+                           <p>Click the link below to set a new password (valid for 1 hour):</p>
+                           <p><a href="${resetPasswordLink}">${resetPasswordLink}</a></p>
+                           <p>If you didn't request this, you can ignore this email.</p>`,
+                });
+            } catch (mailErr) {
+                console.log("forgotPassword: failed to send email", mailErr.message);
+            }
         }
-        else {
-            return res.json({
-                message: "forgotPassword : user with this email is not registered"
-            });
-        }
+
+        // generic response either way, so we don't reveal whether the email exists
+        return res.json({
+            message: "If an account exists for this email, a reset link has been sent."
+        });
 
     } catch (err) {
         return res.json({
@@ -179,12 +172,13 @@ async function forgotPassword(req, res) {
 async function resetPassword(req, res) {
     try {
         const token = req.params.token;
-        // here this token will help us in getting to the user who 
+        // here this token will help us in getting to the user who
         // has opted for a change of password
         let { password, confirmPassword } = req.body;
-        let user = await userModel.findOne({ resetToken: token });
-        // here the key name != variable name 
-        // so shorthand could not be used 
+        let user = await userModel.findOne({
+            resetToken: token,
+            resetTokenExpiry: { $gt: Date.now() },
+        });
         if(user)
         {
             user.resetPasswordHandler(password, confirmPassword);
@@ -196,7 +190,7 @@ async function resetPassword(req, res) {
         else
         {
             return res.json({
-                message : "reset password : user entry in database missing"
+                message : "reset password : token is invalid or has expired"
             });
         }
     } catch (err) {
@@ -209,14 +203,11 @@ async function resetPassword(req, res) {
 
 function logout(req,res){
     res.cookie("isLoggedIn", "", {
-  httpOnly: true,
-  secure: true,
-  sameSite: "None",
-  expires: new Date(0) // Immediately expires cookie
-});
-
-    // cookie ka naam // cookie ki value // extra options such as cookie ki age
-    // what this does is basically destroys the cookie after 1ms
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        expires: new Date(0) // Immediately expires cookie
+    });
     res.json({
         message : "the user was successfully logged out"
     });

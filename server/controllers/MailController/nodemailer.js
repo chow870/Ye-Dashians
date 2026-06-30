@@ -1,3 +1,4 @@
+require('dotenv').config();
 const nodemailer = require("nodemailer");
 
 
@@ -10,8 +11,8 @@ module.exports.sendMail = async function sendMail(req,res){
         port: 587,
         secure: false, // true for port 465, false for other ports
         auth: {
-          user: "ashutoshdigital@gmail.com",
-          pass: "qibi jjqr sgnu qpkf",
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
       });
 
@@ -35,7 +36,7 @@ module.exports.sendMail = async function sendMail(req,res){
 
 
         const info = await transporter.sendMail({
-          from: '"BeatBonds" <ashutoshdigital@gmail.com>', // sender address
+          from: `"BeatBonds" <${process.env.EMAIL_USER}>`, // sender address
           to: data.email, // list of receivers
           subject: Osubject, // Subject line
           html: Ohtml, // html body

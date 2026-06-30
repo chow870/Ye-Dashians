@@ -26,9 +26,8 @@ const initialState = {
           state.loading = false;
         },
         setUser(state, action) {
-            console.log(action.payload);
             state.user = action.payload;
-            state.isAdmin = action.payload.isAdmin;
+            state.isAdmin = action.payload?.isAdmin ?? false;
           },
           setLoading(state, action) {
             state.loading = action.payload;

@@ -16,7 +16,7 @@ function AdminHomePage() {
 
   const organiserId = useSelector((state) => state.auth.user.uid);
 
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   useEffect(() => {
     const fetchEvents = async () => {
       try {

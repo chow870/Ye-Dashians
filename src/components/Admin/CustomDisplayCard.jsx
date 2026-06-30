@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaClock, FaTicketAlt } from 'react-icons
 import axios from 'axios'
 
 function CustomDisplayCard({ item,events,setIsDeleting,isDeleting}) {
-const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
 const handleDeletion = async (eventId) => {
         setIsDeleting(true);
         try {

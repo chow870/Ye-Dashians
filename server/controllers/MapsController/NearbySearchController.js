@@ -6,8 +6,7 @@ const NearbySearch = async (req, res) => {
     console.log("inside the NearbySearch controller with type and keyword ",type,keyword )
     
     const apiKey = process.env.GOOGLE_MAPS_API;
-    console.log(apiKey)
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&keyword=${keyword}&type=${type}&key=AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w`;
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&keyword=${keyword}&type=${type}&key=${apiKey}`;
     
     try {
       const response = await fetch(url);

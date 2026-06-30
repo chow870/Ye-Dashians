@@ -14,7 +14,6 @@ const libraries = ['places', 'geometry'];
 const MyMapComponent = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(null);
-  // console.log(AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w)
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -80,7 +79,7 @@ const MyMapComponent = () => {
 };
 
 const MapWrapper = () => (
-  <LoadScript googleMapsApiKey={"AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w"} libraries={libraries}>
+  <LoadScript googleMapsApiKey={import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={libraries}>
     <MyMapComponent />
   </LoadScript>
 );

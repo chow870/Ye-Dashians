@@ -14,7 +14,7 @@ export default function MoreDetailsCard() {
     const item = JSON.parse(decodeURIComponent(queryParams.get('item')));
     const mylocation = JSON.parse(decodeURIComponent(queryParams.get('mylocation')));
     const destinationLocation = JSON.parse(decodeURIComponent(queryParams.get('destinationLocation')));
-    const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+    const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
     useEffect(() => {
         async function fetchReviews() {
             try {
@@ -62,7 +62,7 @@ export default function MoreDetailsCard() {
     return (
         <div className="flex h-screen bg-black text-gray-200">
             <div className="w-1/2 p-6 flex items-center justify-center">
-                <LoadScript googleMapsApiKey= {"AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w"} >
+                <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} >
                     <MapWithRoute myLocation={mylocation} lat={item.geometry.location.lat} lng={item.geometry.location.lng} />
                 </LoadScript>
             </div>

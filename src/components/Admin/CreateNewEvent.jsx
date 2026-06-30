@@ -23,7 +23,7 @@ const CreateEventForm = () => {
     type: 'Music',
   });
   const navigate = useNavigate();
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -82,7 +82,7 @@ const CreateEventForm = () => {
             <>
               <label className="block mb-4">
                 <span className="text-gray-300">Location Details </span>
-                      <LoadScript googleMapsApiKey= {AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w} libraries={["places"]}>
+                      <LoadScript googleMapsApiKey= {import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={["places"]}>
                             <Autocomplete onLoad={(ref) => (originRef.current = ref)} onPlaceChanged={handleOriginChange}>
                                 <input
                                     type="text"

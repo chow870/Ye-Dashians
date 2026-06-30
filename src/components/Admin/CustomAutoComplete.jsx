@@ -30,7 +30,7 @@ const GoogleMapsAutocomplete = () => {
   };
 
   return (
-    <LoadScript googleMapsApiKey="YOUR_API_KEY" libraries={['places']}>
+    <LoadScript googleMapsApiKey={import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API} libraries={['places']}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={10}>
         <Autocomplete
           onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}

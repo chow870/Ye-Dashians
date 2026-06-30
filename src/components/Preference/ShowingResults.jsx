@@ -11,7 +11,7 @@ export default function ShowingResults() {
     const [socketLoading, setSocketLoading] = useState(true);
     const [sortOption, setSortOption] = useState('rating'); // State for sorting options
     const [filterType, setFilterType] = useState(''); // State for filtering by type of place
-    const socket = io.connect('https://ye-dashians-backend.onrender.com');
+    const socket = io.connect(import.meta.env.VITE_BACKEND_URL);
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState()
     const [friendSuggestedIds, setFriendSuggestedIds] = useState('') // suggested ids.
@@ -27,7 +27,7 @@ export default function ShowingResults() {
         preferenceother,
         myoptions, // Assuming myoptions is passed from props
     } = useLocation().state || {};
-   const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+   const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
 
 
     useEffect(() => {

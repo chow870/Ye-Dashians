@@ -9,7 +9,7 @@ import { database } from '../../firebase';
 import dayjs from 'dayjs';
 import io from 'socket.io-client';
 
-const socket = io.connect('https://ye-dashians-backend.onrender.com');
+const socket = io.connect(import.meta.env.VITE_BACKEND_URL);
 
 const modalStyle = {
   position: 'absolute',
@@ -28,7 +28,7 @@ const modalStyle = {
 function LobbiesCard({ lobbyId, refresh, refreshParent }) {
   const myId = useSelector((state) => state?.auth?.user?._id);
   const navigate = useNavigate();
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const [lobby, setLobby] = useState(null);
   const [guest, setGuest] = useState('');
   const [date, setDate] = useState('');

@@ -11,7 +11,7 @@ function Lobbies() {
   const location = useLocation();
   const highlightId = location.state?.highlightLobbyId;
   const highlightRef = useRef(null);
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
     async function fetchLobbies() {
       try {
         let res = await fetch(`${BackendBaseUrl}/api/v1/user/userProfile/me`, {

@@ -161,11 +161,12 @@ module.exports.deleteLobby = async function deleteLobby(req,res){
         
         if (deletedPreference) {
             return res.status(200).json({
+                success: true,
                 message: "Lobby deleted successfully"
             });
         } else {
-            return res.status(200).json({
-                success: true,
+            return res.status(404).json({
+                success: false,
                 message: "Lobby not found"
             });
         }

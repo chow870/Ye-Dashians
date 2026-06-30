@@ -215,7 +215,7 @@ function Trip() {
       <p>Latitude: {guestCurrentLocation?.lat}</p>
       <p>Longitude: {guestCurrentLocation?.lng}</p>
 
-      <LoadScript googleMapsApiKey={"AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w"}>
+      <LoadScript googleMapsApiKey={import.meta.env.VITE_REACT_APP_GOOGLE_MAPS_API}>
         <MapWithTrack
           myInitialLocation={myCurrentLocation}
           partnerInitialLocation={guestCurrentLocation}

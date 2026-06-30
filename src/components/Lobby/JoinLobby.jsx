@@ -8,7 +8,7 @@ function JoinLobby() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const userId = useSelector((state) => state?.auth?.user?._id);
-  const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+  const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const handleJoin = async (e) => {
     try {
       setLoading(true);

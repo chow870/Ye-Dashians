@@ -10,7 +10,7 @@ const PlaceIdSearch = async (req, res) => {
 
   try {
     // Fetch place details first to get the coordinates
-    const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&fields=delivery,dine_in,serves_dinner,takeout,reviews,photos,formatted_address,formatted_phone_number,current_opening_hours,wheelchair_accessible_entrance,geometry&key=AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w`;
+    const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&fields=delivery,dine_in,serves_dinner,takeout,reviews,photos,formatted_address,formatted_phone_number,current_opening_hours,wheelchair_accessible_entrance,geometry&key=${apiKey}`;
     
     const placesResponse = await fetch(placeDetailsUrl);
     const placesData = await placesResponse.json();
@@ -25,8 +25,8 @@ const PlaceIdSearch = async (req, res) => {
     console.log("Updated coordinates:", lat, lng);
 
     // Now, use the updated lat and lng to create distance matrix URLs
-    const distanceUrl1 = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${coordinate1}&destinations=${lat},${lng}&units=metric&key=AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w`;
-    const distanceUrl2 = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${coordinate2}&destinations=${lat},${lng}&units=metric&key=AIzaSyDN2sqMBvceRuAkBC0UlZ6KLIrEH9OjK2w`;
+    const distanceUrl1 = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${coordinate1}&destinations=${lat},${lng}&units=metric&key=${apiKey}`;
+    const distanceUrl2 = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${coordinate2}&destinations=${lat},${lng}&units=metric&key=${apiKey}`;
 
     // Make concurrent requests for distance
     const [user1DistanceResponse, user2DistanceResponse] = await Promise.all([

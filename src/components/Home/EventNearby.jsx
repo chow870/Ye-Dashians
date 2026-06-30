@@ -6,7 +6,7 @@ function EventSearchForm() {
   const [events, setEvents] = useState([]);
   const [load, setLoad]=useState(false);
   const navigate = useNavigate();
- const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+ const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   // Available event types
   const typesOptions = ["Music", "Concert", "Meetup", "Festival", "Celebrations", "Events"];
 console.log(events)

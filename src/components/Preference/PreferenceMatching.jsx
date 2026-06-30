@@ -8,7 +8,7 @@ function PreferenceMatching() {
   const [othersPreference, setOthersPreference] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
- const BackendBaseUrl = "https://ye-dashians-backend.onrender.com"
+ const BackendBaseUrl = import.meta.env.VITE_BACKEND_URL
   const { slotId, myId, mylocation, guestId, preference,eventDetails } = location.state || {};
 //   console.log("Reached Preference Matching page with:", slotId, myId, mylocation, guestId, preference);
 

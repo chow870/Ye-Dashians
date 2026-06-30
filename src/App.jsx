@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import './index.css'
 import { Route,Routes } from 'react-router-dom';
@@ -26,14 +25,12 @@ import ProfilePage from './components/Admin/ProfilePage';
 import Setting from './components/Admin/Setting';
 import Calendar from './components/Home/Calendar';
 function App() {
-  const [count, setCount] = useState(0)
   const isAdmin = useSelector(state=>{
     return state.auth.isAdmin;
   })
   const user = useSelector(state => {
     return state.auth.user;
   })
-  console.log(isAdmin)
   return (
     <>
       <Navbar />
