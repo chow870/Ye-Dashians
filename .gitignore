@@ -83,6 +83,8 @@ web_modules/
 .next
 out
 
+interview_preparation/
+
 # Nuxt.js build / generate output
 .nuxt
 dist
@@ -121,3 +123,5 @@ dist
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 .DS_Store
 .env
+
+

@@ -84,39 +84,38 @@ function SignUp() {
 
       if (!iAmAdmin) {
         const uploadTask = storage.ref(`/users/${id}/ProfileImage`).put(file);
-        await new Promise((resolve, reject) => {
+        // The account is already created on the backend at this point. Never let a
+        // failed image upload (e.g. Firebase Storage quota exceeded) block signup —
+        // fall back to the default avatar and still complete the flow.
+        await new Promise((resolve) => {
           uploadTask.on(
             'state_changed',
             null,
             (err) => {
-              setError(err.message);
-              setTimeout(() => setError(''), 4000);
-              setLoading(false);
-              reject(err);
+              console.error('profile image upload failed:', err.message);
+              setError("Account created, but the profile image couldn't be uploaded (using default). You can change it later.");
+              setTimeout(() => setError(''), 5000);
+              resolve(); // continue signup with the default profile image
             },
             async () => {
-              const url = await uploadTask.snapshot.ref.getDownloadURL();
-              setImgUrl(url);
-
-              const newuser = await fetch(`${BackendBaseUrl}/api/v1/user/${id}`,{
-          method : 'PATCH',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({profileImage:url}),
-          credentials : "include"
-        })
-        const newuserRes = await newuser.json();
-        console.log(newuserRes.updatedData)
-        // /dispatch(setUser(newuserRes.updatedData)); // Chow870 : updated this. i will prefer to navigate him to the login page. 
-                                                        // it will logically get inclined to the widely used logic
+              try {
+                const url = await uploadTask.snapshot.ref.getDownloadURL();
+                setImgUrl(url);
+                await fetch(`${BackendBaseUrl}/api/v1/user/${id}`, {
+                  method: 'PATCH',
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ profileImage: url }),
+                  credentials: "include",
+                });
+              } catch (e) {
+                console.error('failed to save profile image url:', e.message);
+              } finally {
+                resolve(); // was missing before, so success never navigated
+              }
             }
           );
         });
 
-
-
-        
         setLoading(false);
         navigate('/signin');
       }

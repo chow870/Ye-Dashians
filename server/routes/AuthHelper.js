@@ -17,8 +17,11 @@ async function protectRoute(req, res, next) {
                 if(user)
                 {
                     req.id = user.id
-                    req.role = user.role
-                   
+                    req.isAdmin = user.isAdmin
+                    // the user model uses an `isAdmin` boolean (there is no `role`
+                    // field), so derive the role that isAuthorised() checks against
+                    req.role = user.isAdmin ? 'admin' : 'user'
+
                     next();
                 }else{
                     return res.json({

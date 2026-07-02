@@ -1,8 +1,9 @@
+require('dotenv').config();
 const WaetherSearch = async (req, res) => {
-  
+
     const {lat,lng} = req.query;
-    // console.log("inside the Weather Search controller with type and keyword ", )
-    const url = `http://api.weatherapi.com/v1/forecast.json?key=314673ea789f4a8e8e4142958240611&q=${lat},${lng}&days=1&aqi=yes&alerts=no`;
+    const apiKey = process.env.WEATHER_API_KEY;
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lng}&days=1&aqi=yes&alerts=no`;
     
     try {
       const response = await fetch(url);

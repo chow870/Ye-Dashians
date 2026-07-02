@@ -57,12 +57,15 @@ const CreateEventForm = () => {
     e.preventDefault();
     console.log(formData)
     try {
-      const response = await axios.post(`${BackendBaseUrl}/api/v1/createNewEvent`, {
-        ...formData,
-        organiserId,
-              //  here has to put the organiser name.
-        withCredentials: true
-      });
+      const response = await axios.post(
+        `${BackendBaseUrl}/api/v1/createNewEvent`,
+        {
+          ...formData,
+          organiserId,
+          //  here has to put the organiser name.
+        },
+        { withCredentials: true } // must be in axios config, not the body
+      );
       console.log("Event created successfully:", response.data);
       navigate('/home')
     } catch (error) {

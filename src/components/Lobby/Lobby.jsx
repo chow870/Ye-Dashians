@@ -41,19 +41,29 @@ const myEmail = useSelector((state)=>{
   } = location.state||{};
 
   useEffect(() => {
-    socket.on("connect" , () => {
+    const handleConnect = () => {
       console.log("frontend says connected with socket id" , socket.id)
       setSocketLoading(false);
       socket.emit("Join Room" , lobbyId)
-    })
-    socket.on("private-message-recieved" , (data) => {
-      console.log("private-data" , data)
-      setMessages((prev)=>[...prev , data.inputValue])
-    })
-    return () => {
-      socket.disconnect();
     };
-  }, []);
+    const handlePrivateMessage = (data) => {
+      setMessages((prev)=>[...prev , data.inputValue])
+    };
+
+    socket.on("connect" , handleConnect)
+    socket.on("private-message-recieved" , handlePrivateMessage)
+
+    // if the shared socket is already connected, join the room immediately
+    if (socket.connected) handleConnect();
+
+    // remove only THIS component's handlers on unmount so remounts don't stack
+    // duplicate listeners; don't disconnect the shared singleton socket.
+    return () => {
+      socket.off("connect" , handleConnect);
+      socket.off("private-message-recieved" , handlePrivateMessage);
+      socket.emit("leave_room" , lobbyId);
+    };
+  }, [lobbyId]);
   const handleSubmit2 = (e) => {
     e.preventDefault(); 
     socket.emit("PrivateMessage" , {inputValue,lobbyId})
@@ -82,7 +92,7 @@ const myEmail = useSelector((state)=>{
                 // console.log("ut current lobby is" , foundLobby)
                 const lobbyTime = foundLobby?.time ? dayjs(foundLobby.time) : dayjs();
                 setDateAndTime(lobbyTime)
-                setVenue(foundLobby.venue);
+                setVenue(foundLobby?.venue);
             }
         } catch (error) {
             setError(error.message);

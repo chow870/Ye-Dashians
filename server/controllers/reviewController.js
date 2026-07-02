@@ -37,5 +37,22 @@ module.exports.deleteReview = async function deleteReview(req,res){
 }
 
 module.exports.updateReview = async function updateReview(req,res){
+    const { reviewId } = req.body;
+    // only allow editing the mutable fields of a review
+    const updates = {};
+    if (req.body.text !== undefined) updates.text = req.body.text;
+    if (req.body.stars !== undefined) updates.stars = req.body.stars;
 
+    try {
+        if (!reviewId) {
+            return res.status(400).json({ success: false, message: "reviewId is required" });
+        }
+        const updated = await reviewModel.findByIdAndUpdate(reviewId, updates, { new: true, runValidators: true });
+        if (!updated) {
+            return res.status(404).json({ success: false, message: "review not found" });
+        }
+        return res.json({ success: true, message: "review updated successfully", review: updated });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
 }

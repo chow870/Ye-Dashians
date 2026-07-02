@@ -81,7 +81,8 @@ module.exports.acceptByUser2 = async function(req,res){
 
 module.exports.getAllLobies = async function getAllLobies(req,res){
     try {
-        let mongoRes = await lobbyModel.find();
+        // only return lobbies the authenticated user is part of (req.id is set by protectRoute)
+        let mongoRes = await lobbyModel.find({ $or: [{ user1: req.id }, { user2: req.id }] });
         if (!mongoRes) {
             res.status(500).json({ message : "such a lobby doesnt exist", success: false});
         }
